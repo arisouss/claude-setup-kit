@@ -1,0 +1,334 @@
+<!doctype html>
+<html lang="en" data-look="a"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Claude Code starter</title>
+<style>
+/* Same calm look as the setup page. One accent. The animation is the star. */
+:root{--paper:#e9e4d8;--card:#f6f2e9;--bd:#d8d2c4;--ink:#141413;--text:#3d3a34;--mut:#77736a;--acc:#e5262b;--acc-ink:#b3151a;--tint:#f6e7e4;--ok:#2f7d32;--oktint:#e3eddc;--okbd:#c3d6ba;--bad:#b3401f;--badtint:#f4e1d9;--code:#e6e1d4;
+--font:"Segoe UI",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;--mono:Consolas,"Cascadia Mono","SF Mono",Menlo,monospace}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--text);font:18px/1.7 var(--font);-webkit-font-smoothing:antialiased}
+.wrap{max-width:820px;margin:0 auto;padding:0 24px}
+h1,h2,h3{color:var(--ink);margin:0;letter-spacing:-.02em}
+p{margin:0 0 16px}b{color:var(--ink)}
+[hidden]{display:none!important}
+
+.top{position:sticky;top:0;z-index:20;background:rgba(233,228,216,.94);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--bd)}
+.top-in{max-width:980px;margin:0 auto;padding:12px 24px;display:flex;align-items:center;gap:16px}
+.logo{font-weight:800;font-size:.95rem;color:var(--ink);display:flex;align-items:center;gap:9px;white-space:nowrap}
+.logo i{width:20px;height:20px;border-radius:6px;background:var(--acc);display:block}
+.top a{margin-left:auto;font:600 .9rem var(--font);color:var(--text);text-decoration:none;border:1px solid #bdb9ae;border-radius:999px;padding:7px 16px}
+.top a:hover{color:var(--ink);border-color:var(--ink)}
+.prog{font:600 .82rem var(--font);color:var(--mut);white-space:nowrap}
+
+header.hero{padding:84px 0 20px}
+.kicker{font:700 .78rem var(--font);letter-spacing:.16em;text-transform:uppercase;color:var(--acc-ink);margin-bottom:18px}
+h1{font-size:clamp(2.3rem,5.6vw,3.4rem);line-height:1.08;font-weight:800;letter-spacing:-.03em}
+h1 em{font-style:normal;background:linear-gradient(transparent 64%,var(--acc) 64%,var(--acc) 94%,transparent 94%)}
+.lede{font-size:1.2rem;line-height:1.6;max-width:36em;margin:22px 0 0}
+
+/* lessons */
+.lesson{scroll-margin-top:76px;background:var(--card);border:1px solid var(--bd);border-radius:18px;margin-top:22px;box-shadow:0 2px 12px rgba(20,20,19,.04)}
+.lesson-top{display:flex;align-items:center;gap:16px;padding:22px 26px;cursor:pointer}
+.lesson .n{flex:none;width:44px;height:44px;border-radius:50%;background:var(--acc);color:var(--ink);font-weight:800;display:grid;place-items:center}
+.lesson h2{font-size:1.3rem;font-weight:700;line-height:1.25}
+.lesson .tease{font-size:.98rem;color:var(--mut);margin-top:2px}
+.lesson .state{margin-left:auto;flex:none;font:700 .72rem var(--font);letter-spacing:.1em;text-transform:uppercase;color:var(--mut);background:var(--code);border-radius:999px;padding:5px 12px}
+.lesson.done .state{background:var(--oktint);color:var(--ok)}
+.lesson.soon{background:transparent;box-shadow:none}
+.lesson.soon .lesson-top{cursor:default}
+.lesson.soon .n{background:var(--code);color:var(--mut)}
+.lesson.soon h2{color:var(--mut)}
+.lesson.open{border:2px solid var(--ink)}
+.lesson-body{display:none;padding:4px 26px 30px}
+.lesson.open .lesson-body{display:block}
+.label{font:700 .76rem var(--font);letter-spacing:.14em;text-transform:uppercase;color:var(--acc-ink);margin:38px 0 12px}
+
+/* the little film */
+.film{border:1px solid #cfc9ba;border-radius:16px;overflow:hidden;background:#efeadf}
+.stage{position:relative;aspect-ratio:16/10;container-type:inline-size;overflow:hidden;cursor:pointer;background:#f3efe5;user-select:none}
+.scene{position:absolute;inset:0;opacity:0;visibility:hidden;transition:opacity .35s;padding:5cqw 6cqw 17cqw}
+.scene.on{opacity:1;visibility:visible}
+.capline{position:absolute;left:6cqw;right:6cqw;bottom:4cqw;font-size:3.5cqw;line-height:1.3;font-weight:700;color:var(--ink);min-height:9cqw;display:flex;align-items:flex-end}
+.capline span{background:rgba(243,239,229,.9);padding:.4cqw 0}
+.tagline{font:700 1.7cqw var(--font);letter-spacing:.16em;text-transform:uppercase;color:var(--acc-ink);margin-bottom:2.5cqw}
+.a{opacity:0;transform:translateY(2cqw);transition:opacity .45s ease,transform .45s cubic-bezier(.2,.9,.2,1)}
+.a.in{opacity:1;transform:none}
+.a.pop{transform:scale(.6)}.a.pop.in{transform:none;transition:opacity .3s,transform .45s cubic-bezier(.3,1.7,.5,1)}
+.bubble{display:inline-block;max-width:78%;padding:1.6cqw 2.4cqw;border-radius:2cqw;font-size:2.7cqw;line-height:1.35;margin-bottom:1.8cqw}
+.bubble.me{background:var(--ink);color:#fff;float:right;clear:both;border-bottom-right-radius:.5cqw}
+.bubble.ai{background:#fff;color:var(--ink);border:1px solid var(--bd);float:left;clear:both;border-bottom-left-radius:.5cqw;min-width:40%}
+.clear{clear:both}
+.bigq{position:absolute;left:50%;top:57%;translate:-50% -50%;background:var(--acc);color:var(--ink);font-weight:800;font-size:4.6cqw;padding:2cqw 4cqw;border-radius:2.4cqw;white-space:nowrap;box-shadow:0 1.5cqw 4cqw rgba(20,20,19,.18);rotate:-2deg}
+.search{display:flex;align-items:center;gap:1.6cqw;border:.3cqw solid #b9b5aa;border-radius:6cqw;padding:1.4cqw 3cqw;font-size:2.7cqw;color:var(--mut);background:#fff;width:70%}
+.search i{width:2.4cqw;height:2.4cqw;border:.4cqw solid var(--mut);border-radius:50%;display:block;flex:none}
+.quote{position:relative;margin-top:3cqw;background:#fff;border:1px solid var(--bd);border-radius:2cqw;padding:2.6cqw 3cqw;width:78%}
+.quote q{display:block;font-size:3.6cqw;font-weight:700;color:var(--ink);line-height:1.25;quotes:"\201C" "\201D"}
+.quote small{display:block;margin-top:1cqw;font-size:2.2cqw;color:var(--mut)}
+.stamp{position:absolute;right:-12cqw;bottom:-4cqw;border:.6cqw solid var(--bad);color:var(--bad);font-weight:900;font-size:3.4cqw;letter-spacing:.14em;padding:.8cqw 2cqw;border-radius:1.2cqw;background:rgba(246,242,233,.95);rotate:8deg;white-space:nowrap}
+.sentence{font-size:5.4cqw;font-weight:800;color:var(--ink);line-height:1.2}
+.blank{display:inline-block;min-width:16cqw;border-bottom:.7cqw solid var(--ink);text-align:center;color:transparent;transition:color .3s,border-color .3s}
+.blank.in{color:var(--acc-ink);border-color:var(--acc-ink);opacity:1;transform:none}
+.bars{margin-top:3.4cqw;display:grid;gap:1.6cqw;width:86%}
+.bar{display:grid;grid-template-columns:11cqw 1fr 9cqw;align-items:center;gap:2cqw;font-size:2.8cqw;font-weight:700;color:var(--ink)}
+.bar i{display:block;height:3.4cqw;border-radius:2cqw;background:#ddd7c9;overflow:hidden}
+.bar i b{display:block;height:100%;width:0;background:var(--ink);border-radius:2cqw;transition:width .9s cubic-bezier(.2,.9,.2,1)}
+.bar.win i b{background:var(--acc)}
+.bar.in i b{width:var(--w)}
+.bar span:last-child{text-align:right;color:var(--mut);font-weight:600}
+.words{font-size:4.6cqw;font-weight:800;color:var(--ink);line-height:1.5;display:flex;flex-wrap:wrap;gap:1cqw 1.6cqw}
+.words span{background:#fff;border:1px solid var(--bd);border-radius:1.4cqw;padding:.2cqw 1.8cqw}
+.words span.new.in{background:var(--acc);border-color:var(--acc)}
+.counter{margin-top:4cqw;font-size:3cqw;font-weight:700;color:var(--mut)}
+.counter b{font-size:5.4cqw;color:var(--ink);font-variant-numeric:tabular-nums}
+.venn{position:relative;height:30cqw;width:74cqw;margin:1cqw auto 0}
+.venn div{position:absolute;top:0;width:44cqw;height:30cqw;border-radius:50%;display:grid;place-items:center;font-size:2.8cqw;font-weight:800;color:var(--ink);text-align:center;line-height:1.2}
+.venn .l{left:0;background:rgba(229,38,43,.30);padding-right:16cqw}
+.venn .r{right:0;background:rgba(47,125,50,.28);padding-left:16cqw}
+.venn .mid{left:50%;translate:-50% 0;width:20cqw;background:none;font-size:2.2cqw;font-weight:700;color:var(--text)}
+.venn .gap{left:-1cqw;top:auto;bottom:-3cqw;width:auto;height:auto;border-radius:1.4cqw;background:var(--badtint);border:.3cqw solid var(--bad);color:var(--bad);font-size:2.4cqw;padding:.8cqw 2cqw;white-space:nowrap}
+.three3{display:grid;grid-template-columns:repeat(3,1fr);gap:2.4cqw;margin-top:1cqw}
+.three3 div{background:#fff;border:1px solid var(--bd);border-radius:2.2cqw;padding:2.6cqw 2.2cqw}
+.three3 i{width:5.4cqw;height:5.4cqw;border-radius:50%;background:var(--acc);color:var(--ink);font:800 2.8cqw var(--font);display:grid;place-items:center;margin-bottom:1.6cqw}
+.three3 b{display:block;font-size:2.9cqw;line-height:1.2}
+.three3 small{display:block;font-size:2.1cqw;color:var(--mut);margin-top:.8cqw;line-height:1.3}
+.doors{display:flex;gap:4cqw;justify-content:center;margin-top:2cqw}
+.door{width:17cqw;height:25cqw;border:.5cqw solid var(--ink);border-radius:1.6cqw 1.6cqw 0 0;background:#fff;position:relative;display:grid;place-items:end center;padding-bottom:2cqw;font-size:2.8cqw;font-weight:800;color:var(--ink)}
+.door::after{content:"";position:absolute;right:2cqw;top:50%;width:1.6cqw;height:1.6cqw;border-radius:50%;background:var(--ink)}
+.door.hl{background:var(--acc)}
+.note{position:absolute;right:3cqw;top:3cqw;font-size:1.7cqw;color:var(--mut)}
+
+.poster,.endcard{position:absolute;inset:0;display:grid;place-items:center;background:rgba(243,239,229,.9);text-align:center;z-index:3}
+.poster[hidden],.endcard[hidden]{display:none}
+.playbig{display:inline-flex;align-items:center;gap:1.6cqw;background:var(--ink);color:#fff;border:0;border-radius:99cqw;font:700 3cqw var(--font);padding:2.2cqw 4.4cqw;cursor:pointer}
+.playbig::before{content:"";border-left:2.2cqw solid #fff;border-top:1.4cqw solid transparent;border-bottom:1.4cqw solid transparent}
+.poster p,.endcard p{font-size:2.3cqw;color:var(--mut);margin:2cqw 0 0}
+.endcard b{display:block;font-size:4cqw;margin-bottom:2.4cqw}
+.ctrl{display:flex;align-items:center;gap:10px;padding:10px 12px;background:#e4dfd2;border-top:1px solid #d3cdbf}
+.ctrl button{font:700 .86rem var(--font);background:var(--card);color:var(--ink);border:1px solid #bdb9ae;border-radius:9px;padding:8px 14px;cursor:pointer;min-height:38px;white-space:nowrap}
+.ctrl button:hover{border-color:var(--ink)}
+.ctrl .pp{background:var(--ink);color:#fff;border-color:var(--ink);min-width:86px}
+.segs{flex:1;display:flex;gap:4px}
+.segs i{flex:1;height:6px;border-radius:3px;background:#cfc9ba;overflow:hidden;display:block}
+.segs i b{display:block;height:100%;width:0;background:var(--ink)}
+
+/* bottom line, game, try */
+.bl{background:var(--tint);border:1px solid #e6c9c4;border-radius:14px;padding:22px 24px}
+.bl ul{margin:0;padding-left:22px}.bl li{margin:8px 0;color:var(--ink)}
+.game{border:1px solid var(--bd);border-radius:14px;padding:24px;background:#efeadf}
+.game .q{font-size:1.5rem;font-weight:800;color:var(--ink);line-height:1.3;margin-bottom:18px}
+.game .q u{text-decoration:none;display:inline-block;min-width:110px;border-bottom:4px solid var(--ink)}
+.opts{display:flex;flex-wrap:wrap;gap:10px}
+.opts button{font:700 1rem var(--font);background:var(--card);color:var(--ink);border:2px solid #bdb9ae;border-radius:12px;padding:12px 20px;cursor:pointer}
+.opts button:hover:not(:disabled){border-color:var(--ink)}
+.opts button.pick{border-color:var(--ink);background:var(--ink);color:#fff}
+.opts button small{font-weight:600;opacity:.75;margin-left:8px}
+.fb{margin-top:18px;font-size:1rem;color:var(--text);min-height:1.7em}
+.fb b{color:var(--ink)}
+.game .nextq{margin-top:14px}
+.btn{display:inline-flex;align-items:center;gap:10px;font:700 1rem var(--font);border:0;border-radius:12px;padding:13px 22px;cursor:pointer;background:var(--ink);color:#fff}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid #bdb9ae}
+.copy{margin:8px 0 0;border:1px solid #cfcbc0;border-radius:14px;overflow:hidden;background:#efeadf}
+.copy-bar{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 10px 10px 18px;background:#e4dfd2;border-bottom:1px solid #d3cdbf;font:600 .86rem var(--font)}
+.copy button{font:700 .9rem var(--font);background:var(--ink);color:#fff;border:0;border-radius:9px;padding:10px 20px;cursor:pointer;min-height:40px}
+.copy button.ok{background:var(--ok)}
+.copy pre{margin:0;padding:18px;font:14px/1.65 var(--mono);white-space:pre-wrap;word-break:break-word;color:#2b2823}
+.finishrow{display:flex;flex-wrap:wrap;align-items:center;gap:16px;margin-top:34px;padding-top:26px;border-top:1px solid var(--bd)}
+.finishrow span{color:var(--mut);font-size:.98rem}
+footer{margin:100px 0 70px;padding-top:28px;border-top:1px solid var(--bd);color:var(--mut);font-size:.92rem;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;align-items:center}
+button:focus-visible,a:focus-visible{outline:3px solid var(--acc-ink);outline-offset:3px}
+@media (max-width:560px){.lesson-top{padding:18px}.lesson-body{padding:4px 16px 24px}.lesson .state{display:none}.ctrl .hideS{display:none}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important}html{scroll-behavior:auto}}
+@media print{.top,.ctrl,.poster,.endcard,footer{display:none!important}body{background:#fff}.lesson-body{display:block}}
+
+/* extra scene pieces for lessons 2 to 10 */
+.three3 div.hl{background:var(--acc);border-color:var(--acc)}.three3 div.hl i{background:#fff}.three3 div.hl small{color:var(--ink)}
+.flow{display:flex;align-items:center;justify-content:center;gap:1.8cqw;margin-top:5cqw}
+.fbox{background:#fff;border:1px solid var(--bd);border-radius:2cqw;padding:2.4cqw 2.4cqw;font-size:2.7cqw;font-weight:800;color:var(--ink);text-align:center;line-height:1.2;max-width:24cqw}
+.fbox small{display:block;font-weight:600;color:var(--mut);font-size:2cqw;margin-top:.6cqw}
+.fbox.hl{background:var(--acc);border-color:var(--acc)}.fbox.hl small{color:var(--ink)}
+.arr{font-size:4cqw;font-weight:800;color:var(--ink)}
+.cmp{display:grid;grid-template-columns:1fr 1fr;gap:3cqw}
+.col{background:#fff;border:1px solid var(--bd);border-radius:2.2cqw;padding:2.4cqw 2.6cqw}
+.col h4{margin:0 0 1.6cqw;font-size:3cqw;color:var(--ink)}
+.col p{font-size:2.5cqw;line-height:1.3;margin:0 0 1.2cqw;color:var(--text);font-weight:600}
+.col.good{background:var(--oktint);border-color:var(--okbd)}
+.bigtext{font-size:5.6cqw;font-weight:800;color:var(--ink);line-height:1.2;margin-top:4cqw}
+.bigtext em{font-style:normal;background:linear-gradient(transparent 62%,var(--acc) 62%,var(--acc) 94%,transparent 94%)}
+.smalltext{font-size:2.8cqw;color:var(--mut);margin-top:2.4cqw;font-weight:600}
+.bartitle{font-size:3.4cqw;font-weight:800;color:var(--ink);margin-bottom:1cqw}
+.bars.wide{width:100%;margin-top:2.4cqw}.bars.wide .bar{grid-template-columns:34cqw 1fr 1cqw;font-size:2.5cqw}
+.sizes{display:flex;align-items:flex-end;justify-content:center;gap:6cqw;margin-top:1cqw}
+.sz{text-align:center;font-size:2.8cqw;font-weight:800;color:var(--ink)}
+.sz i{display:block;border-radius:50%;background:#fff;border:.5cqw solid var(--ink);margin:0 auto 1.6cqw}
+.sz.s i{width:9cqw;height:9cqw}.sz.m i{width:15cqw;height:15cqw}.sz.l i{width:22cqw;height:22cqw}
+.sz.hl i{background:var(--acc)}.sz small{display:block;color:var(--mut);font-weight:600;font-size:2.1cqw}
+.pile{display:grid;gap:1.1cqw;width:64%}
+.pile div{background:#fff;border:1px solid var(--bd);border-radius:1.3cqw;padding:.9cqw 2.2cqw;font-size:2.4cqw;font-weight:700;color:var(--ink)}
+.pile div.hl{background:var(--acc);border-color:var(--acc);margin-top:1cqw;font-size:2.7cqw}
+.opts button.right{border-color:var(--ok);background:var(--oktint);color:var(--ok)}
+.monobox{font:2.7cqw/1.7 var(--mono);background:#fff;border:1px solid var(--bd);border-radius:2cqw;padding:2.2cqw 3.2cqw;color:var(--ink);width:72%}
+.col.bad{background:var(--badtint);border-color:#e3bfb2}
+
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:34px 0 6px}
+.chips button{font:600 .92rem var(--font);color:var(--text);background:var(--card);border:1px solid #bdb9ae;border-radius:999px;padding:8px 16px;cursor:pointer}
+.chips button[aria-pressed=true]{background:var(--ink);color:#fff;border-color:var(--ink)}
+.group{font-size:1.5rem;font-weight:800;color:var(--ink);margin:64px 0 6px;letter-spacing:-.02em}
+.tip{background:var(--card);border:1px solid var(--bd);border-radius:16px;margin-top:16px;scroll-margin-top:76px}
+.tip-top{display:flex;align-items:center;gap:14px;padding:20px 24px;cursor:pointer}
+.tip h3{font-size:1.2rem;font-weight:700;line-height:1.3;flex:1}
+.tip .hook{font-size:.98rem;color:var(--mut);margin-top:3px;font-weight:400}
+.badge{flex:none;font:700 .7rem var(--font);letter-spacing:.08em;text-transform:uppercase;border-radius:999px;padding:5px 11px;white-space:nowrap}
+.badge.now{background:var(--oktint);color:var(--ok)}.badge.it{background:#f3e9c4;color:#7a5d00}
+.tip-body{display:none;padding:0 24px 26px}
+.tip.open{border:2px solid var(--ink)}.tip.open .tip-body{display:block}
+.get{background:var(--tint);border:1px solid #e6c9c4;border-radius:12px;padding:14px 16px;margin:0 0 18px;color:var(--ink)}
+.tip ol{margin:0 0 6px;padding-left:24px}.tip li{margin:9px 0}
+.gtk{font-size:.95rem;color:var(--mut);border-left:3px solid var(--acc);padding-left:14px;margin:18px 0 0}
+code{font-family:var(--mono);font-size:.9em;background:var(--code);padding:2px 7px;border-radius:6px;color:var(--ink)}
+.top .links{margin-left:auto;display:flex;gap:8px}.top .links a{margin-left:0}
+@media (max-width:560px){.badge{display:none}.tip-top{padding:16px}.tip-body{padding:0 16px 22px}}
+@media print{.tip-body{display:block}.chips{display:none}}
+</style><style>
+/* personal look: black, white, one red accent */
+:root{--paper:#f1efea;--card:#fbfaf7;--bd:#dcd8cf;--acc:#e5262b;--acc-ink:#b3151a;--tint:#f6e7e4;--code:#e9e6de}
+.part-head,.dl,.bl,.get,.finish{border-color:#e6c9c4!important}
+.lesson .n,.part-head .num,.idea .n,.three .n,.three3 i,.logo i{color:#fff}
+.fbox.hl,.fbox.hl small,.three3 div.hl,.three3 div.hl b,.three3 div.hl small,.door.hl,.pile div.hl,.words span.new.in,.bigq{color:#fff}
+.three3 div.hl i{background:#fff;color:#141413}
+.dl .ico svg{stroke:#fff}
+.field.hl{box-shadow:0 0 0 3px #f6e7e4}
+</style>
+<style>
+.dl{display:flex;gap:18px;align-items:center;flex-wrap:wrap;border:1px solid #e6c9c4;border-radius:14px;padding:22px;margin:30px 0 6px;background:var(--tint)}
+.dl .ico{flex:none;width:52px;height:52px;border-radius:13px;background:var(--acc);display:grid;place-items:center}
+.dl .t{flex:1;min-width:200px}.dl .t b{display:block;font-size:1.1rem;color:var(--ink)}.dl .t span{font-size:.95rem}
+.dl a.btn{display:inline-flex;font:700 1rem var(--font);text-decoration:none;border-radius:12px;padding:13px 22px;background:var(--ink);color:#fff}
+.tip a{color:var(--acc-ink);font-weight:600}
+.vs{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:26px 0 0}
+.vs div{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:22px}
+.vs h3{font-size:1.15rem;margin-bottom:8px}.vs p{margin:0;font-size:.98rem}.vs .pick{border:2px solid var(--ink)}
+@media (max-width:640px){.vs{grid-template-columns:1fr}}
+</style><style>
+.sitenav{background:#141413;color:#fff}
+.sitenav-in{max-width:980px;margin:0 auto;padding:0 24px;display:flex;align-items:center;gap:6px;overflow-x:auto;scrollbar-width:none}
+.sitenav .brand{font:800 .9rem var(--font);white-space:nowrap;margin-right:14px;padding:14px 0;color:#fff;text-decoration:none}
+.sitenav .brand span{color:#ff6b61}
+.sitenav a.tabl{font:600 .88rem var(--font);color:#c9c7c1;text-decoration:none;white-space:nowrap;padding:14px 12px;border-bottom:3px solid transparent}
+.sitenav a.tabl:hover{color:#fff}
+.sitenav a.tabl.cur{color:#fff;border-bottom-color:#e5262b}
+.sitenav a.dlall{margin-left:auto;color:#fff}
+.top .links,.top-in>a{display:none!important}
+@media print{.sitenav{display:none}}
+</style>
+<style id="look">
+/* the look: warm paper, white cards, one red accent used very little */
+html[data-look]{--acc:#e5262b;--acc-ink:#b3151a;--tint:#fbeceb;--wash:#f8e9da;--accbd:#f1cdc8;
+  --paper:#f4f1ea;--card:#ffffff;--bd:#e8e2d5;--ink:#2e2b25;--text:#4a463e;--mut:#8c8576;--code:#f1ede4;
+  --lift:0 1px 2px rgba(40,30,10,.05),0 10px 24px rgba(40,30,10,.07)}
+html[data-look] body{background-color:var(--paper);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .32  0 0 0 0 .27  0 0 0 0 .2  0 0 0 .09 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),linear-gradient(180deg,var(--wash) 0,var(--paper) 100%);
+  background-repeat:repeat,no-repeat;background-size:180px 180px,100% 640px}
+
+/* top bars: light */
+html[data-look] .sitenav{background:transparent;color:var(--ink)}
+html[data-look] .sitenav .brand{color:var(--ink)}
+html[data-look] .sitenav .brand span{color:var(--acc-ink)}
+html[data-look] .sitenav a.tabl{color:var(--mut)}
+html[data-look] .sitenav a.tabl:hover{color:var(--ink)}
+html[data-look] .sitenav a.tabl.cur{color:var(--ink);border-bottom-color:var(--acc)}
+html[data-look] .sitenav a.dlall{color:var(--ink);border:1px solid #cfc8b8;border-radius:999px;padding:7px 16px;margin:8px 0 8px auto;background:rgba(255,255,255,.6)}
+html[data-look] .top{background:rgba(255,255,255,.78);border-bottom-color:var(--bd)}
+html[data-look] .tabs{background:rgba(255,255,255,.7)}
+html[data-look] .seg{background:#e3ddcf}
+
+/* headline and the one red button */
+html[data-look] .kicker{color:var(--mut)}
+html[data-look] h1 em{background:none;color:var(--acc)}
+html[data-look] .hero .btn{background:var(--acc);box-shadow:0 3px 0 var(--acc-ink);border-radius:14px;padding:15px 26px}
+html[data-look] .hero .btn:hover{background:var(--acc-ink)}
+html[data-look] .btn:hover{background:#1d1b17}
+
+/* cards: white, thin warm line, soft shadow underneath */
+html[data-look] .step,html[data-look] .card,html[data-look] .idea div,html[data-look] .three div,html[data-look] .fix div,html[data-look] .lesson,html[data-look] .tip{border-radius:20px;box-shadow:var(--lift)}
+html[data-look] .idea .n,html[data-look] .three .n{background:#f1ede4;color:var(--ink);box-shadow:none;border-radius:50%;padding:0}
+html[data-look] .lesson .n{background:var(--tint);color:var(--acc-ink)}
+html[data-look] .lesson.soon .n{background:var(--code);color:var(--mut)}
+html[data-look] .part-head{background:#fff;border-color:var(--bd)!important;box-shadow:var(--lift);border-radius:24px}
+html[data-look] .part-head .num{background:var(--tint);color:var(--acc-ink)}
+html[data-look] .eyebrow{color:var(--mut)}
+html[data-look] .why{border-left-color:var(--accbd)}
+html[data-look] .dl{background:#fff;border-color:var(--bd)!important;box-shadow:var(--lift);border-radius:20px}
+html[data-look] .dl .ico{background:var(--tint)}
+html[data-look] .dl .ico svg{stroke:var(--acc-ink)}
+html[data-look] .bl,html[data-look] .get,html[data-look] .finish{border-color:var(--accbd)!important}
+html[data-look] .field.hl{box-shadow:0 0 0 3px var(--tint)}
+html[data-look] .copy{background:#faf8f3;border-color:var(--bd)}
+html[data-look] .copy-bar{background:#f3efe6;border-bottom-color:var(--bd)}
+html[data-look] .win-bar{background:#f7f4ee}
+html[data-look] .bub.ai{background:#f1ede4}
+html[data-look] .tree{background:#faf8f3}
+</style>
+</head><body>
+<nav class="sitenav" aria-label="Kit pages"><div class="sitenav-in"><a class="brand" href="Claude-Cowork-Setup.html">Claude Setup Kit <span>@itsarisouss</span></a><a class="tabl" href="Claude-Cowork-Setup.html">1 Setup</a><a class="tabl" href="AI-Bootcamp.html">2 The basics</a><a class="tabl" href="Tips-and-Tricks.html">3 Tips</a><a class="tabl" href="AI-Bootcamp-Advanced.html">4 Skills and agents</a><a class="tabl cur" href="Claude-Code.html">5 Claude Code</a><a class="tabl dlall" href="claude-setup-kit.zip" download>Download the kit</a></div></nav>
+
+<div class="top"><div class="top-in">
+  <div class="logo"><i></i><span>Claude Code starter</span></div>
+  <div class="links"><a href="Claude-Cowork-Setup.html">Setup</a><a href="AI-Bootcamp.html">Bootcamp</a><a href="Tips-and-Tricks.html">Tips</a></div>
+</div></div>
+<div class="wrap">
+<header class="hero">
+  <div class="kicker">The Claude setup kit · level 3</div>
+  <h1>Claude Code: <em>one folder, three words.</em></h1>
+  <p class="lede">Claude Code is the Code tab inside the Claude app. It reads its rules from your folder by itself, so the setup is shorter: download a folder, open it, and say "Set me up."</p>
+</header>
+<div class="dl"><div class="ico"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 11l5 5 5-5M4 20h16"/></svg></div>
+  <div class="t"><b>claude-code-starter.zip</b><span>A ready folder: the rule book, four skills and two helper agents.</span></div>
+  <a class="btn" href="downloads/claude-code-starter.zip" download>Download</a></div>
+<div class="vs">
+  <div><h3>Stay with the normal Claude chat if</h3><p>You want the simplest path, you work mostly with documents and decks, and one thing at a time is enough.</p></div>
+  <div class="pick"><h3>Move to Claude Code if</h3><p>You want Claude to remember its rules without being told, run several jobs at once, and hand work to helper agents.</p></div>
+</div>
+<div class="chips" id="chips"><button data-f="all" aria-pressed="true">Everything</button><button data-f="setup" aria-pressed="false">Set it up in 5 minutes</button><button data-f="habits" aria-pressed="false">Daily habits</button><button data-f="delegate" aria-pressed="false">Hand work to other agents</button><button data-f="more" aria-pressed="false">More skills</button></div>
+<h2 class="group" data-g="setup">Set it up in 5 minutes</h2>
+<article class="tip" data-g="setup" id="c1"><div class="tip-top"><div style="flex:1"><h3>Step 1. Download the starter folder</h3><div class="hook">A ready folder with rules, four skills and two helper agents inside.</div></div></div><div class="tip-body"><p class="get"><b>What you get:</b> Everything in place before you type a word. No terminal, no settings.</p><ol><li>Click <b>Download</b> at the top of this page.</li><li>Unzip it. You get a folder called <code>My-Claude</code></li><li>Move that folder to your Desktop.</li></ol><p class="gtk"><b>Good to know:</b> You need the Claude desktop app and a paid Claude plan. Get the app at claude.com/download.</p></div></article>
+<article class="tip" data-g="setup" id="c2"><div class="tip-top"><div style="flex:1"><h3>Step 2. Open the folder in the Code tab</h3><div class="hook">Claude Code lives inside the same Claude app. It is the tab called Code.</div></div></div><div class="tip-body"><p class="get"><b>What you get:</b> Claude working directly in your folder.</p><ol><li>Open the Claude app and click the <b>Code</b> tab.</li><li>Click <b>+ New</b> in the sidebar.</li><li>Under the message box, click the <b>project folder</b> control and choose <code>My-Claude</code> on your Desktop.</li><li>Set the permission mode to <b>Manual</b>. Claude then asks before it changes anything.</li></ol><p class="gtk"><b>Good to know:</b> When you are comfortable, Accept edits lets Claude change files without asking each time. Leave Bypass permissions alone.</p></div></article>
+<article class="tip" data-g="setup" id="c3"><div class="tip-top"><div style="flex:1"><h3>Step 3. Say three words</h3><div class="hook">No long prompt to paste. The folder already tells Claude what to do.</div></div></div><div class="tip-body"><p class="get"><b>What you get:</b> Claude interviews you, one question at a time, and writes down who you are and how you work.</p><ol><li>Type the line below and press Enter.</li><li>Answer the 7 questions. Short answers are fine.</li><li>Say yes when Claude asks to save what it learned.</li></ol><div class="copy"><div class="copy-bar"><span>Type this</span><button data-copy="cp3">Copy</button></div><pre id="cp3">Set me up.</pre></div><p class="gtk"><b>Good to know:</b> Claude reads a file called CLAUDE.md in your folder at the start of every session. That is why it knows what to do.</p></div></article>
+<article class="tip" data-g="setup" id="c4"><div class="tip-top"><div style="flex:1"><h3>Step 4. Look at what you have</h3><div class="hook">From now on, every new session in this folder starts already knowing you.</div></div></div><div class="tip-body"><p class="get"><b>What you get:</b> A home for your work that Claude understands.</p><ol><li><code>CLAUDE.md</code> is the rule book Claude reads first, every time.</li><li><code>about-me.md</code> is who you are. Open it and fix anything.</li><li><code>00_Inbox</code> is where you drop files. <code>01_Projects</code> has one folder per project.</li><li>Four skills and two helper agents are already inside. Type <b>/</b> in the message box to see the skills.</li></ol><div class="copy"><div class="copy-bar"><span>Try this first</span><button data-copy="cp4">Copy</button></div><pre id="cp4">What do you know about me, and which skills and helpers do you have in this folder?</pre></div></div></article>
+<h2 class="group" data-g="habits">Daily habits</h2>
+<article class="tip" data-g="habits" id="c5"><div class="tip-top"><div style="flex:1"><h3>New task? Type /clear</h3><div class="hook">Yesterday&#x27;s job is still in the chat. Claude rereads it with every message, and you pay for it.</div></div></div><div class="tip-body"><p class="get"><b>What you get:</b> A clean start. Better answers, and less of your limit used.</p><ol><li>When you move to an unrelated task, type <code>/clear</code></li><li>Your folder, your rules and your skills stay. Only the chat history goes.</li></ol><div class="copy"><div class="copy-bar"><span>Type this</span><button data-copy="cp5">Copy</button></div><pre id="cp5">/clear</pre></div><p class="gtk"><b>Good to know:</b> Anthropic&#x27;s own advice: /clear between unrelated tasks costs nothing, and the next task does not keep paying for the last one.</p></div></article>
+<article class="tip" data-g="habits" id="c6"><div class="tip-top"><div style="flex:1"><h3>Long job? Type /compact with a focus</h3><div class="hook">You are deep in one long job and the chat is getting heavy, but you cannot start over.</div></div></div><div class="tip-body"><p class="get"><b>What you get:</b> Claude sums up the chat so far and keeps going with a lighter load.</p><ol><li>Type <code>/compact</code> and say what must be kept.</li></ol><div class="copy"><div class="copy-bar"><span>Type this</span><button data-copy="cp6">Copy</button></div><pre id="cp6">/compact keep the decisions we made and the file names</pre></div><p class="gtk"><b>Good to know:</b> Claude also does this by itself when a chat gets very long. Use /clear when the task is finished, and /compact when it is not.</p></div></article>
+<article class="tip" data-g="habits" id="c7"><div class="tip-top"><div style="flex:1"><h3>Two failed fixes? Start over</h3><div class="hook">You corrected Claude twice and it is still wrong. A third correction rarely helps.</div></div></div><div class="tip-body"><p class="get"><b>What you get:</b> One clean prompt that includes what you learned, in place of a chat full of failed tries.</p><ol><li>Type <code>/clear</code></li><li>Write one new prompt that says what you now know you want.</li></ol><p class="gtk"><b>Good to know:</b> This is from Anthropic&#x27;s best practices: after two failed corrections, clear and write a better prompt.</p></div></article>
+<article class="tip" data-g="habits" id="c8"><div class="tip-top"><div style="flex:1"><h3>Big job? Ask for the plan first</h3><div class="hook">Claude ran for ten minutes and built the wrong thing.</div></div></div><div class="tip-body"><p class="get"><b>What you get:</b> You see the approach before any file is touched.</p><ol><li>In the mode selector under the message box, choose <b>Plan</b>.</li><li>Describe the job. Claude looks around and proposes a plan without changing anything.</li><li>Say yes, or say what to change. Then switch back to Manual.</li></ol></div></article>
+<article class="tip" data-g="habits" id="c9"><div class="tip-top"><div style="flex:1"><h3>Tell Claude how to check its work</h3><div class="hook">Claude says it is done. It is not quite done.</div></div></div><div class="tip-body"><p class="get"><b>What you get:</b> A result that comes with proof.</p><ol><li>End your request with what done looks like, and how to check it.</li></ol><div class="copy"><div class="copy-bar"><span>Add this to a request</span><button data-copy="cp9">Copy</button></div><pre id="cp9">Before you say you are done: check every number against the source file, open the finished file to make sure it works, and tell me what you could not check.</pre></div></div></article>
+<article class="tip" data-g="habits" id="c10"><div class="tip-top"><div style="flex:1"><h3>Stop it the moment it drifts</h3><div class="hook">You can see Claude heading the wrong way, and you wait politely for it to finish.</div></div></div><div class="tip-body"><p class="get"><b>What you get:</b> Seconds lost, not minutes.</p><ol><li>Press <b>Esc</b> to stop Claude at once. Then say what to do differently.</li><li>To undo, type <code>/rewind</code> and pick an earlier point in the chat.</li></ol></div></article>
+<article class="tip" data-g="habits" id="c11"><div class="tip-top"><div style="flex:1"><h3>Teach it once, in CLAUDE.md</h3><div class="hook">You correct the same thing every week.</div></div></div><div class="tip-body"><p class="get"><b>What you get:</b> A rule Claude reads at the start of every session.</p><ol><li>When you have corrected Claude twice on the same thing, paste the line below.</li></ol><div class="copy"><div class="copy-bar"><span>Paste this</span><button data-copy="cp11">Copy</button></div><pre id="cp11">Add this rule to CLAUDE.md so you remember it every time: WHAT CLAUDE SHOULD DO.</pre></div><p class="gtk"><b>Good to know:</b> Keep CLAUDE.md short. Anthropic recommends under 200 lines. A long rule book gets followed less.</p></div></article>
+<article class="tip" data-g="habits" id="c12"><div class="tip-top"><div style="flex:1"><h3>See where your limit goes</h3><div class="hook">You hit your limit and have no idea why.</div></div></div><div class="tip-body"><p class="get"><b>What you get:</b> A breakdown of what used it: long chats, skills, helpers.</p><ol><li>Type <code>/usage</code></li></ol><div class="copy"><div class="copy-bar"><span>Type this</span><button data-copy="cp12">Copy</button></div><pre id="cp12">/usage</pre></div></div></article>
+<h2 class="group" data-g="delegate">Hand work to other agents</h2>
+<article class="tip" data-g="delegate" id="c13"><div class="tip-top"><div style="flex:1"><h3>Send a job to a helper and get a report back</h3><div class="hook">You want background research, but you do not want 40 web pages dumped into your main chat.</div></div></div><div class="tip-body"><p class="get"><b>What you get:</b> A helper does the digging in the background. Your chat gets only the answer.</p><ol><li>Ask for a subagent in plain words, and say how short the report should be.</li><li>Carry on with your work. The helper reports back when it is done.</li><li>To watch it, open <b>Background tasks</b> from the <b>⋮</b> menu in the title bar.</li></ol><div class="copy"><div class="copy-bar"><span>Paste this</span><button data-copy="cp13">Copy</button></div><pre id="cp13">Use the researcher subagent to find out WHAT YOU NEED TO KNOW. Report back in 10 lines with sources.</pre></div><p class="gtk"><b>Good to know:</b> A helper uses extra tokens, because it does its own reading. Use it for real digging, not for small questions.</p></div></article>
+<article class="tip" data-g="delegate" id="c14"><div class="tip-top"><div style="flex:1"><h3>Get a fresh pair of eyes on a draft</h3><div class="hook">Claude wrote the draft, so Claude thinks the draft is good.</div></div></div><div class="tip-body"><p class="get"><b>What you get:</b> A review by a helper that never saw your conversation, so it is not swayed by it.</p><ol><li>When a draft is ready, paste the line below.</li></ol><div class="copy"><div class="copy-bar"><span>Paste this</span><button data-copy="cp14">Copy</button></div><pre id="cp14">Use the reviewer subagent on this draft. Give it the draft and my original request, nothing else. Show me its score and its top 3 fixes.</pre></div><p class="gtk"><b>Good to know:</b> The reviewer in your starter folder can only read files. It cannot change anything.</p></div></article>
+<article class="tip" data-g="delegate" id="c15"><div class="tip-top"><div style="flex:1"><h3>Run two jobs at the same time</h3><div class="hook">One job is running and you are waiting. You have another job to start.</div></div></div><div class="tip-body"><p class="get"><b>What you get:</b> Two or more sessions working side by side, each with its own chat.</p><ol><li>Click <b>+ New</b> in the sidebar to start a second session in the same folder.</li><li>Each session has its own history. Switch between them in the sidebar.</li><li>Hold <b>Alt</b> (Mac: <b>Option</b>) and click a session to open it beside the first.</li></ol></div></article>
+<article class="tip" data-g="delegate" id="c16"><div class="tip-top"><div style="flex:1"><h3>Let one chat hand work to another, and report back</h3><div class="hook">In the middle of a job you spot a second job. You do not want to lose your place.</div></div></div><div class="tip-body"><p class="get"><b>What you get:</b> The second job runs in its own session. Your main chat hears how it went.</p><ol><li>When Claude spots work outside your current task, it suggests a task. Click <b>Start</b>. It opens in a new session, listed under this one.</li><li>Or ask for it yourself with the line below.</li><li>Later, ask your main chat what the other session found.</li></ol><div class="copy"><div class="copy-bar"><span>Paste this</span><button data-copy="cp16">Copy</button></div><pre id="cp16">This is a separate job. Suggest it as its own task so it runs in another session: DESCRIBE THE JOB. When it is done, tell me what it found.</pre></div><p class="gtk"><b>Good to know:</b> Claude can read what your other sessions in the app have been doing, and send them messages. Ask it: what did the research session conclude?</p></div></article>
+<article class="tip" data-g="delegate" id="c17"><div class="tip-top"><div style="flex:1"><h3>Make your own helper</h3><div class="hook">You keep giving a helper the same instructions.</div></div></div><div class="tip-body"><p class="get"><b>What you get:</b> A named helper you can call any time, with only the powers you give it.</p><ol><li>Paste the line below and describe the helper.</li><li>Claude writes a small file in your folder under <code>.claude/agents</code></li><li>Give a helper that only checks things the read-only tools. Then it cannot change your files.</li></ol><div class="copy"><div class="copy-bar"><span>Paste this</span><button data-copy="cp17">Copy</button></div><pre id="cp17">Create a subagent called NAME. Its job: WHAT IT DOES. Give it only the tools it needs. If it only checks or reads, give it Read, Grep and Glob only. Show me the file before you save it.</pre></div></div></article>
+<h2 class="group" data-g="more">More skills</h2>
+<article class="tip" data-g="more" id="c18"><div class="tip-top"><div style="flex:1"><h3>Edit your videos: the edit-like-a-pro skill</h3><div class="hook">You film a talking-head video on your phone. Editing it takes longer than filming it.</div></div></div><div class="tip-body"><p class="get"><b>What you get:</b> A tight cut with one-word captions, zooms, graphics on the spoken word and sound design, in your own colors. You approve a storyboard before anything renders.</p><ol><li>Get the skill from GitHub: <a href="https://github.com/arisouss/edit-like-a-pro">github.com/arisouss/edit-like-a-pro</a>. Click <b>Code</b>, then <b>Download ZIP</b>.</li><li>Unzip it and put the folder in <code>~/.claude/skills</code>, named <code>edit-like-a-pro</code></li><li>Paste the line below. Claude sets up the free video tools for you, and asks before each install.</li><li>Then say: <code>edit this video</code>, with the path to your file.</li></ol><div class="copy"><div class="copy-bar"><span>Paste this</span><button data-copy="cp18">Copy</button></div><pre id="cp18">Read the README of the edit-like-a-pro skill and set up the video tools folder for me. Ask before you install anything.</pre></div><p class="gtk"><b>Good to know:</b> This is an early release. It needs Python, Node and about 20 minutes of setup. Remotion, the renderer it uses, is free for individuals and for companies with up to 3 employees.</p></div></article>
+
+<footer><span>Made by @itsarisouss, with Claude. Checked against Anthropic's own Claude Code documentation.</span></footer>
+</div>
+<script>
+(function(){
+var $$=function(s,r){return [].slice.call((r||document).querySelectorAll(s))};
+$$('.tip').forEach(function(t){t.querySelector('.tip-top').addEventListener('click',function(){var o=t.classList.contains('open');$$('.tip.open').forEach(function(x){x.classList.remove('open')});if(!o)t.classList.add('open')})});
+$$('#chips button').forEach(function(b){b.addEventListener('click',function(){var f=b.dataset.f;$$('#chips button').forEach(function(x){x.setAttribute('aria-pressed',x===b)});
+  $$('[data-g]').forEach(function(el){el.hidden=!(f==='all'||el.dataset.g===f)})})});
+$$('[data-copy]').forEach(function(b){b.addEventListener('click',function(e){e.stopPropagation();
+  var el=document.getElementById(b.getAttribute('data-copy')),txt=el.textContent,o=b.getAttribute('data-label')||b.textContent;b.setAttribute('data-label',o);
+  function done(){b.textContent='Copied. Now paste it.';b.classList.add('ok');clearTimeout(b._t);b._t=setTimeout(function(){b.textContent=o;b.classList.remove('ok')},2200)}
+  function execCopy(){var ta=document.createElement('textarea');ta.value=txt;ta.setAttribute('readonly','');ta.style.cssText='position:fixed;top:0;left:0;width:1px;height:1px;opacity:0';document.body.appendChild(ta);ta.focus();ta.select();var ok=false;try{ok=document.execCommand('copy')}catch(e){ok=false}document.body.removeChild(ta);return ok}
+  function manual(){var r=document.createRange();r.selectNodeContents(el);var s=window.getSelection();s.removeAllRanges();s.addRange(r);b.textContent='Selected. Press Ctrl+C';clearTimeout(b._t);b._t=setTimeout(function(){b.textContent=o},4500)}
+  if(execCopy()){done();return}
+  try{if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(done,manual)}else{manual()}}catch(e){manual()}
+})});
+})();
+</script>
+
+</body></html>

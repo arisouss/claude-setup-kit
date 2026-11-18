@@ -1,0 +1,560 @@
+<!doctype html>
+<html lang="en" data-look="a"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Bootcamp: skills and agents</title>
+<script>document.documentElement.className='js'</script>
+<style>
+/* Same calm look as the setup page. One accent. The animation is the star. */
+:root{--paper:#e9e4d8;--card:#f6f2e9;--bd:#d8d2c4;--ink:#141413;--text:#3d3a34;--mut:#77736a;--acc:#e5262b;--acc-ink:#b3151a;--tint:#f6e7e4;--ok:#2f7d32;--oktint:#e3eddc;--okbd:#c3d6ba;--bad:#b3401f;--badtint:#f4e1d9;--code:#e6e1d4;
+--font:"Segoe UI",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;--mono:Consolas,"Cascadia Mono","SF Mono",Menlo,monospace}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--text);font:18px/1.7 var(--font);-webkit-font-smoothing:antialiased}
+.wrap{max-width:820px;margin:0 auto;padding:0 24px}
+h1,h2,h3{color:var(--ink);margin:0;letter-spacing:-.02em}
+p{margin:0 0 16px}b{color:var(--ink)}
+[hidden]{display:none!important}
+
+.top{position:sticky;top:0;z-index:20;background:rgba(233,228,216,.94);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--bd)}
+.top-in{max-width:980px;margin:0 auto;padding:12px 24px;display:flex;align-items:center;gap:16px}
+.logo{font-weight:800;font-size:.95rem;color:var(--ink);display:flex;align-items:center;gap:9px;white-space:nowrap}
+.logo i{width:20px;height:20px;border-radius:6px;background:var(--acc);display:block}
+.top a{margin-left:auto;font:600 .9rem var(--font);color:var(--text);text-decoration:none;border:1px solid #bdb9ae;border-radius:999px;padding:7px 16px}
+.top a:hover{color:var(--ink);border-color:var(--ink)}
+.prog{font:600 .82rem var(--font);color:var(--mut);white-space:nowrap}
+
+header.hero{padding:84px 0 20px}
+.kicker{font:700 .78rem var(--font);letter-spacing:.16em;text-transform:uppercase;color:var(--acc-ink);margin-bottom:18px}
+h1{font-size:clamp(2.3rem,5.6vw,3.4rem);line-height:1.08;font-weight:800;letter-spacing:-.03em}
+h1 em{font-style:normal;background:linear-gradient(transparent 64%,var(--acc) 64%,var(--acc) 94%,transparent 94%)}
+.lede{font-size:1.2rem;line-height:1.6;max-width:36em;margin:22px 0 0}
+
+/* lessons */
+.lesson{scroll-margin-top:76px;background:var(--card);border:1px solid var(--bd);border-radius:18px;margin-top:22px;box-shadow:0 2px 12px rgba(20,20,19,.04)}
+.lesson-top{display:flex;align-items:center;gap:16px;padding:22px 26px;cursor:pointer}
+.lesson .n{flex:none;width:44px;height:44px;border-radius:50%;background:var(--acc);color:var(--ink);font-weight:800;display:grid;place-items:center}
+.lesson h2{font-size:1.3rem;font-weight:700;line-height:1.25}
+.lesson .tease{font-size:.98rem;color:var(--mut);margin-top:2px}
+.lesson .state{margin-left:auto;flex:none;font:700 .72rem var(--font);letter-spacing:.1em;text-transform:uppercase;color:var(--mut);background:var(--code);border-radius:999px;padding:5px 12px}
+.lesson.done .state{background:var(--oktint);color:var(--ok)}
+.lesson.soon{background:transparent;box-shadow:none}
+.lesson.soon .lesson-top{cursor:default}
+.lesson.soon .n{background:var(--code);color:var(--mut)}
+.lesson.soon h2{color:var(--mut)}
+.lesson.open{border:2px solid var(--ink)}
+.lesson-body{display:none;padding:4px 26px 30px}
+.lesson.open .lesson-body{display:block}
+.label{font:700 .76rem var(--font);letter-spacing:.14em;text-transform:uppercase;color:var(--acc-ink);margin:38px 0 12px}
+
+/* the little film */
+.film{border:1px solid #cfc9ba;border-radius:16px;overflow:hidden;background:#efeadf}
+.stage{position:relative;aspect-ratio:16/10;container-type:inline-size;overflow:hidden;cursor:pointer;background:#f3efe5;user-select:none}
+.scene{position:absolute;inset:0;opacity:0;visibility:hidden;transition:opacity .35s;padding:5cqw 6cqw 17cqw}
+.scene.on{opacity:1;visibility:visible}
+.capline{position:absolute;left:6cqw;right:6cqw;bottom:4cqw;font-size:3.5cqw;line-height:1.3;font-weight:700;color:var(--ink);min-height:9cqw;display:flex;align-items:flex-end}
+.capline span{background:rgba(243,239,229,.9);padding:.4cqw 0}
+.tagline{font:700 1.7cqw var(--font);letter-spacing:.16em;text-transform:uppercase;color:var(--acc-ink);margin-bottom:2.5cqw}
+.a{opacity:0;transform:translateY(2cqw);transition:opacity .45s ease,transform .45s cubic-bezier(.2,.9,.2,1)}
+.a.in{opacity:1;transform:none}
+.a.pop{transform:scale(.6)}.a.pop.in{transform:none;transition:opacity .3s,transform .45s cubic-bezier(.3,1.7,.5,1)}
+.bubble{display:inline-block;max-width:78%;padding:1.6cqw 2.4cqw;border-radius:2cqw;font-size:2.7cqw;line-height:1.35;margin-bottom:1.8cqw}
+.bubble.me{background:var(--ink);color:#fff;float:right;clear:both;border-bottom-right-radius:.5cqw}
+.bubble.ai{background:#fff;color:var(--ink);border:1px solid var(--bd);float:left;clear:both;border-bottom-left-radius:.5cqw;min-width:40%}
+.clear{clear:both}
+.bigq{position:absolute;left:50%;top:57%;translate:-50% -50%;background:var(--acc);color:var(--ink);font-weight:800;font-size:4.6cqw;padding:2cqw 4cqw;border-radius:2.4cqw;white-space:nowrap;box-shadow:0 1.5cqw 4cqw rgba(20,20,19,.18);rotate:-2deg}
+.search{display:flex;align-items:center;gap:1.6cqw;border:.3cqw solid #b9b5aa;border-radius:6cqw;padding:1.4cqw 3cqw;font-size:2.7cqw;color:var(--mut);background:#fff;width:70%}
+.search i{width:2.4cqw;height:2.4cqw;border:.4cqw solid var(--mut);border-radius:50%;display:block;flex:none}
+.quote{position:relative;margin-top:3cqw;background:#fff;border:1px solid var(--bd);border-radius:2cqw;padding:2.6cqw 3cqw;width:78%}
+.quote q{display:block;font-size:3.6cqw;font-weight:700;color:var(--ink);line-height:1.25;quotes:"\201C" "\201D"}
+.quote small{display:block;margin-top:1cqw;font-size:2.2cqw;color:var(--mut)}
+.stamp{position:absolute;right:-12cqw;bottom:-4cqw;border:.6cqw solid var(--bad);color:var(--bad);font-weight:900;font-size:3.4cqw;letter-spacing:.14em;padding:.8cqw 2cqw;border-radius:1.2cqw;background:rgba(246,242,233,.95);rotate:8deg;white-space:nowrap}
+.sentence{font-size:5.4cqw;font-weight:800;color:var(--ink);line-height:1.2}
+.blank{display:inline-block;min-width:16cqw;border-bottom:.7cqw solid var(--ink);text-align:center;color:transparent;transition:color .3s,border-color .3s}
+.blank.in{color:var(--acc-ink);border-color:var(--acc-ink);opacity:1;transform:none}
+.bars{margin-top:3.4cqw;display:grid;gap:1.6cqw;width:86%}
+.bar{display:grid;grid-template-columns:11cqw 1fr 9cqw;align-items:center;gap:2cqw;font-size:2.8cqw;font-weight:700;color:var(--ink)}
+.bar i{display:block;height:3.4cqw;border-radius:2cqw;background:#ddd7c9;overflow:hidden}
+.bar i b{display:block;height:100%;width:0;background:var(--ink);border-radius:2cqw;transition:width .9s cubic-bezier(.2,.9,.2,1)}
+.bar.win i b{background:var(--acc)}
+.bar.in i b{width:var(--w)}
+.bar span:last-child{text-align:right;color:var(--mut);font-weight:600}
+.words{font-size:4.6cqw;font-weight:800;color:var(--ink);line-height:1.5;display:flex;flex-wrap:wrap;gap:1cqw 1.6cqw}
+.words span{background:#fff;border:1px solid var(--bd);border-radius:1.4cqw;padding:.2cqw 1.8cqw}
+.words span.new.in{background:var(--acc);border-color:var(--acc)}
+.counter{margin-top:4cqw;font-size:3cqw;font-weight:700;color:var(--mut)}
+.counter b{font-size:5.4cqw;color:var(--ink);font-variant-numeric:tabular-nums}
+.venn{position:relative;height:30cqw;width:74cqw;margin:1cqw auto 0}
+.venn div{position:absolute;top:0;width:44cqw;height:30cqw;border-radius:50%;display:grid;place-items:center;font-size:2.8cqw;font-weight:800;color:var(--ink);text-align:center;line-height:1.2}
+.venn .l{left:0;background:rgba(229,38,43,.30);padding-right:16cqw}
+.venn .r{right:0;background:rgba(47,125,50,.28);padding-left:16cqw}
+.venn .mid{left:50%;translate:-50% 0;width:20cqw;background:none;font-size:2.2cqw;font-weight:700;color:var(--text)}
+.venn .gap{left:-1cqw;top:auto;bottom:-3cqw;width:auto;height:auto;border-radius:1.4cqw;background:var(--badtint);border:.3cqw solid var(--bad);color:var(--bad);font-size:2.4cqw;padding:.8cqw 2cqw;white-space:nowrap}
+.three3{display:grid;grid-template-columns:repeat(3,1fr);gap:2.4cqw;margin-top:1cqw}
+.three3 div{background:#fff;border:1px solid var(--bd);border-radius:2.2cqw;padding:2.6cqw 2.2cqw}
+.three3 i{width:5.4cqw;height:5.4cqw;border-radius:50%;background:var(--acc);color:var(--ink);font:800 2.8cqw var(--font);display:grid;place-items:center;margin-bottom:1.6cqw}
+.three3 b{display:block;font-size:2.9cqw;line-height:1.2}
+.three3 small{display:block;font-size:2.1cqw;color:var(--mut);margin-top:.8cqw;line-height:1.3}
+.doors{display:flex;gap:4cqw;justify-content:center;margin-top:2cqw}
+.door{width:17cqw;height:25cqw;border:.5cqw solid var(--ink);border-radius:1.6cqw 1.6cqw 0 0;background:#fff;position:relative;display:grid;place-items:end center;padding-bottom:2cqw;font-size:2.8cqw;font-weight:800;color:var(--ink)}
+.door::after{content:"";position:absolute;right:2cqw;top:50%;width:1.6cqw;height:1.6cqw;border-radius:50%;background:var(--ink)}
+.door.hl{background:var(--acc)}
+.note{position:absolute;right:3cqw;top:3cqw;font-size:1.7cqw;color:var(--mut)}
+
+.poster,.endcard{position:absolute;inset:0;display:grid;place-items:center;background:rgba(243,239,229,.9);text-align:center;z-index:3}
+.poster[hidden],.endcard[hidden]{display:none}
+.playbig{display:inline-flex;align-items:center;gap:1.6cqw;background:var(--ink);color:#fff;border:0;border-radius:99cqw;font:700 3cqw var(--font);padding:2.2cqw 4.4cqw;cursor:pointer}
+.playbig::before{content:"";border-left:2.2cqw solid #fff;border-top:1.4cqw solid transparent;border-bottom:1.4cqw solid transparent}
+.poster p,.endcard p{font-size:2.3cqw;color:var(--mut);margin:2cqw 0 0}
+.endcard b{display:block;font-size:4cqw;margin-bottom:2.4cqw}
+.ctrl{display:flex;align-items:center;gap:10px;padding:10px 12px;background:#e4dfd2;border-top:1px solid #d3cdbf}
+.ctrl button{font:700 .86rem var(--font);background:var(--card);color:var(--ink);border:1px solid #bdb9ae;border-radius:9px;padding:8px 14px;cursor:pointer;min-height:38px;white-space:nowrap}
+.ctrl button:hover{border-color:var(--ink)}
+.ctrl .pp{background:var(--ink);color:#fff;border-color:var(--ink);min-width:86px}
+.segs{flex:1;display:flex;gap:4px}
+.segs i{flex:1;height:6px;border-radius:3px;background:#cfc9ba;overflow:hidden;display:block}
+.segs i b{display:block;height:100%;width:0;background:var(--ink)}
+
+/* bottom line, game, try */
+.bl{background:var(--tint);border:1px solid #e6c9c4;border-radius:14px;padding:22px 24px}
+.bl ul{margin:0;padding-left:22px}.bl li{margin:8px 0;color:var(--ink)}
+.game{border:1px solid var(--bd);border-radius:14px;padding:24px;background:#efeadf}
+.game .q{font-size:1.5rem;font-weight:800;color:var(--ink);line-height:1.3;margin-bottom:18px}
+.game .q u{text-decoration:none;display:inline-block;min-width:110px;border-bottom:4px solid var(--ink)}
+.opts{display:flex;flex-wrap:wrap;gap:10px}
+.opts button{font:700 1rem var(--font);background:var(--card);color:var(--ink);border:2px solid #bdb9ae;border-radius:12px;padding:12px 20px;cursor:pointer}
+.opts button:hover:not(:disabled){border-color:var(--ink)}
+.opts button.pick{border-color:var(--ink);background:var(--ink);color:#fff}
+.opts button small{font-weight:600;opacity:.75;margin-left:8px}
+.fb{margin-top:18px;font-size:1rem;color:var(--text);min-height:1.7em}
+.fb b{color:var(--ink)}
+.game .nextq{margin-top:14px}
+.btn{display:inline-flex;align-items:center;gap:10px;font:700 1rem var(--font);border:0;border-radius:12px;padding:13px 22px;cursor:pointer;background:var(--ink);color:#fff}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid #bdb9ae}
+.copy{margin:8px 0 0;border:1px solid #cfcbc0;border-radius:14px;overflow:hidden;background:#efeadf}
+.copy-bar{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 10px 10px 18px;background:#e4dfd2;border-bottom:1px solid #d3cdbf;font:600 .86rem var(--font)}
+.copy button{font:700 .9rem var(--font);background:var(--ink);color:#fff;border:0;border-radius:9px;padding:10px 20px;cursor:pointer;min-height:40px}
+.copy button.ok{background:var(--ok)}
+.copy pre{margin:0;padding:18px;font:14px/1.65 var(--mono);white-space:pre-wrap;word-break:break-word;color:#2b2823}
+.finishrow{display:flex;flex-wrap:wrap;align-items:center;gap:16px;margin-top:34px;padding-top:26px;border-top:1px solid var(--bd)}
+.finishrow span{color:var(--mut);font-size:.98rem}
+footer{margin:100px 0 70px;padding-top:28px;border-top:1px solid var(--bd);color:var(--mut);font-size:.92rem;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;align-items:center}
+button:focus-visible,a:focus-visible{outline:3px solid var(--acc-ink);outline-offset:3px}
+@media (max-width:560px){.lesson-top{padding:18px}.lesson-body{padding:4px 16px 24px}.lesson .state{display:none}.ctrl .hideS{display:none}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important}html{scroll-behavior:auto}}
+@media print{.top,.ctrl,.poster,.endcard,footer{display:none!important}body{background:#fff}.lesson-body{display:block}}
+
+/* extra scene pieces for lessons 2 to 10 */
+.three3 div.hl{background:var(--acc);border-color:var(--acc)}.three3 div.hl i{background:#fff}.three3 div.hl small{color:var(--ink)}
+.flow{display:flex;align-items:center;justify-content:center;gap:1.8cqw;margin-top:5cqw}
+.fbox{background:#fff;border:1px solid var(--bd);border-radius:2cqw;padding:2.4cqw 2.4cqw;font-size:2.7cqw;font-weight:800;color:var(--ink);text-align:center;line-height:1.2;max-width:24cqw}
+.fbox small{display:block;font-weight:600;color:var(--mut);font-size:2cqw;margin-top:.6cqw}
+.fbox.hl{background:var(--acc);border-color:var(--acc)}.fbox.hl small{color:var(--ink)}
+.arr{font-size:4cqw;font-weight:800;color:var(--ink)}
+.cmp{display:grid;grid-template-columns:1fr 1fr;gap:3cqw}
+.col{background:#fff;border:1px solid var(--bd);border-radius:2.2cqw;padding:2.4cqw 2.6cqw}
+.col h4{margin:0 0 1.6cqw;font-size:3cqw;color:var(--ink)}
+.col p{font-size:2.5cqw;line-height:1.3;margin:0 0 1.2cqw;color:var(--text);font-weight:600}
+.col.good{background:var(--oktint);border-color:var(--okbd)}
+.bigtext{font-size:5.6cqw;font-weight:800;color:var(--ink);line-height:1.2;margin-top:4cqw}
+.bigtext em{font-style:normal;background:linear-gradient(transparent 62%,var(--acc) 62%,var(--acc) 94%,transparent 94%)}
+.smalltext{font-size:2.8cqw;color:var(--mut);margin-top:2.4cqw;font-weight:600}
+.bartitle{font-size:3.4cqw;font-weight:800;color:var(--ink);margin-bottom:1cqw}
+.bars.wide{width:100%;margin-top:2.4cqw}.bars.wide .bar{grid-template-columns:34cqw 1fr 1cqw;font-size:2.5cqw}
+.sizes{display:flex;align-items:flex-end;justify-content:center;gap:6cqw;margin-top:1cqw}
+.sz{text-align:center;font-size:2.8cqw;font-weight:800;color:var(--ink)}
+.sz i{display:block;border-radius:50%;background:#fff;border:.5cqw solid var(--ink);margin:0 auto 1.6cqw}
+.sz.s i{width:9cqw;height:9cqw}.sz.m i{width:15cqw;height:15cqw}.sz.l i{width:22cqw;height:22cqw}
+.sz.hl i{background:var(--acc)}.sz small{display:block;color:var(--mut);font-weight:600;font-size:2.1cqw}
+.pile{display:grid;gap:1.1cqw;width:64%}
+.pile div{background:#fff;border:1px solid var(--bd);border-radius:1.3cqw;padding:.9cqw 2.2cqw;font-size:2.4cqw;font-weight:700;color:var(--ink)}
+.pile div.hl{background:var(--acc);border-color:var(--acc);margin-top:1cqw;font-size:2.7cqw}
+.opts button.right{border-color:var(--ok);background:var(--oktint);color:var(--ok)}
+.monobox{font:2.7cqw/1.7 var(--mono);background:#fff;border:1px solid var(--bd);border-radius:2cqw;padding:2.2cqw 3.2cqw;color:var(--ink);width:72%}
+.col.bad{background:var(--badtint);border-color:#e3bfb2}
+.lesson-body a{color:var(--acc-ink);font-weight:600}
+.dl{display:flex;gap:18px;align-items:center;flex-wrap:wrap;border:1px solid #e6c9c4;border-radius:14px;padding:20px;margin:8px 0 16px;background:var(--tint)}
+.dl .ico{flex:none;width:52px;height:52px;border-radius:13px;background:var(--acc);display:grid;place-items:center}
+.dl .t{flex:1;min-width:200px}.dl .t b{display:block;font-size:1.05rem}.dl .t span{font-size:.92rem;color:var(--text)}
+.dl a.btn{text-decoration:none;color:#fff}
+</style><style>
+/* personal look: black, white, one red accent */
+:root{--paper:#f1efea;--card:#fbfaf7;--bd:#dcd8cf;--acc:#e5262b;--acc-ink:#b3151a;--tint:#f6e7e4;--code:#e9e6de}
+.part-head,.dl,.bl,.get,.finish{border-color:#e6c9c4!important}
+.lesson .n,.part-head .num,.idea .n,.three .n,.three3 i,.logo i{color:#fff}
+.fbox.hl,.fbox.hl small,.three3 div.hl,.three3 div.hl b,.three3 div.hl small,.door.hl,.pile div.hl,.words span.new.in,.bigq{color:#fff}
+.three3 div.hl i{background:#fff;color:#141413}
+.dl .ico svg{stroke:#fff}
+.field.hl{box-shadow:0 0 0 3px #f6e7e4}
+</style>
+<style>
+.sitenav{background:#141413;color:#fff}
+.sitenav-in{max-width:980px;margin:0 auto;padding:0 24px;display:flex;align-items:center;gap:6px;overflow-x:auto;scrollbar-width:none}
+.sitenav .brand{font:800 .9rem var(--font);white-space:nowrap;margin-right:14px;padding:14px 0;color:#fff;text-decoration:none}
+.sitenav .brand span{color:#ff6b61}
+.sitenav a.tabl{font:600 .88rem var(--font);color:#c9c7c1;text-decoration:none;white-space:nowrap;padding:14px 12px;border-bottom:3px solid transparent}
+.sitenav a.tabl:hover{color:#fff}
+.sitenav a.tabl.cur{color:#fff;border-bottom-color:#e5262b}
+.sitenav a.dlall{margin-left:auto;color:#fff}
+.top .links,.top-in>a{display:none!important}
+@media print{.sitenav{display:none}}
+</style>
+<style id="look">
+/* the look: warm paper, white cards, one red accent used very little */
+html[data-look]{--acc:#e5262b;--acc-ink:#b3151a;--tint:#fbeceb;--wash:#f8e9da;--accbd:#f1cdc8;
+  --paper:#f4f1ea;--card:#ffffff;--bd:#e8e2d5;--ink:#2e2b25;--text:#4a463e;--mut:#8c8576;--code:#f1ede4;
+  --lift:0 1px 2px rgba(40,30,10,.05),0 10px 24px rgba(40,30,10,.07)}
+html[data-look] body{background-color:var(--paper);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .32  0 0 0 0 .27  0 0 0 0 .2  0 0 0 .09 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),linear-gradient(180deg,var(--wash) 0,var(--paper) 100%);
+  background-repeat:repeat,no-repeat;background-size:180px 180px,100% 640px}
+
+/* top bars: light */
+html[data-look] .sitenav{background:transparent;color:var(--ink)}
+html[data-look] .sitenav .brand{color:var(--ink)}
+html[data-look] .sitenav .brand span{color:var(--acc-ink)}
+html[data-look] .sitenav a.tabl{color:var(--mut)}
+html[data-look] .sitenav a.tabl:hover{color:var(--ink)}
+html[data-look] .sitenav a.tabl.cur{color:var(--ink);border-bottom-color:var(--acc)}
+html[data-look] .sitenav a.dlall{color:var(--ink);border:1px solid #cfc8b8;border-radius:999px;padding:7px 16px;margin:8px 0 8px auto;background:rgba(255,255,255,.6)}
+html[data-look] .top{background:rgba(255,255,255,.78);border-bottom-color:var(--bd)}
+html[data-look] .tabs{background:rgba(255,255,255,.7)}
+html[data-look] .seg{background:#e3ddcf}
+
+/* headline and the one red button */
+html[data-look] .kicker{color:var(--mut)}
+html[data-look] h1 em{background:none;color:var(--acc)}
+html[data-look] .hero .btn{background:var(--acc);box-shadow:0 3px 0 var(--acc-ink);border-radius:14px;padding:15px 26px}
+html[data-look] .hero .btn:hover{background:var(--acc-ink)}
+html[data-look] .btn:hover{background:#1d1b17}
+
+/* cards: white, thin warm line, soft shadow underneath */
+html[data-look] .step,html[data-look] .card,html[data-look] .idea div,html[data-look] .three div,html[data-look] .fix div,html[data-look] .lesson,html[data-look] .tip{border-radius:20px;box-shadow:var(--lift)}
+html[data-look] .idea .n,html[data-look] .three .n{background:#f1ede4;color:var(--ink);box-shadow:none;border-radius:50%;padding:0}
+html[data-look] .lesson .n{background:var(--tint);color:var(--acc-ink)}
+html[data-look] .lesson.soon .n{background:var(--code);color:var(--mut)}
+html[data-look] .part-head{background:#fff;border-color:var(--bd)!important;box-shadow:var(--lift);border-radius:24px}
+html[data-look] .part-head .num{background:var(--tint);color:var(--acc-ink)}
+html[data-look] .eyebrow{color:var(--mut)}
+html[data-look] .why{border-left-color:var(--accbd)}
+html[data-look] .dl{background:#fff;border-color:var(--bd)!important;box-shadow:var(--lift);border-radius:20px}
+html[data-look] .dl .ico{background:var(--tint)}
+html[data-look] .dl .ico svg{stroke:var(--acc-ink)}
+html[data-look] .bl,html[data-look] .get,html[data-look] .finish{border-color:var(--accbd)!important}
+html[data-look] .field.hl{box-shadow:0 0 0 3px var(--tint)}
+html[data-look] .copy{background:#faf8f3;border-color:var(--bd)}
+html[data-look] .copy-bar{background:#f3efe6;border-bottom-color:var(--bd)}
+html[data-look] .win-bar{background:#f7f4ee}
+html[data-look] .bub.ai{background:#f1ede4}
+html[data-look] .tree{background:#faf8f3}
+</style>
+</head><body>
+<nav class="sitenav" aria-label="Kit pages"><div class="sitenav-in"><a class="brand" href="Claude-Cowork-Setup.html">Claude Setup Kit <span>@itsarisouss</span></a><a class="tabl" href="Claude-Cowork-Setup.html">1 Setup</a><a class="tabl" href="AI-Bootcamp.html">2 The basics</a><a class="tabl" href="Tips-and-Tricks.html">3 Tips</a><a class="tabl cur" href="AI-Bootcamp-Advanced.html">4 Skills and agents</a><a class="tabl" href="Claude-Code.html">5 Claude Code</a><a class="tabl dlall" href="claude-setup-kit.zip" download>Download the kit</a></div></nav>
+
+
+<div class="top"><div class="top-in">
+  <div class="logo"><i></i><span>Skills and agents</span></div>
+  <span class="prog" id="prog">0 of 7 lessons</span>
+  <a href="AI-Bootcamp.html">The basics</a><a href="Tips-and-Tricks.html" style="margin-left:8px">Tips</a><a href="Claude-Cowork-Setup.html" style="margin-left:8px">Setup</a><a href="Claude-Code.html" style="margin-left:8px">Claude Code</a>
+</div></div>
+
+<div class="wrap">
+<header class="hero">
+  <div class="kicker">AI Bootcamp · level 2</div>
+  <h1>Skills and agents: <em>let Claude carry more.</em></h1>
+  <p class="lede">Seven short lessons for when the basics feel easy. What skills are, how to check one, how to make and share your own, and how to build your first agent.</p>
+</header>
+
+<!-- ============ LESSON 1 ============ -->
+
+<section class="lesson" id="l1" data-id="l1">
+  <div class="lesson-top"><div class="n">1</div><div><h2>What a skill is</h2><div class="tease">You explain the same job every week. You can stop.</div></div><span class="state">1 min</span></div>
+  <div class="lesson-body">
+    <div class="film" id="film1">
+      <div class="stage" tabindex="0" aria-label="Lesson 1 animation. Press space to play or pause.">
+        <div class="scene" data-dur="8.5"><div class="tagline">Start here</div><div class="bubble me a" data-at="0.3">Like last week: bottom line, 5 points, actions, plain words...</div><div class="bubble ai a" data-at="1.5"><span data-type="Got it. Which document?" data-at="1.7" data-cps="34"></span></div><div class="clear"></div><div class="bigq a pop" data-at="4.4">You said all that last week.</div><div class="capline"><span>Every Monday you explain the same job to Claude, from the start. There is a way to explain it once.</span></div></div>
+        <div class="scene" data-dur="8.5"><div class="tagline">The idea</div><div class="bigtext a" data-at="0.4">A skill is<br><em>a job you explain once.</em></div><div class="capline"><span>A skill is a saved routine. You explain a job once. After that you ask for it by name.</span></div></div>
+        <div class="scene" data-dur="9"><div class="tagline">What is inside</div><div class="monobox"><div class="a" data-at="0.5">quick-brief/</div><div class="a" data-at="1.4">   SKILL.md      the steps, in plain words</div><div class="a" data-at="2.3">   references/   files the job needs</div></div><div class="capline"><span>A skill is just a folder. Inside is a plain text note with the steps, and any files the job needs.</span></div></div>
+        <div class="scene" data-dur="9.5"><div class="tagline">How it works</div><div class="flow"><div class="fbox a" data-at="0.4">You ask<small>quick brief this</small></div><span class="arr a" data-at="1.9">&rarr;</span><div class="fbox a" data-at="1.9">Claude spots the match<small>by name and one line</small></div><span class="arr a" data-at="3.4">&rarr;</span><div class="fbox a" data-at="3.4">It opens the skill<small>and follows the steps</small></div></div><div class="capline"><span>Claude keeps only the name and one line about each skill in mind. It opens the full steps when a job needs them.</span></div></div>
+        <div class="scene" data-dur="9"><div class="tagline">Why it matters</div><div class="three3" style="grid-template-columns:repeat(3,1fr)"><div class="a" data-at="0.4"><i>1</i><b>Same result every time</b><small>The steps do not change.</small></div><div class="a" data-at="1.9"><i>2</i><b>Short prompts</b><small>Three words, not thirty lines.</small></div><div class="a" data-at="3.4"><i>3</i><b>Easy to share</b><small>You can give it to other people.</small></div></div><div class="capline"><span>The job is done the same way every time, without a long prompt.</span></div></div>
+        <div class="scene" data-dur="8.5"><div class="tagline">Your rule</div><div class="three3" style="grid-template-columns:repeat(2,1fr)"><div class="a" data-at="0.4"><i>1</i><b>Done it once</b><small>Just write a prompt.</small></div><div class="a hl" data-at="1.9"><i>2</i><b>Done it three times</b><small>Make it a skill.</small></div></div><div class="capline"><span>Not every job needs a skill. Make one when you have done the same job three times.</span></div></div>
+        <div class="scene" data-dur="7.5"><div class="tagline">Next lesson</div><div class="bigtext a" data-at="0.4">Anyone can publish a skill.<br><em>That is the problem.</em></div><div class="capline"><span>Next: skills from the internet, and how to check one.</span></div></div>
+        <div class="poster"><div><button class="playbig" type="button">Play lesson 1</button><p>One minute. No sound needed.</p></div></div>
+        <div class="endcard" hidden><div><b>That is the idea.</b><button class="playbig again" type="button">Watch again</button><p>Then scroll down and try it yourself.</p></div></div>
+      </div>
+      <div class="ctrl"><button class="pp" type="button">Play</button><button class="back hideS" type="button">Back</button><div class="segs"></div><button class="next" type="button">Next</button></div>
+    </div>
+    <div class="label">The bottom line</div>
+    <div class="bl"><ul><li><b>A skill is a job you explain once.</b> It is a folder with a plain text note of steps.</li><li>Claude opens a skill only when a job needs it, so skills do not slow you down.</li><li>Make a skill when you have done the same job three times.</li></ul></div>
+    <div class="label">Quick check</div>
+    <div class="game" data-game="l1"></div>
+    <div class="label">One thing to try today</div>
+    <p>Paste this in Claude to see which skills you already have.</p>
+    <div class="copy"><div class="copy-bar"><span>Copy and paste</span><button data-copy="l1p">Copy</button></div><pre id="l1p">Which skills do you have available right now? List each one with one line on what it does.</pre></div>
+    <div class="finishrow"><button class="btn" type="button" data-done="l1">I get it. Mark lesson 1 done</button></div>
+  </div>
+</section>
+
+<section class="lesson" id="l2" data-id="l2">
+  <div class="lesson-top"><div class="n">2</div><div><h2>Skills from the internet</h2><div class="tease">You are about to install a stranger&#x27;s instructions.</div></div><span class="state">1 min</span></div>
+  <div class="lesson-body">
+    <div class="film" id="film2">
+      <div class="stage" tabindex="0" aria-label="Lesson 2 animation. Press space to play or pause.">
+        <div class="scene" data-dur="8.5"><div class="tagline">Start here</div><div class="bigtext a" data-at="0.4">A skill is a set of instructions<br><em>that Claude will follow.</em></div><div class="capline"><span>You find a great-looking skill online. One click and it is installed. Stop for a moment.</span></div></div>
+        <div class="scene" data-dur="9"><div class="tagline">The problem</div><div class="three3" style="grid-template-columns:repeat(3,1fr)"><div class="a" data-at="0.4"><i>1</i><b>Read your files</b><small>And pass them on.</small></div><div class="a" data-at="1.9"><i>2</i><b>Run a program</b><small>Some skills carry scripts.</small></div><div class="a" data-at="3.4"><i>3</i><b>Change how Claude acts</b><small>Without telling you.</small></div></div><div class="capline"><span>A bad skill can tell Claude to do things you never asked for, with your files and in your name.</span></div></div>
+        <div class="scene" data-dur="8.5"><div class="tagline">Good news</div><div class="bigtext a" data-at="0.4">You can read every line<br><em>before you install it.</em></div><div class="capline"><span>A skill is plain text. You can open it and read it before you install it. So can Claude.</span></div></div>
+        <div class="scene" data-dur="10"><div class="tagline">The 5 point check</div><div class="three3" style="grid-template-columns:repeat(4,1fr)"><div class="a" data-at="0.4"><i>1</i><b>Who made it?</b><small>A name you can find and trust.</small></div><div class="a" data-at="1.9"><i>2</i><b>Can you read it?</b><small>Open SKILL.md. It should make sense.</small></div><div class="a" data-at="3.4"><i>3</i><b>Any programs?</b><small>Files ending in .py, .sh, .js or .exe need a second look.</small></div><div class="a" data-at="4.9"><i>4</i><b>Any web addresses?</b><small>Why would it send anything anywhere?</small></div></div><div class="capline"><span>Five questions, two minutes.</span></div></div>
+        <div class="scene" data-dur="9"><div class="tagline">The safe test</div><div class="flow"><div class="fbox a" data-at="0.4">Empty test folder</div><span class="arr a" data-at="1.9">&rarr;</span><div class="fbox a" data-at="1.9">Manual mode<small>it asks before each action</small></div><span class="arr a" data-at="3.4">&rarr;</span><div class="fbox a" data-at="3.4">Watch what it does<small>stop if it surprises you</small></div></div><div class="capline"><span>Still unsure? Try it once on Manual, in an empty folder, with nothing confidential in it.</span></div></div>
+        <div class="scene" data-dur="9"><div class="tagline">Your rule</div><div class="three3" style="grid-template-columns:repeat(3,1fr)"><div class="a" data-at="0.4"><i>1</i><b>From the Claude directory</b><small>Fine.</small></div><div class="a" data-at="1.9"><i>2</i><b>From someone you trust</b><small>Fine.</small></div><div class="a hl" data-at="3.4"><i>3</i><b>From anywhere else</b><small>Check it first, or ask.</small></div></div><div class="capline"><span>Anthropic&#x27;s advice: stick to skills from the Claude directory. For anything else, check first or ask.</span></div></div>
+        <div class="scene" data-dur="7.5"><div class="tagline">Next lesson</div><div class="bigtext a" data-at="0.4">So where do you find<br><em>skills you can trust?</em></div><div class="capline"><span>Next: where the good skills are.</span></div></div>
+        <div class="poster"><div><button class="playbig" type="button">Play lesson 2</button><p>One minute. No sound needed.</p></div></div>
+        <div class="endcard" hidden><div><b>That is the idea.</b><button class="playbig again" type="button">Watch again</button><p>Then scroll down and try it yourself.</p></div></div>
+      </div>
+      <div class="ctrl"><button class="pp" type="button">Play</button><button class="back hideS" type="button">Back</button><div class="segs"></div><button class="next" type="button">Next</button></div>
+    </div>
+    <div class="label">The bottom line</div>
+    <div class="bl"><ul><li><b>A skill is instructions Claude will follow.</b> A bad one can misuse your files.</li><li>Check five things: who made it, can you read it, any programs, any web addresses, and try it on Manual in an empty folder.</li><li>Skills from the Claude directory, or from someone you know and trust, are fine. Check anything else first.</li></ul></div>
+    <div class="label">Quick check</div>
+    <div class="game" data-game="l2"></div>
+    <div class="label">One thing to try today</div>
+    <p>Before you install a skill from outside, unzip it into 00_Inbox and paste this.</p>
+    <div class="copy"><div class="copy-bar"><span>Copy and paste</span><button data-copy="l2p">Copy</button></div><pre id="l2p">There is a skill folder in 00_Inbox. Do not install it and do not run anything in it. Read every file and tell me in plain words: what it does, whether it contains any programs or scripts and what each one does, whether it sends data anywhere or names any web address, and anything that worries you. End with: safe to install, or not.</pre></div>
+    <div class="finishrow"><button class="btn" type="button" data-done="l2">I get it. Mark lesson 2 done</button></div>
+  </div>
+</section>
+
+<section class="lesson" id="l3" data-id="l3">
+  <div class="lesson-top"><div class="n">3</div><div><h2>Where the good skills are</h2><div class="tease">Four places, from safest to check-it-first.</div></div><span class="state">1 min</span></div>
+  <div class="lesson-body">
+    <div class="film" id="film3">
+      <div class="stage" tabindex="0" aria-label="Lesson 3 animation. Press space to play or pause.">
+        <div class="scene" data-dur="7.5"><div class="tagline">Start here</div><div class="bigtext a" data-at="0.4">Thousands of skills.<br><em>You need about five.</em></div><div class="capline"><span>There are thousands of skills online. You need about five.</span></div></div>
+        <div class="scene" data-dur="8.5"><div class="tagline">Place 1</div><div class="three3" style="grid-template-columns:repeat(1,1fr)"><div class="a hl" data-at="0.4"><i>1</i><b>The Claude directory</b><small>Inside the app, under Customize. Start here.</small></div></div><div class="capline"><span>Start inside Claude. The directory lists skills, connectors and plugins that Anthropic has reviewed.</span></div></div>
+        <div class="scene" data-dur="9.5"><div class="tagline">Place 2</div><div class="three3" style="grid-template-columns:repeat(4,1fr)"><div class="a" data-at="0.4"><i>1</i><b>Brand check</b><small>Is this on brand?</small></div><div class="a" data-at="1.9"><i>2</i><b>Quick brief</b><small>The bottom line of a long document.</small></div><div class="a" data-at="3.4"><i>3</i><b>Plain rewrite</b><small>Copy that sounds like a person.</small></div><div class="a" data-at="4.9"><i>4</i><b>Fresh angles</b><small>Ideas that are not the obvious ones.</small></div></div><div class="capline"><span>This kit comes with four skills on the setup page, ready to download.</span></div></div>
+        <div class="scene" data-dur="9"><div class="tagline">Place 3</div><div class="three3" style="grid-template-columns:repeat(3,1fr)"><div class="a" data-at="0.4"><i>1</i><b>Anthropic&#x27;s skills</b><small>github.com/anthropics/skills</small></div><div class="a" data-at="1.9"><i>2</i><b>Made by</b><small>The makers of Claude.</small></div><div class="a" data-at="3.4"><i>3</i><b>Good for</b><small>Documents, decks, spreadsheets.</small></div></div><div class="capline"><span>Anthropic publishes its own skills for Word, PowerPoint, Excel and PDF files, plus brand and communication examples.</span></div></div>
+        <div class="scene" data-dur="10"><div class="tagline">Place 4</div><div class="three3" style="grid-template-columns:repeat(3,1fr)"><div class="a" data-at="0.4"><i>1</i><b>Marketing skills</b><small>github.com/coreyhaines31/marketingskills</small></div><div class="a" data-at="1.9"><i>2</i><b>53 skills</b><small>Copywriting, ads, emails, SEO, launches.</small></div><div class="a hl" data-at="3.4"><i>3</i><b>Check first</b><small>Some expect tools you do not have.</small></div></div><div class="capline"><span>There is a large free marketing collection: 53 skills for copy, SEO, ads, emails and launches. It was made for developers, so check each one first.</span></div></div>
+        <div class="scene" data-dur="9.5"><div class="tagline">How to get one</div><div class="flow"><div class="fbox a" data-at="0.4">Download<small>Code, then Download ZIP</small></div><span class="arr a" data-at="1.9">&rarr;</span><div class="fbox a" data-at="1.9">Find the skill folder<small>inside skills</small></div><span class="arr a" data-at="3.4">&rarr;</span><div class="fbox a" data-at="3.4">Zip that one folder</div><span class="arr a" data-at="4.9">&rarr;</span><div class="fbox a" data-at="4.9">Upload it<small>Customize, Skills</small></div></div><div class="capline"><span>A skill on GitHub is a folder. Download it, zip that one folder, and upload the zip.</span></div></div>
+        <div class="scene" data-dur="7.5"><div class="tagline">Next lesson</div><div class="bigtext a" data-at="0.4">The best skill is the one<br><em>built for your job.</em></div><div class="capline"><span>Next: make your own.</span></div></div>
+        <div class="poster"><div><button class="playbig" type="button">Play lesson 3</button><p>One minute. No sound needed.</p></div></div>
+        <div class="endcard" hidden><div><b>That is the idea.</b><button class="playbig again" type="button">Watch again</button><p>Then scroll down and try it yourself.</p></div></div>
+      </div>
+      <div class="ctrl"><button class="pp" type="button">Play</button><button class="back hideS" type="button">Back</button><div class="segs"></div><button class="next" type="button">Next</button></div>
+    </div>
+    <div class="label">The bottom line</div>
+    <div class="bl"><ul><li><b>Start with the Claude directory and the four skills in this kit.</b></li><li>Anthropic's own skills are at github.com/anthropics/skills. A large marketing set is at github.com/coreyhaines31/marketingskills.</li><li>Anything from GitHub: run the 5 point check from lesson 2 before you upload it.</li></ul></div>
+    <div class="label">Quick check</div>
+    <div class="game" data-game="l3"></div>
+    <div class="label">One thing to try today</div>
+    <p>Paste this in Claude to find a skill for a job you do often.</p>
+    <div class="copy"><div class="copy-bar"><span>Copy and paste</span><button data-copy="l3p">Copy</button></div><pre id="l3p">I often have to DESCRIBE THE JOB. Is there a skill in your directory that does this? If not, tell me what a skill for it should contain.</pre></div>
+    <div class="finishrow"><button class="btn" type="button" data-done="l3">I get it. Mark lesson 3 done</button></div>
+  </div>
+</section>
+
+<section class="lesson" id="l4" data-id="l4">
+  <div class="lesson-top"><div class="n">4</div><div><h2>Make your own skill</h2><div class="tease">Do the job once. Then keep it.</div></div><span class="state">1 min</span></div>
+  <div class="lesson-body">
+    <div class="film" id="film4">
+      <div class="stage" tabindex="0" aria-label="Lesson 4 animation. Press space to play or pause.">
+        <div class="scene" data-dur="8.5"><div class="tagline">Start here</div><div class="bigtext a" data-at="0.4">Ten minutes of good work.<br><em>Gone when you close the chat.</em></div><div class="capline"><span>You just got a great result from Claude after ten minutes of back and forth. Next week you start from zero.</span></div></div>
+        <div class="scene" data-dur="9"><div class="tagline">The idea</div><div class="flow"><div class="fbox a" data-at="0.4">Do the job once<small>until the result is right</small></div><span class="arr a" data-at="1.9">&rarr;</span><div class="fbox a" data-at="1.9">Ask Claude<small>turn this into a skill</small></div><span class="arr a" data-at="3.4">&rarr;</span><div class="fbox a" data-at="3.4">Use it by name<small>from now on</small></div></div><div class="capline"><span>Do the job once, properly. Then ask Claude to turn what you just did into a skill.</span></div></div>
+        <div class="scene" data-dur="9.5"><div class="tagline">How it works</div><div class="three3" style="grid-template-columns:repeat(3,1fr)"><div class="a" data-at="0.4"><i>1</i><b>A short name</b><small>weekly-report</small></div><div class="a" data-at="1.9"><i>2</i><b>Your trigger words</b><small>&quot;weekly report&quot;, &quot;Monday numbers&quot;</small></div><div class="a" data-at="3.4"><i>3</i><b>The steps</b><small>Claude writes them from what you just did.</small></div></div><div class="capline"><span>Claude writes the skill for you. You only give it a name, and the words you will use to ask for it.</span></div></div>
+        <div class="scene" data-dur="8.5"><div class="tagline">Read it first</div><div class="bigtext a" data-at="0.4">Show me the skill<br><em>before you save it.</em></div><div class="capline"><span>Ask to see the skill in plain words before it is saved. If a step is wrong, say so.</span></div></div>
+        <div class="scene" data-dur="9"><div class="tagline">Test it</div><div class="three3" style="grid-template-columns:repeat(3,1fr)"><div class="a" data-at="0.4"><i>1</i><b>New chat</b><small>So Claude does not lean on the old one.</small></div><div class="a" data-at="1.9"><i>2</i><b>A different file</b><small>A real test.</small></div><div class="a" data-at="3.4"><i>3</i><b>Fix and repeat</b><small>Tell Claude what to change in the skill.</small></div></div><div class="capline"><span>Open a new chat and ask for the skill by name on a different file. That shows if it really works.</span></div></div>
+        <div class="scene" data-dur="7.5"><div class="tagline">Keep it</div><div class="three3" style="grid-template-columns:repeat(1,1fr)"><div class="a hl" data-at="0.4"><i>1</i><b>04_Skills</b><small>Your own copy of every skill you make.</small></div></div><div class="capline"><span>Save a copy of the skill in your 04_Skills folder. That copy is yours.</span></div></div>
+        <div class="scene" data-dur="7.5"><div class="tagline">Next lesson</div><div class="bigtext a" data-at="0.4">A good skill should not<br><em>stay on one laptop.</em></div><div class="capline"><span>Next: share it, and update it.</span></div></div>
+        <div class="poster"><div><button class="playbig" type="button">Play lesson 4</button><p>One minute. No sound needed.</p></div></div>
+        <div class="endcard" hidden><div><b>That is the idea.</b><button class="playbig again" type="button">Watch again</button><p>Then scroll down and try it yourself.</p></div></div>
+      </div>
+      <div class="ctrl"><button class="pp" type="button">Play</button><button class="back hideS" type="button">Back</button><div class="segs"></div><button class="next" type="button">Next</button></div>
+    </div>
+    <div class="label">The bottom line</div>
+    <div class="bl"><ul><li><b>Do the job once, then ask Claude to turn it into a skill.</b></li><li>Read the skill before it is saved. Then test it in a new chat on a different file.</li><li>Keep a copy in 04_Skills.</li></ul></div>
+    <div class="label">Quick check</div>
+    <div class="game" data-game="l4"></div>
+    <div class="label">One thing to try today</div>
+    <p>Paste this right after a job that went well.</p>
+    <div class="copy"><div class="copy-bar"><span>Copy and paste</span><button data-copy="l4p">Copy</button></div><pre id="l4p">We just did a job I will do again. Turn what we just did into a reusable skill. Ask me for a short name and for the words I will use to ask for it. Show me the skill in plain words before you save it. Save a copy in 04_Skills.</pre></div>
+    <div class="finishrow"><button class="btn" type="button" data-done="l4">I get it. Mark lesson 4 done</button></div>
+  </div>
+</section>
+
+<section class="lesson" id="l5" data-id="l5">
+  <div class="lesson-top"><div class="n">5</div><div><h2>Share a skill and update it</h2><div class="tease">Version 2, with patch notes. Like an app.</div></div><span class="state">1 min</span></div>
+  <div class="lesson-body">
+    <div class="film" id="film5">
+      <div class="stage" tabindex="0" aria-label="Lesson 5 animation. Press space to play or pause.">
+        <div class="scene" data-dur="8.5"><div class="tagline">Start here</div><div class="bigtext a" data-at="0.4">Five people. Five brand checks.<br><em>Five different answers.</em></div><div class="capline"><span>Five people each wrote their own brand check. Five different results.</span></div></div>
+        <div class="scene" data-dur="9"><div class="tagline">The idea</div><div class="flow"><div class="fbox a" data-at="0.4">One person builds it</div><span class="arr a" data-at="1.9">&rarr;</span><div class="fbox a" data-at="1.9">Shares it<small>with the others</small></div><span class="arr a" data-at="3.4">&rarr;</span><div class="fbox a" data-at="3.4">Everyone switches it on<small>same result for all</small></div></div><div class="capline"><span>One skill, shared with everyone. Everybody gets the same check.</span></div></div>
+        <div class="scene" data-dur="9"><div class="tagline">How sharing works</div><div class="three3" style="grid-template-columns:repeat(2,1fr)"><div class="a" data-at="0.4"><i>1</i><b>Send the zip file</b><small>Anyone can upload it to their own Claude.</small></div><div class="a" data-at="1.9"><i>2</i><b>On a team plan</b><small>You can also share it inside Claude.</small></div></div><div class="capline"><span>The simple way to share a skill: send the zip file. On a team plan you can also share it inside Claude.</span></div></div>
+        <div class="scene" data-dur="9.5"><div class="tagline">When it needs to change</div><div class="monobox"><div class="a" data-at="0.5">Version 2.0</div><div class="a" data-at="1.4">- Now also checks the writing rules</div><div class="a" data-at="2.3">- Asks before it makes a new version</div><div class="a" data-at="3.2">Version 1.0</div><div class="a" data-at="4.1">- First version</div></div><div class="capline"><span>Skills get better. Keep the same name, raise the version, and write down what changed.</span></div></div>
+        <div class="scene" data-dur="9.5"><div class="tagline">How to update</div><div class="flow"><div class="fbox a" data-at="0.4">Change the skill</div><span class="arr a" data-at="1.9">&rarr;</span><div class="fbox a" data-at="1.9">Write the patch notes<small>what changed and why</small></div><span class="arr a" data-at="3.4">&rarr;</span><div class="fbox a" data-at="3.4">Upload again<small>same name</small></div><span class="arr a" data-at="4.9">&rarr;</span><div class="fbox a" data-at="4.9">Tell people<small>one line</small></div></div><div class="capline"><span>Upload the new version with the same name. Then tell the people who use it what changed.</span></div></div>
+        <div class="scene" data-dur="10"><div class="tagline">A real one</div><div class="three3" style="grid-template-columns:repeat(3,1fr)"><div class="a" data-at="0.4"><i>1</i><b>Reports first</b><small>Verdict, top 3 fixes, a table.</small></div><div class="a" data-at="1.9"><i>2</i><b>Then asks</b><small>Do you want an on-brand version?</small></div><div class="a" data-at="3.4"><i>3</i><b>Never overwrites</b><small>The new version is a new file.</small></div></div><div class="capline"><span>The brand check in this kit is version 2. It reports first, then asks before it builds anything, so it never spends your limit without a yes.</span></div></div>
+        <div class="scene" data-dur="7.5"><div class="tagline">Next lesson</div><div class="bigtext a" data-at="0.4">What if Claude did the job<br><em>without being asked each time?</em></div><div class="capline"><span>Next: agents.</span></div></div>
+        <div class="poster"><div><button class="playbig" type="button">Play lesson 5</button><p>One minute. No sound needed.</p></div></div>
+        <div class="endcard" hidden><div><b>That is the idea.</b><button class="playbig again" type="button">Watch again</button><p>Then scroll down and try it yourself.</p></div></div>
+      </div>
+      <div class="ctrl"><button class="pp" type="button">Play</button><button class="back hideS" type="button">Back</button><div class="segs"></div><button class="next" type="button">Next</button></div>
+    </div>
+    <div class="label">The bottom line</div>
+    <div class="bl"><ul><li><b>One shared skill gives everyone the same result.</b></li><li>To update: keep the name, raise the version, write patch notes, upload again, and tell the people who use it.</li><li>The brand check in this kit reports first and asks before it makes anything.</li></ul></div>
+    <div class="label">Quick check</div>
+    <div class="game" data-game="l5"></div>
+    <div class="label">One thing to try today</div>
+    <p>After you upload the brand check, paste this with any draft.</p>
+    <div class="copy"><div class="copy-bar"><span>Copy and paste</span><button data-copy="l5p">Copy</button></div><pre id="l5p">Brand check FILE NAME. It is an organic LinkedIn post.</pre></div>
+    <div class="label">Download: brand check, version 2.0</div><div class="dl"><div class="ico"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#141413" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 11l5 5 5-5M4 20h16"/></svg></div><div class="t"><b>brand-check.zip</b><span>Version 2.0. Checks the look, the words and AI-sounding copy. Asks before it builds anything.</span></div><a class="btn c" href="downloads/skills/brand-check.zip" download>Download</a></div><p>Upload it in Claude: <b>Customize</b>, then <b>Skills</b>, then <b>+</b>, then <b>Upload a skill</b>. Do not unzip it. If you have version 1, this replaces it.</p>
+    <div class="finishrow"><button class="btn" type="button" data-done="l5">I get it. Mark lesson 5 done</button></div>
+  </div>
+</section>
+
+<section class="lesson" id="l6" data-id="l6">
+  <div class="lesson-top"><div class="n">6</div><div><h2>What an agent is</h2><div class="tease">What if Claude did the job without being asked each time?</div></div><span class="state">1 min</span></div>
+  <div class="lesson-body">
+    <div class="film" id="film6">
+      <div class="stage" tabindex="0" aria-label="Lesson 6 animation. Press space to play or pause.">
+        <div class="scene" data-dur="7.5"><div class="tagline">Start here</div><div class="bigtext a" data-at="0.4">Same job. Every Monday.<br><em>By hand.</em></div><div class="capline"><span>Every Monday you sort the same folder and write the same summary. By hand.</span></div></div>
+        <div class="scene" data-dur="9.5"><div class="tagline">The idea</div><div class="three3" style="grid-template-columns:repeat(4,1fr)"><div class="a" data-at="0.4"><i>1</i><b>A goal</b><small>What done looks like.</small></div><div class="a" data-at="1.9"><i>2</i><b>Tools</b><small>Your folder, the web, a skill.</small></div><div class="a" data-at="3.4"><i>3</i><b>Rules</b><small>What it may and may not do.</small></div><div class="a" data-at="4.9"><i>4</i><b>Stop points</b><small>Where it must ask you.</small></div></div><div class="capline"><span>An agent is Claude with a goal, tools, and permission to take the steps itself.</span></div></div>
+        <div class="scene" data-dur="8.5"><div class="tagline">You already use one</div><div class="bigtext a" data-at="0.4">You have been using<br><em>an agent all along.</em></div><div class="capline"><span>When Claude opens your files and builds a deck step by step, it is acting as an agent.</span></div></div>
+        <div class="scene" data-dur="9"><div class="tagline">Helpers</div><div class="flow"><div class="fbox a" data-at="0.4">One big job</div><span class="arr a" data-at="1.9">&rarr;</span><div class="fbox a" data-at="1.9">Claude splits it<small>among helpers</small></div><span class="arr a" data-at="3.4">&rarr;</span><div class="fbox a" data-at="3.4">One result<small>back to you</small></div></div><div class="capline"><span>For a big job Claude can split the work among helpers that run side by side. That is faster, and it uses more of your limit.</span></div></div>
+        <div class="scene" data-dur="9.5"><div class="tagline">Why it matters</div><div class="cmp"><div class="col  a" data-at="0.3"><h4>Let it run</h4><p class="a" data-at="0.9">Read and summarize</p><p class="a" data-at="2.4">Sort and rename</p><p class="a" data-at="3.9">Write a draft</p></div><div class="col bad a" data-at="0.3"><h4>Always ask me</h4><p class="a" data-at="1.25">Send or post anything</p><p class="a" data-at="2.75">Delete anything</p><p class="a" data-at="4.25">Spend money or sign up</p></div></div><div class="capline"><span>The more Claude does on its own, the more the rules matter. Reading is low risk. Sending, deleting and paying need you.</span></div></div>
+        <div class="scene" data-dur="9"><div class="tagline">Your rule</div><div class="three3" style="grid-template-columns:repeat(3,1fr)"><div class="a" data-at="0.4"><i>1</i><b>Start small</b><small>A job where a mistake costs nothing.</small></div><div class="a" data-at="1.9"><i>2</i><b>Read every result</b><small>At first, every time.</small></div><div class="a" data-at="3.4"><i>3</i><b>Then widen</b><small>Only when it has earned it.</small></div></div><div class="capline"><span>You stay responsible for what Claude does in your name. Give an agent a small job first.</span></div></div>
+        <div class="scene" data-dur="7.5"><div class="tagline">Next lesson</div><div class="bigtext a" data-at="0.4">Ten minutes.<br><em>Your first agent.</em></div><div class="capline"><span>Next: build your first agent.</span></div></div>
+        <div class="poster"><div><button class="playbig" type="button">Play lesson 6</button><p>One minute. No sound needed.</p></div></div>
+        <div class="endcard" hidden><div><b>That is the idea.</b><button class="playbig again" type="button">Watch again</button><p>Then scroll down and try it yourself.</p></div></div>
+      </div>
+      <div class="ctrl"><button class="pp" type="button">Play</button><button class="back hideS" type="button">Back</button><div class="segs"></div><button class="next" type="button">Next</button></div>
+    </div>
+    <div class="label">The bottom line</div>
+    <div class="bl"><ul><li><b>An agent is Claude with a goal, tools, rules and stop points.</b></li><li>Reading, sorting and drafting can run on their own. Sending, deleting and spending always need your yes.</li><li>Start with a small job and read every result.</li></ul></div>
+    <div class="label">Quick check</div>
+    <div class="game" data-game="l6"></div>
+    <div class="label">One thing to try today</div>
+    <p>Paste this in Claude to find your first agent job.</p>
+    <div class="copy"><div class="copy-bar"><span>Copy and paste</span><button data-copy="l6p">Copy</button></div><pre id="l6p">Here are jobs I repeat every week: LIST THEM. Which one is the best first job to hand to an agent? Pick the one that is low risk and easy to check, and tell me why.</pre></div>
+    <div class="finishrow"><button class="btn" type="button" data-done="l6">I get it. Mark lesson 6 done</button></div>
+  </div>
+</section>
+
+<section class="lesson" id="l7" data-id="l7">
+  <div class="lesson-top"><div class="n">7</div><div><h2>Build your first agent</h2><div class="tease">Ten minutes. A small job that runs without you.</div></div><span class="state">1 min</span></div>
+  <div class="lesson-body">
+    <div class="film" id="film7">
+      <div class="stage" tabindex="0" aria-label="Lesson 7 animation. Press space to play or pause.">
+        <div class="scene" data-dur="8.5"><div class="tagline">Start here</div><div class="bigtext a" data-at="0.4">An agent is<br><em>a brief that repeats.</em></div><div class="capline"><span>You will not build a robot. You will write a clear brief and let Claude repeat it.</span></div></div>
+        <div class="scene" data-dur="8.5"><div class="tagline">Step 1</div><div class="three3" style="grid-template-columns:repeat(2,1fr)"><div class="a" data-at="0.4"><i>1</i><b>Do it once</b><small>With Claude, in a normal chat.</small></div><div class="a" data-at="1.9"><i>2</i><b>Fix it</b><small>Until you are happy with the result.</small></div></div><div class="capline"><span>Do the job once by hand, with Claude, until the result is right.</span></div></div>
+        <div class="scene" data-dur="10"><div class="tagline">Step 2</div><div class="monobox"><div class="a" data-at="0.5">Goal: a summary of my inbox folder</div><div class="a" data-at="1.4">Use: the files in 00_Inbox</div><div class="a" data-at="2.3">Steps: read, group, summarize</div><div class="a" data-at="3.2">Never: delete, send, rename</div><div class="a" data-at="4.1">Stop and ask: if a file looks confidential</div><div class="a" data-at="5.0">Result: one page in 01_Projects</div></div><div class="capline"><span>Write the agent&#x27;s brief. Six lines are enough.</span></div></div>
+        <div class="scene" data-dur="9"><div class="tagline">Step 3</div><div class="flow"><div class="fbox a" data-at="0.4">The brief</div><span class="arr a" data-at="1.9">&rarr;</span><div class="fbox a" data-at="1.9">/schedule<small>or Scheduled in the menu</small></div><span class="arr a" data-at="3.4">&rarr;</span><div class="fbox a" data-at="3.4">Pick a time<small>every Monday at 9</small></div></div><div class="capline"><span>Ask Claude to make it repeat. Type /schedule, or open Scheduled in the left menu.</span></div></div>
+        <div class="scene" data-dur="8.5"><div class="tagline">Good to know</div><div class="three3" style="grid-template-columns:repeat(2,1fr)"><div class="a" data-at="0.4"><i>1</i><b>Uses your folder</b><small>The app must be open.</small></div><div class="a" data-at="1.9"><i>2</i><b>Laptop asleep</b><small>It runs when you are back.</small></div></div><div class="capline"><span>A job that uses your folder needs the Claude app open. If your laptop is asleep, it runs when you come back.</span></div></div>
+        <div class="scene" data-dur="9"><div class="tagline">Step 4</div><div class="three3" style="grid-template-columns:repeat(3,1fr)"><div class="a" data-at="0.4"><i>1</i><b>Read every run</b><small>At first.</small></div><div class="a" data-at="1.9"><i>2</i><b>Adjust the brief</b><small>When something is off.</small></div><div class="a" data-at="3.4"><i>3</i><b>Pause or delete</b><small>When the job is over.</small></div></div><div class="capline"><span>Read the result after every run for the first weeks. Pause the agent when you no longer need it.</span></div></div>
+        <div class="scene" data-dur="8"><div class="tagline">You made it</div><div class="bigtext a" data-at="0.4">One small job this week.<br><em>That is how it starts.</em></div><div class="capline"><span>That is skills and agents. Start with one small job this week.</span></div></div>
+        <div class="poster"><div><button class="playbig" type="button">Play lesson 7</button><p>One minute. No sound needed.</p></div></div>
+        <div class="endcard" hidden><div><b>That is the whole course.</b><button class="playbig again" type="button">Watch again</button><p>Then scroll down and try it yourself.</p></div></div>
+      </div>
+      <div class="ctrl"><button class="pp" type="button">Play</button><button class="back hideS" type="button">Back</button><div class="segs"></div><button class="next" type="button">Next</button></div>
+    </div>
+    <div class="label">The bottom line</div>
+    <div class="bl"><ul><li><b>An agent is a clear brief that repeats.</b></li><li>Do the job once, write a six line brief, then schedule it with /schedule.</li><li>Jobs that use your folder need the app open. Read every result at first.</li></ul></div>
+    <div class="label">Quick check</div>
+    <div class="game" data-game="l7"></div>
+    <div class="label">One thing to try today</div>
+    <p>Paste this, fill in the capitals, and let Claude help you finish the brief.</p>
+    <div class="copy"><div class="copy-bar"><span>Copy and paste</span><button data-copy="l7p">Copy</button></div><pre id="l7p">Help me set up a small recurring job.
+
+Goal: WHAT DONE LOOKS LIKE
+Use: WHICH FOLDER OR FILES
+Never: delete, send, post, or change files outside this folder
+Stop and ask me: if anything looks confidential or unclear
+Result: WHERE TO SAVE IT AND IN WHAT FORM
+
+First do it once now and show me the result. If I say it is right, tell me how to schedule it to run WHEN.</pre></div>
+    <div class="finishrow"><button class="btn" type="button" data-done="l7">I get it. Mark lesson 7 done</button></div>
+  </div>
+</section>
+
+<footer><span>Made by @itsarisouss, with Claude.</span><button class="btn ghost" id="reset" type="button" style="padding:9px 16px;font-size:.85rem">Clear my progress</button></footer>
+</div>
+
+<script>
+(function(){
+var $=function(s,r){return (r||document).querySelector(s)},$$=function(s,r){return [].slice.call((r||document).querySelectorAll(s))};
+var reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion:reduce)').matches;
+
+/* ---------- the film player ---------- */
+function Film(root){
+  var stage=$('.stage',root),scenes=$$('.scene',root),segs=$('.segs',root),pp=$('.pp',root),poster=$('.poster',root),endc=$('.endcard',root);
+  var idx=0,t=0,playing=false,last=0,raf=0;
+  scenes.forEach(function(){var i=document.createElement('i');i.appendChild(document.createElement('b'));segs.appendChild(i)});
+  var fills=$$('b',segs);
+  function dur(i){return +scenes[i].dataset.dur}
+  function draw(){
+    var s=scenes[idx];
+    $$('[data-at]',s).forEach(function(el){
+      var at=+el.dataset.at,on=t>=at;
+      if(el.classList.contains('a'))el.classList.toggle('in',on);
+      if(el.hasAttribute('data-type')){var txt=el.getAttribute('data-type');el.textContent=on?txt.slice(0,Math.floor((t-at)*(+el.dataset.cps||30))):''}
+      if(el.hasAttribute('data-count')){var k=on?Math.min(1,(t-at)/(+el.dataset.len||1.5)):0;k=1-Math.pow(1-k,3);el.textContent=Math.round(Math.pow(10,(+el.dataset.count)*k)).toLocaleString('en-US')}
+    });
+    fills.forEach(function(b,i){b.style.width=(i<idx?100:i>idx?0:Math.min(100,100*t/dur(idx)))+'%'});
+  }
+  function show(i,full){idx=i;scenes.forEach(function(s,j){s.classList.toggle('on',j===i)});t=full?dur(i):0;draw()}
+  function frame(now){if(!playing)return;t+=Math.min(.5,(now-last)/1000);last=now;
+    if(t>=dur(idx)){if(idx<scenes.length-1){show(idx+1)}else{t=dur(idx);draw();stop();endc.hidden=false;return}}
+    draw();raf=requestAnimationFrame(frame)}
+  function play(){poster.hidden=true;endc.hidden=true;if(reduce){show(idx,true);return}
+    if(idx===scenes.length-1&&t>=dur(idx))show(0);playing=true;pp.textContent='Pause';last=performance.now();raf=requestAnimationFrame(frame)}
+  function stop(){playing=false;pp.textContent='Play';cancelAnimationFrame(raf)}
+  function toggle(){playing?stop():play()}
+  function go(d){var i=Math.max(0,Math.min(scenes.length-1,idx+d));poster.hidden=true;endc.hidden=true;show(i,reduce||!playing&&false);if(reduce)show(i,true);else if(!playing)play()}
+  pp.addEventListener('click',toggle);
+  stage.addEventListener('click',function(e){if(e.target.closest('.again')){show(0);play();return}toggle()});
+  stage.addEventListener('keydown',function(e){if(e.key===' '||e.key==='Enter'){e.preventDefault();toggle()}if(e.key==='ArrowRight')go(1);if(e.key==='ArrowLeft')go(-1)});
+  $('.next',root).addEventListener('click',function(){go(1)});
+  $('.back',root).addEventListener('click',function(){go(-1)});
+  document.addEventListener('visibilitychange',function(){if(document.hidden&&playing)stop()});
+  show(0);
+  root._seek=function(i,full){poster.hidden=true;endc.hidden=true;stop();show(i,full)};
+}
+$$('.film').forEach(Film);
+
+/* ---------- the game ---------- */
+var ROUNDS=[
+ {q:'Thank you for your <u>&nbsp;</u>',o:[['time',41],['email',33],['patience',19]],
+  fb:'<b>All three fit.</b> There is no single right answer, only likely ones. That is why Claude writes so easily.'},
+ {q:'Our customers are mostly cafes, bakeries and <u>&nbsp;</u>',o:[['restaurants',46],['hotels',31],['bananas',0]],
+  fb:'<b>You guessed from what usually comes next.</b> So does Claude. It does not know who your customers really are unless you give it the file.'},
+ {q:'The capital of Australia is <u>&nbsp;</u>',o:[['Sydney',0],['Canberra',0],['Melbourne',0]],
+  fb:'<b>It is Canberra.</b> Sydney is the famous one, so it sounds right. Sounding right and being right are two different things. That gap is where mistakes come from.'}
+];
+var GAMES={"l1": [{"q": "What is inside a skill?", "o": [["A plain text note with steps, and files the job needs", 0], ["A separate AI model", 0], ["A program you must install", 0]], "fb": "It is a folder you can open and read. That is also why you can check one.", "right": 0}, {"q": "You wrote a one-off email with Claude. Make a skill?", "o": [["Yes", 0], ["No, a prompt is enough", 0]], "fb": "A skill pays off when the job repeats. Three times is a good rule.", "right": 1}], "l2": [{"q": "A skill folder contains a file called upload.py. What do you do?", "o": [["Install it, it is probably fine", 0], ["Stop and find out what that program does", 0]], "fb": "A program inside a skill can do things the text does not mention. Ask Claude to explain it before you install.", "right": 1}, {"q": "Where is the safest place to get a skill?", "o": [["A link in a social media post", 0], ["The Claude directory, or your own team", 0]], "fb": "Anthropic&#x27;s own advice is to stick to the directory.", "right": 1}], "l3": [{"q": "Where do you look first for a new skill?", "o": [["A search engine", 0], ["The Claude directory and the skills in this kit", 0]], "fb": "Those are reviewed or made by people you know.", "right": 1}, {"q": "You download a marketing skill from GitHub. First step?", "o": [["Upload it straight away", 0], ["Run the 5 point check", 0]], "fb": "It was made by a stranger, for developers. Read it first.", "right": 1}], "l4": [{"q": "When is the best moment to make a skill?", "o": [["Before you have ever done the job", 0], ["Right after you did the job well with Claude", 0]], "fb": "Claude can write the steps from what just worked.", "right": 1}, {"q": "How do you test a new skill?", "o": [["In the same chat, on the same file", 0], ["In a new chat, on a different file", 0]], "fb": "A new chat and a new file show whether the skill stands on its own.", "right": 1}], "l5": [{"q": "You improved a shared skill. What do you keep the same?", "o": [["The name", 0], ["Nothing, make a new skill", 0]], "fb": "The same name means people get the new version in place of the old one.", "right": 0}, {"q": "Why does the brand check ask before it makes an on-brand version?", "o": [["Because making it uses your limit", 0], ["Because it is slow", 0]], "fb": "A report is cheap. A full rewrite or mock-up costs more. You decide.", "right": 0}], "l6": [{"q": "Which job should an agent always ask you about first?", "o": [["Summarizing a folder", 0], ["Sending an email to a customer", 0]], "fb": "A sent email cannot be taken back. That is a stop point.", "right": 1}, {"q": "Claude splits a big job among helpers. What is the cost?", "o": [["It uses more of your limit", 0], ["Nothing", 0]], "fb": "Each helper does its own reading and writing. Use it for big jobs only.", "right": 0}], "l7": [{"q": "What do you do before you schedule a job?", "o": [["Do it once by hand and check the result", 0], ["Nothing, just schedule it", 0]], "fb": "Anthropic&#x27;s own advice: do the task once, confirm the output, then make it recurring.", "right": 0}, {"q": "Your first agent should be a job that is...", "o": [["Low risk and easy to check", 0], ["Important and urgent", 0]], "fb": "Start where a mistake costs nothing. Widen it later.", "right": 0}]};
+function Game(root){var r=0,ROUNDS=GAMES[root.dataset.game];
+  function render(){var R=ROUNDS[r];
+    root.innerHTML='<div class="q">'+R.q+'</div><div class="opts">'+R.o.map(function(o,i){return '<button type="button" data-i="'+i+'">'+o[0]+'</button>'}).join('')+'</div><div class="fb"></div>';
+    $$('.opts button',root).forEach(function(b){b.addEventListener('click',function(){
+      $$('.opts button',root).forEach(function(x,i){x.disabled=true;if(R.o[i][1])x.innerHTML=R.o[i][0]+'<small>'+R.o[i][1]+'%</small>'});
+      b.classList.add('pick');var hasRight=typeof R.right==='number';if(hasRight)$$('.opts button',root)[R.right].classList.add('right');
+      $('.fb',root).innerHTML=(hasRight?(+b.dataset.i===R.right?'<b>Yes.</b> ':'<b>Not quite.</b> '):'')+R.fb+(R.o[0][1]?' <span style="color:var(--mut)">(The numbers are an illustration.)</span>':'');
+      var n=document.createElement('button');n.type='button';n.className='btn nextq';
+      n.textContent=r<ROUNDS.length-1?'Next one':'Play again';
+      n.addEventListener('click',function(){r=(r+1)%ROUNDS.length;render()});root.appendChild(n)})})}
+  render()}
+$$('.game').forEach(Game);
+
+/* ---------- lessons, progress, copy ---------- */
+var KEY='ai-bootcamp-adv-v1',saved={};try{saved=JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){saved={}}
+var lessons=$$('.lesson[data-id]');
+function paint(){var c=0;lessons.forEach(function(l){var d=!!saved[l.dataset.id];if(d)c++;l.classList.toggle('done',d);$('.state',l).textContent=d?'Done':'1 min';
+  var b=$('[data-done]',l);if(b)b.textContent=d?'Done. Watch it again any time':'I get it. Mark lesson '+l.dataset.id.slice(1)+' done'});
+  $('#prog').textContent=c+' of '+lessons.length+' lessons'}
+function openOnly(l,scroll){lessons.forEach(function(x){x.classList.toggle('open',x===l)});if(l&&scroll)l.scrollIntoView({behavior:reduce?'auto':'smooth',block:'start'})}
+lessons.forEach(function(l){$('.lesson-top',l).addEventListener('click',function(){if(l.classList.contains('open'))l.classList.remove('open');else openOnly(l,false)});
+  var b=$('[data-done]',l);if(b)b.addEventListener('click',function(){saved[l.dataset.id]=true;try{localStorage.setItem(KEY,JSON.stringify(saved))}catch(e){}paint();var nx=lessons[lessons.indexOf(l)+1];if(nx)openOnly(nx,true)})});
+$('#reset').addEventListener('click',function(){saved={};try{localStorage.removeItem(KEY)}catch(e){}paint()});
+paint();openOnly(lessons.filter(function(l){return !saved[l.dataset.id]})[0]||lessons[0],false);
+$$('[data-copy]').forEach(function(b){b.addEventListener('click',function(){
+  var el=document.getElementById(b.getAttribute('data-copy')),txt=el.textContent,o=b.getAttribute('data-label')||b.textContent;b.setAttribute('data-label',o);
+  function done(){b.textContent='Copied. Now paste it.';b.classList.add('ok');clearTimeout(b._t);b._t=setTimeout(function(){b.textContent=o;b.classList.remove('ok')},2200)}
+  function execCopy(){var ta=document.createElement('textarea');ta.value=txt;ta.setAttribute('readonly','');ta.style.cssText='position:fixed;top:0;left:0;width:1px;height:1px;opacity:0';document.body.appendChild(ta);ta.focus();ta.select();var ok=false;try{ok=document.execCommand('copy')}catch(e){ok=false}document.body.removeChild(ta);return ok}
+  function manual(){var r=document.createRange();r.selectNodeContents(el);var s=window.getSelection();s.removeAllRanges();s.addRange(r);b.textContent='Selected. Press Ctrl+C';clearTimeout(b._t);b._t=setTimeout(function(){b.textContent=o},4500)}
+  if(execCopy()){done();return}
+  try{if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(done,manual)}else{manual()}}catch(e){manual()}
+})});
+})();
+</script>
+</body></html>

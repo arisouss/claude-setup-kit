@@ -1,0 +1,775 @@
+<!doctype html>
+<html lang="en" data-look="a"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Bootcamp: the basics</title>
+<script>document.documentElement.className='js'</script>
+<style>
+/* Same calm look as the setup page. One accent. The animation is the star. */
+:root{--paper:#e9e4d8;--card:#f6f2e9;--bd:#d8d2c4;--ink:#141413;--text:#3d3a34;--mut:#77736a;--acc:#e5262b;--acc-ink:#b3151a;--tint:#f6e7e4;--ok:#2f7d32;--oktint:#e3eddc;--okbd:#c3d6ba;--bad:#b3401f;--badtint:#f4e1d9;--code:#e6e1d4;
+--font:"Segoe UI",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;--mono:Consolas,"Cascadia Mono","SF Mono",Menlo,monospace}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--text);font:18px/1.7 var(--font);-webkit-font-smoothing:antialiased}
+.wrap{max-width:820px;margin:0 auto;padding:0 24px}
+h1,h2,h3{color:var(--ink);margin:0;letter-spacing:-.02em}
+p{margin:0 0 16px}b{color:var(--ink)}
+[hidden]{display:none!important}
+
+.top{position:sticky;top:0;z-index:20;background:rgba(233,228,216,.94);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--bd)}
+.top-in{max-width:980px;margin:0 auto;padding:12px 24px;display:flex;align-items:center;gap:16px}
+.logo{font-weight:800;font-size:.95rem;color:var(--ink);display:flex;align-items:center;gap:9px;white-space:nowrap}
+.logo i{width:20px;height:20px;border-radius:6px;background:var(--acc);display:block}
+.top a{margin-left:auto;font:600 .9rem var(--font);color:var(--text);text-decoration:none;border:1px solid #bdb9ae;border-radius:999px;padding:7px 16px}
+.top a:hover{color:var(--ink);border-color:var(--ink)}
+.prog{font:600 .82rem var(--font);color:var(--mut);white-space:nowrap}
+
+header.hero{padding:84px 0 20px}
+.kicker{font:700 .78rem var(--font);letter-spacing:.16em;text-transform:uppercase;color:var(--acc-ink);margin-bottom:18px}
+h1{font-size:clamp(2.3rem,5.6vw,3.4rem);line-height:1.08;font-weight:800;letter-spacing:-.03em}
+h1 em{font-style:normal;background:linear-gradient(transparent 64%,var(--acc) 64%,var(--acc) 94%,transparent 94%)}
+.lede{font-size:1.2rem;line-height:1.6;max-width:36em;margin:22px 0 0}
+
+/* lessons */
+.lesson{scroll-margin-top:76px;background:var(--card);border:1px solid var(--bd);border-radius:18px;margin-top:22px;box-shadow:0 2px 12px rgba(20,20,19,.04)}
+.lesson-top{display:flex;align-items:center;gap:16px;padding:22px 26px;cursor:pointer}
+.lesson .n{flex:none;width:44px;height:44px;border-radius:50%;background:var(--acc);color:var(--ink);font-weight:800;display:grid;place-items:center}
+.lesson h2{font-size:1.3rem;font-weight:700;line-height:1.25}
+.lesson .tease{font-size:.98rem;color:var(--mut);margin-top:2px}
+.lesson .state{margin-left:auto;flex:none;font:700 .72rem var(--font);letter-spacing:.1em;text-transform:uppercase;color:var(--mut);background:var(--code);border-radius:999px;padding:5px 12px}
+.lesson.done .state{background:var(--oktint);color:var(--ok)}
+.lesson.soon{background:transparent;box-shadow:none}
+.lesson.soon .lesson-top{cursor:default}
+.lesson.soon .n{background:var(--code);color:var(--mut)}
+.lesson.soon h2{color:var(--mut)}
+.lesson.open{border:2px solid var(--ink)}
+.lesson-body{display:none;padding:4px 26px 30px}
+.lesson.open .lesson-body{display:block}
+.label{font:700 .76rem var(--font);letter-spacing:.14em;text-transform:uppercase;color:var(--acc-ink);margin:38px 0 12px}
+
+/* the little film */
+.film{border:1px solid #cfc9ba;border-radius:16px;overflow:hidden;background:#efeadf}
+.stage{position:relative;aspect-ratio:16/10;container-type:inline-size;overflow:hidden;cursor:pointer;background:#f3efe5;user-select:none}
+.scene{position:absolute;inset:0;opacity:0;visibility:hidden;transition:opacity .35s;padding:5cqw 6cqw 17cqw}
+.scene.on{opacity:1;visibility:visible}
+.capline{position:absolute;left:6cqw;right:6cqw;bottom:4cqw;font-size:3.5cqw;line-height:1.3;font-weight:700;color:var(--ink);min-height:9cqw;display:flex;align-items:flex-end}
+.capline span{background:rgba(243,239,229,.9);padding:.4cqw 0}
+.tagline{font:700 1.7cqw var(--font);letter-spacing:.16em;text-transform:uppercase;color:var(--acc-ink);margin-bottom:2.5cqw}
+.a{opacity:0;transform:translateY(2cqw);transition:opacity .45s ease,transform .45s cubic-bezier(.2,.9,.2,1)}
+.a.in{opacity:1;transform:none}
+.a.pop{transform:scale(.6)}.a.pop.in{transform:none;transition:opacity .3s,transform .45s cubic-bezier(.3,1.7,.5,1)}
+.bubble{display:inline-block;max-width:78%;padding:1.6cqw 2.4cqw;border-radius:2cqw;font-size:2.7cqw;line-height:1.35;margin-bottom:1.8cqw}
+.bubble.me{background:var(--ink);color:#fff;float:right;clear:both;border-bottom-right-radius:.5cqw}
+.bubble.ai{background:#fff;color:var(--ink);border:1px solid var(--bd);float:left;clear:both;border-bottom-left-radius:.5cqw;min-width:40%}
+.clear{clear:both}
+.bigq{position:absolute;left:50%;top:57%;translate:-50% -50%;background:var(--acc);color:var(--ink);font-weight:800;font-size:4.6cqw;padding:2cqw 4cqw;border-radius:2.4cqw;white-space:nowrap;box-shadow:0 1.5cqw 4cqw rgba(20,20,19,.18);rotate:-2deg}
+.search{display:flex;align-items:center;gap:1.6cqw;border:.3cqw solid #b9b5aa;border-radius:6cqw;padding:1.4cqw 3cqw;font-size:2.7cqw;color:var(--mut);background:#fff;width:70%}
+.search i{width:2.4cqw;height:2.4cqw;border:.4cqw solid var(--mut);border-radius:50%;display:block;flex:none}
+.quote{position:relative;margin-top:3cqw;background:#fff;border:1px solid var(--bd);border-radius:2cqw;padding:2.6cqw 3cqw;width:78%}
+.quote q{display:block;font-size:3.6cqw;font-weight:700;color:var(--ink);line-height:1.25;quotes:"\201C" "\201D"}
+.quote small{display:block;margin-top:1cqw;font-size:2.2cqw;color:var(--mut)}
+.stamp{position:absolute;right:-12cqw;bottom:-4cqw;border:.6cqw solid var(--bad);color:var(--bad);font-weight:900;font-size:3.4cqw;letter-spacing:.14em;padding:.8cqw 2cqw;border-radius:1.2cqw;background:rgba(246,242,233,.95);rotate:8deg;white-space:nowrap}
+.sentence{font-size:5.4cqw;font-weight:800;color:var(--ink);line-height:1.2}
+.blank{display:inline-block;min-width:16cqw;border-bottom:.7cqw solid var(--ink);text-align:center;color:transparent;transition:color .3s,border-color .3s}
+.blank.in{color:var(--acc-ink);border-color:var(--acc-ink);opacity:1;transform:none}
+.bars{margin-top:3.4cqw;display:grid;gap:1.6cqw;width:86%}
+.bar{display:grid;grid-template-columns:11cqw 1fr 9cqw;align-items:center;gap:2cqw;font-size:2.8cqw;font-weight:700;color:var(--ink)}
+.bar i{display:block;height:3.4cqw;border-radius:2cqw;background:#ddd7c9;overflow:hidden}
+.bar i b{display:block;height:100%;width:0;background:var(--ink);border-radius:2cqw;transition:width .9s cubic-bezier(.2,.9,.2,1)}
+.bar.win i b{background:var(--acc)}
+.bar.in i b{width:var(--w)}
+.bar span:last-child{text-align:right;color:var(--mut);font-weight:600}
+.words{font-size:4.6cqw;font-weight:800;color:var(--ink);line-height:1.5;display:flex;flex-wrap:wrap;gap:1cqw 1.6cqw}
+.words span{background:#fff;border:1px solid var(--bd);border-radius:1.4cqw;padding:.2cqw 1.8cqw}
+.words span.new.in{background:var(--acc);border-color:var(--acc)}
+.counter{margin-top:4cqw;font-size:3cqw;font-weight:700;color:var(--mut)}
+.counter b{font-size:5.4cqw;color:var(--ink);font-variant-numeric:tabular-nums}
+.venn{position:relative;height:30cqw;width:74cqw;margin:1cqw auto 0}
+.venn div{position:absolute;top:0;width:44cqw;height:30cqw;border-radius:50%;display:grid;place-items:center;font-size:2.8cqw;font-weight:800;color:var(--ink);text-align:center;line-height:1.2}
+.venn .l{left:0;background:rgba(229,38,43,.30);padding-right:16cqw}
+.venn .r{right:0;background:rgba(47,125,50,.28);padding-left:16cqw}
+.venn .mid{left:50%;translate:-50% 0;width:20cqw;background:none;font-size:2.2cqw;font-weight:700;color:var(--text)}
+.venn .gap{left:-1cqw;top:auto;bottom:-3cqw;width:auto;height:auto;border-radius:1.4cqw;background:var(--badtint);border:.3cqw solid var(--bad);color:var(--bad);font-size:2.4cqw;padding:.8cqw 2cqw;white-space:nowrap}
+.three3{display:grid;grid-template-columns:repeat(3,1fr);gap:2.4cqw;margin-top:1cqw}
+.three3 div{background:#fff;border:1px solid var(--bd);border-radius:2.2cqw;padding:2.6cqw 2.2cqw}
+.three3 i{width:5.4cqw;height:5.4cqw;border-radius:50%;background:var(--acc);color:var(--ink);font:800 2.8cqw var(--font);display:grid;place-items:center;margin-bottom:1.6cqw}
+.three3 b{display:block;font-size:2.9cqw;line-height:1.2}
+.three3 small{display:block;font-size:2.1cqw;color:var(--mut);margin-top:.8cqw;line-height:1.3}
+.doors{display:flex;gap:4cqw;justify-content:center;margin-top:2cqw}
+.door{width:17cqw;height:25cqw;border:.5cqw solid var(--ink);border-radius:1.6cqw 1.6cqw 0 0;background:#fff;position:relative;display:grid;place-items:end center;padding-bottom:2cqw;font-size:2.8cqw;font-weight:800;color:var(--ink)}
+.door::after{content:"";position:absolute;right:2cqw;top:50%;width:1.6cqw;height:1.6cqw;border-radius:50%;background:var(--ink)}
+.door.hl{background:var(--acc)}
+.note{position:absolute;right:3cqw;top:3cqw;font-size:1.7cqw;color:var(--mut)}
+
+.poster,.endcard{position:absolute;inset:0;display:grid;place-items:center;background:rgba(243,239,229,.9);text-align:center;z-index:3}
+.poster[hidden],.endcard[hidden]{display:none}
+.playbig{display:inline-flex;align-items:center;gap:1.6cqw;background:var(--ink);color:#fff;border:0;border-radius:99cqw;font:700 3cqw var(--font);padding:2.2cqw 4.4cqw;cursor:pointer}
+.playbig::before{content:"";border-left:2.2cqw solid #fff;border-top:1.4cqw solid transparent;border-bottom:1.4cqw solid transparent}
+.poster p,.endcard p{font-size:2.3cqw;color:var(--mut);margin:2cqw 0 0}
+.endcard b{display:block;font-size:4cqw;margin-bottom:2.4cqw}
+.ctrl{display:flex;align-items:center;gap:10px;padding:10px 12px;background:#e4dfd2;border-top:1px solid #d3cdbf}
+.ctrl button{font:700 .86rem var(--font);background:var(--card);color:var(--ink);border:1px solid #bdb9ae;border-radius:9px;padding:8px 14px;cursor:pointer;min-height:38px;white-space:nowrap}
+.ctrl button:hover{border-color:var(--ink)}
+.ctrl .pp{background:var(--ink);color:#fff;border-color:var(--ink);min-width:86px}
+.segs{flex:1;display:flex;gap:4px}
+.segs i{flex:1;height:6px;border-radius:3px;background:#cfc9ba;overflow:hidden;display:block}
+.segs i b{display:block;height:100%;width:0;background:var(--ink)}
+
+/* bottom line, game, try */
+.bl{background:var(--tint);border:1px solid #e6c9c4;border-radius:14px;padding:22px 24px}
+.bl ul{margin:0;padding-left:22px}.bl li{margin:8px 0;color:var(--ink)}
+.game{border:1px solid var(--bd);border-radius:14px;padding:24px;background:#efeadf}
+.game .q{font-size:1.5rem;font-weight:800;color:var(--ink);line-height:1.3;margin-bottom:18px}
+.game .q u{text-decoration:none;display:inline-block;min-width:110px;border-bottom:4px solid var(--ink)}
+.opts{display:flex;flex-wrap:wrap;gap:10px}
+.opts button{font:700 1rem var(--font);background:var(--card);color:var(--ink);border:2px solid #bdb9ae;border-radius:12px;padding:12px 20px;cursor:pointer}
+.opts button:hover:not(:disabled){border-color:var(--ink)}
+.opts button.pick{border-color:var(--ink);background:var(--ink);color:#fff}
+.opts button small{font-weight:600;opacity:.75;margin-left:8px}
+.fb{margin-top:18px;font-size:1rem;color:var(--text);min-height:1.7em}
+.fb b{color:var(--ink)}
+.game .nextq{margin-top:14px}
+.btn{display:inline-flex;align-items:center;gap:10px;font:700 1rem var(--font);border:0;border-radius:12px;padding:13px 22px;cursor:pointer;background:var(--ink);color:#fff}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid #bdb9ae}
+.copy{margin:8px 0 0;border:1px solid #cfcbc0;border-radius:14px;overflow:hidden;background:#efeadf}
+.copy-bar{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 10px 10px 18px;background:#e4dfd2;border-bottom:1px solid #d3cdbf;font:600 .86rem var(--font)}
+.copy button{font:700 .9rem var(--font);background:var(--ink);color:#fff;border:0;border-radius:9px;padding:10px 20px;cursor:pointer;min-height:40px}
+.copy button.ok{background:var(--ok)}
+.copy pre{margin:0;padding:18px;font:14px/1.65 var(--mono);white-space:pre-wrap;word-break:break-word;color:#2b2823}
+.finishrow{display:flex;flex-wrap:wrap;align-items:center;gap:16px;margin-top:34px;padding-top:26px;border-top:1px solid var(--bd)}
+.finishrow span{color:var(--mut);font-size:.98rem}
+footer{margin:100px 0 70px;padding-top:28px;border-top:1px solid var(--bd);color:var(--mut);font-size:.92rem;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;align-items:center}
+button:focus-visible,a:focus-visible{outline:3px solid var(--acc-ink);outline-offset:3px}
+@media (max-width:560px){.lesson-top{padding:18px}.lesson-body{padding:4px 16px 24px}.lesson .state{display:none}.ctrl .hideS{display:none}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important}html{scroll-behavior:auto}}
+@media print{.top,.ctrl,.poster,.endcard,footer{display:none!important}body{background:#fff}.lesson-body{display:block}}
+
+/* extra scene pieces for lessons 2 to 10 */
+.three3 div.hl{background:var(--acc);border-color:var(--acc)}.three3 div.hl i{background:#fff}.three3 div.hl small{color:var(--ink)}
+.flow{display:flex;align-items:center;justify-content:center;gap:1.8cqw;margin-top:5cqw}
+.fbox{background:#fff;border:1px solid var(--bd);border-radius:2cqw;padding:2.4cqw 2.4cqw;font-size:2.7cqw;font-weight:800;color:var(--ink);text-align:center;line-height:1.2;max-width:24cqw}
+.fbox small{display:block;font-weight:600;color:var(--mut);font-size:2cqw;margin-top:.6cqw}
+.fbox.hl{background:var(--acc);border-color:var(--acc)}.fbox.hl small{color:var(--ink)}
+.arr{font-size:4cqw;font-weight:800;color:var(--ink)}
+.cmp{display:grid;grid-template-columns:1fr 1fr;gap:3cqw}
+.col{background:#fff;border:1px solid var(--bd);border-radius:2.2cqw;padding:2.4cqw 2.6cqw}
+.col h4{margin:0 0 1.6cqw;font-size:3cqw;color:var(--ink)}
+.col p{font-size:2.5cqw;line-height:1.3;margin:0 0 1.2cqw;color:var(--text);font-weight:600}
+.col.good{background:var(--oktint);border-color:var(--okbd)}
+.bigtext{font-size:5.6cqw;font-weight:800;color:var(--ink);line-height:1.2;margin-top:4cqw}
+.bigtext em{font-style:normal;background:linear-gradient(transparent 62%,var(--acc) 62%,var(--acc) 94%,transparent 94%)}
+.smalltext{font-size:2.8cqw;color:var(--mut);margin-top:2.4cqw;font-weight:600}
+.bartitle{font-size:3.4cqw;font-weight:800;color:var(--ink);margin-bottom:1cqw}
+.bars.wide{width:100%;margin-top:2.4cqw}.bars.wide .bar{grid-template-columns:34cqw 1fr 1cqw;font-size:2.5cqw}
+.sizes{display:flex;align-items:flex-end;justify-content:center;gap:6cqw;margin-top:1cqw}
+.sz{text-align:center;font-size:2.8cqw;font-weight:800;color:var(--ink)}
+.sz i{display:block;border-radius:50%;background:#fff;border:.5cqw solid var(--ink);margin:0 auto 1.6cqw}
+.sz.s i{width:9cqw;height:9cqw}.sz.m i{width:15cqw;height:15cqw}.sz.l i{width:22cqw;height:22cqw}
+.sz.hl i{background:var(--acc)}.sz small{display:block;color:var(--mut);font-weight:600;font-size:2.1cqw}
+.pile{display:grid;gap:1.1cqw;width:64%}
+.pile div{background:#fff;border:1px solid var(--bd);border-radius:1.3cqw;padding:.9cqw 2.2cqw;font-size:2.4cqw;font-weight:700;color:var(--ink)}
+.pile div.hl{background:var(--acc);border-color:var(--acc);margin-top:1cqw;font-size:2.7cqw}
+.opts button.right{border-color:var(--ok);background:var(--oktint);color:var(--ok)}
+.monobox{font:2.7cqw/1.7 var(--mono);background:#fff;border:1px solid var(--bd);border-radius:2cqw;padding:2.2cqw 3.2cqw;color:var(--ink);width:72%}
+.col.bad{background:var(--badtint);border-color:#e3bfb2}
+</style><style>
+/* personal look: black, white, one red accent */
+:root{--paper:#f1efea;--card:#fbfaf7;--bd:#dcd8cf;--acc:#e5262b;--acc-ink:#b3151a;--tint:#f6e7e4;--code:#e9e6de}
+.part-head,.dl,.bl,.get,.finish{border-color:#e6c9c4!important}
+.lesson .n,.part-head .num,.idea .n,.three .n,.three3 i,.logo i{color:#fff}
+.fbox.hl,.fbox.hl small,.three3 div.hl,.three3 div.hl b,.three3 div.hl small,.door.hl,.pile div.hl,.words span.new.in,.bigq{color:#fff}
+.three3 div.hl i{background:#fff;color:#141413}
+.dl .ico svg{stroke:#fff}
+.field.hl{box-shadow:0 0 0 3px #f6e7e4}
+</style>
+<style>
+.sitenav{background:#141413;color:#fff}
+.sitenav-in{max-width:980px;margin:0 auto;padding:0 24px;display:flex;align-items:center;gap:6px;overflow-x:auto;scrollbar-width:none}
+.sitenav .brand{font:800 .9rem var(--font);white-space:nowrap;margin-right:14px;padding:14px 0;color:#fff;text-decoration:none}
+.sitenav .brand span{color:#ff6b61}
+.sitenav a.tabl{font:600 .88rem var(--font);color:#c9c7c1;text-decoration:none;white-space:nowrap;padding:14px 12px;border-bottom:3px solid transparent}
+.sitenav a.tabl:hover{color:#fff}
+.sitenav a.tabl.cur{color:#fff;border-bottom-color:#e5262b}
+.sitenav a.dlall{margin-left:auto;color:#fff}
+.top .links,.top-in>a{display:none!important}
+@media print{.sitenav{display:none}}
+</style>
+<style id="look">
+/* the look: warm paper, white cards, one red accent used very little */
+html[data-look]{--acc:#e5262b;--acc-ink:#b3151a;--tint:#fbeceb;--wash:#f8e9da;--accbd:#f1cdc8;
+  --paper:#f4f1ea;--card:#ffffff;--bd:#e8e2d5;--ink:#2e2b25;--text:#4a463e;--mut:#8c8576;--code:#f1ede4;
+  --lift:0 1px 2px rgba(40,30,10,.05),0 10px 24px rgba(40,30,10,.07)}
+html[data-look] body{background-color:var(--paper);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .32  0 0 0 0 .27  0 0 0 0 .2  0 0 0 .09 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),linear-gradient(180deg,var(--wash) 0,var(--paper) 100%);
+  background-repeat:repeat,no-repeat;background-size:180px 180px,100% 640px}
+
+/* top bars: light */
+html[data-look] .sitenav{background:transparent;color:var(--ink)}
+html[data-look] .sitenav .brand{color:var(--ink)}
+html[data-look] .sitenav .brand span{color:var(--acc-ink)}
+html[data-look] .sitenav a.tabl{color:var(--mut)}
+html[data-look] .sitenav a.tabl:hover{color:var(--ink)}
+html[data-look] .sitenav a.tabl.cur{color:var(--ink);border-bottom-color:var(--acc)}
+html[data-look] .sitenav a.dlall{color:var(--ink);border:1px solid #cfc8b8;border-radius:999px;padding:7px 16px;margin:8px 0 8px auto;background:rgba(255,255,255,.6)}
+html[data-look] .top{background:rgba(255,255,255,.78);border-bottom-color:var(--bd)}
+html[data-look] .tabs{background:rgba(255,255,255,.7)}
+html[data-look] .seg{background:#e3ddcf}
+
+/* headline and the one red button */
+html[data-look] .kicker{color:var(--mut)}
+html[data-look] h1 em{background:none;color:var(--acc)}
+html[data-look] .hero .btn{background:var(--acc);box-shadow:0 3px 0 var(--acc-ink);border-radius:14px;padding:15px 26px}
+html[data-look] .hero .btn:hover{background:var(--acc-ink)}
+html[data-look] .btn:hover{background:#1d1b17}
+
+/* cards: white, thin warm line, soft shadow underneath */
+html[data-look] .step,html[data-look] .card,html[data-look] .idea div,html[data-look] .three div,html[data-look] .fix div,html[data-look] .lesson,html[data-look] .tip{border-radius:20px;box-shadow:var(--lift)}
+html[data-look] .idea .n,html[data-look] .three .n{background:#f1ede4;color:var(--ink);box-shadow:none;border-radius:50%;padding:0}
+html[data-look] .lesson .n{background:var(--tint);color:var(--acc-ink)}
+html[data-look] .lesson.soon .n{background:var(--code);color:var(--mut)}
+html[data-look] .part-head{background:#fff;border-color:var(--bd)!important;box-shadow:var(--lift);border-radius:24px}
+html[data-look] .part-head .num{background:var(--tint);color:var(--acc-ink)}
+html[data-look] .eyebrow{color:var(--mut)}
+html[data-look] .why{border-left-color:var(--accbd)}
+html[data-look] .dl{background:#fff;border-color:var(--bd)!important;box-shadow:var(--lift);border-radius:20px}
+html[data-look] .dl .ico{background:var(--tint)}
+html[data-look] .dl .ico svg{stroke:var(--acc-ink)}
+html[data-look] .bl,html[data-look] .get,html[data-look] .finish{border-color:var(--accbd)!important}
+html[data-look] .field.hl{box-shadow:0 0 0 3px var(--tint)}
+html[data-look] .copy{background:#faf8f3;border-color:var(--bd)}
+html[data-look] .copy-bar{background:#f3efe6;border-bottom-color:var(--bd)}
+html[data-look] .win-bar{background:#f7f4ee}
+html[data-look] .bub.ai{background:#f1ede4}
+html[data-look] .tree{background:#faf8f3}
+</style>
+</head><body>
+<nav class="sitenav" aria-label="Kit pages"><div class="sitenav-in"><a class="brand" href="Claude-Cowork-Setup.html">Claude Setup Kit <span>@itsarisouss</span></a><a class="tabl" href="Claude-Cowork-Setup.html">1 Setup</a><a class="tabl cur" href="AI-Bootcamp.html">2 The basics</a><a class="tabl" href="Tips-and-Tricks.html">3 Tips</a><a class="tabl" href="AI-Bootcamp-Advanced.html">4 Skills and agents</a><a class="tabl" href="Claude-Code.html">5 Claude Code</a><a class="tabl dlall" href="claude-setup-kit.zip" download>Download the kit</a></div></nav>
+
+
+<div class="top"><div class="top-in">
+  <div class="logo"><i></i><span>AI Bootcamp</span></div>
+  <span class="prog" id="prog">0 of 13 lessons</span>
+  <a href="Claude-Cowork-Setup.html">Setup page</a><a href="Tips-and-Tricks.html" style="margin-left:8px">Tips</a><a href="AI-Bootcamp-Advanced.html" style="margin-left:8px">Level 2</a>
+</div></div>
+
+<div class="wrap">
+<header class="hero">
+  <div class="kicker">AI Bootcamp · the basics</div>
+  <h1>How this thing <em>actually works.</em></h1>
+  <p class="lede">Thirteen short lessons. Each one is a one-minute animation, a quick check, and one small thing to try. No lectures. Watch one with your coffee.</p>
+</header>
+
+<!-- ============ LESSON 1 ============ -->
+<section class="lesson" id="l1" data-id="l1">
+  <div class="lesson-top"><div class="n">1</div><div><h2>What is Claude, really?</h2><div class="tease">It answers in two seconds. So where does the answer come from?</div></div><span class="state">1 min</span></div>
+  <div class="lesson-body">
+
+    <div class="film" id="film1">
+      <div class="stage" tabindex="0" aria-label="Lesson 1 animation. Press space to play or pause.">
+
+        <div class="scene" data-dur="7.5">
+          <div class="tagline">Start here</div>
+          <div class="bubble me a" data-at="0.3">What is our strongest message for new customers?</div>
+          <div class="bubble ai a" data-at="1.5"><span data-type="Here are three strong messages, with a headline for each..." data-at="1.7" data-cps="34"></span></div>
+          <div class="clear"></div>
+          <div class="bigq a pop" data-at="4.6">Where did that come from?</div>
+          <div class="capline"><span>You ask. It answers in two seconds. It did not look anything up.</span></div>
+        </div>
+
+        <div class="scene" data-dur="8.5">
+          <div class="tagline">The problem</div>
+          <div class="search a" data-at="0.3"><i></i>customer quote about our product</div>
+          <div class="quote a" data-at="1.8"><q>It cut our lead time by 43%.</q><small>Jane D., VP Operations</small><div class="stamp a pop" data-at="4.4">Nobody said this</div></div>
+          <div class="capline"><span>We use it like a search engine. But it can hand you a quote that nobody ever said.</span></div>
+        </div>
+
+        <div class="scene" data-dur="9">
+          <div class="tagline">How it works</div><div class="note">illustration</div>
+          <div class="sentence a" data-at="0.3">The cat sat on the <span class="blank a" data-at="5.6">mat</span></div>
+          <div class="bars">
+            <div class="bar win a" data-at="2.0" style="--w:62%"><span>mat</span><i><b></b></i><span>62%</span></div>
+            <div class="bar a" data-at="2.5" style="--w:21%"><span>sofa</span><i><b></b></i><span>21%</span></div>
+            <div class="bar a" data-at="3.0" style="--w:2%"><span>moon</span><i><b></b></i><span>2%</span></div>
+          </div>
+          <div class="capline"><span>It learned from a huge amount of text. And it learned one trick: guess the next word.</span></div>
+        </div>
+
+        <div class="scene" data-dur="8.5">
+          <div class="tagline">How it works</div>
+          <div class="words">
+            <span class="a" data-at="0.3">We</span><span class="a new" data-at="0.9">make</span><span class="a new" data-at="1.5">parts</span><span class="a new" data-at="2.1">that</span><span class="a new" data-at="2.7">fly,</span><span class="a new" data-at="3.3">drive</span><span class="a new" data-at="3.9">and</span><span class="a new" data-at="4.5">heal.</span>
+          </div>
+          <div class="counter a" data-at="5.0">one guess at a time, about <b data-count="9" data-at="5.2" data-len="1.6">1</b> times</div>
+          <div class="capline"><span>Guess a word. Add it. Guess again. Do that fast enough and it looks like thinking.</span></div>
+        </div>
+
+        <div class="scene" data-dur="8.5">
+          <div class="tagline">Why it goes wrong</div>
+          <div class="venn">
+            <div class="l a" data-at="0.4">What sounds right</div>
+            <div class="r a" data-at="1.4">What is right</div>
+            <div class="mid a" data-at="2.6">usually the same</div>
+            <div class="gap a pop" data-at="4.6">sometimes only this</div>
+          </div>
+          <div class="capline"><span>It gives you what sounds right. Usually that is also what is right. Not always.</span></div>
+        </div>
+
+        <div class="scene" data-dur="9">
+          <div class="tagline">What you can do</div>
+          <div class="three3">
+            <div class="a" data-at="0.5"><i>1</i><b>Give it your facts</b><small>Your files, your brand, your numbers.</small></div>
+            <div class="a" data-at="2.3"><i>2</i><b>Show it what good looks like</b><small>One real example beats ten adjectives.</small></div>
+            <div class="a" data-at="4.1"><i>3</i><b>Make it check its work</b><small>"Tell me what you could not check."</small></div>
+          </div>
+          <div class="capline"><span>So you are not helpless. Three things are in your hands.</span></div>
+        </div>
+
+        <div class="scene" data-dur="7.5">
+          <div class="tagline">Next lesson</div>
+          <div class="bigtext a" data-at="0.4">The words you type<br><em>have a name.</em></div>
+          <div class="capline"><span>Next: what a prompt is, and why four words are not enough.</span></div>
+        </div>
+
+        <div class="poster"><div><button class="playbig" type="button">Play lesson 1</button><p>One minute. No sound needed.</p></div></div>
+        <div class="endcard" hidden><div><b>That is the whole idea.</b><button class="playbig again" type="button">Watch again</button><p>Then scroll down and try it yourself.</p></div></div>
+      </div>
+      <div class="ctrl"><button class="pp" type="button">Play</button><button class="back hideS" type="button">Back</button><div class="segs"></div><button class="next" type="button">Next</button></div>
+    </div>
+
+    <div class="label">The bottom line</div>
+    <div class="bl"><ul>
+      <li><b>Claude does not look things up. It writes the most likely next word.</b></li>
+      <li>That is why it writes so well, and why it can be wrong and still sound sure.</li>
+      <li>Your job: give it your facts, show it an example, and make it check its work.</li>
+    </ul></div>
+
+    <div class="label">Try it: you be the model</div>
+    <div class="game" id="game1" data-game="l1"></div>
+
+    <div class="label">One thing to try in Claude today</div>
+    <p>Paste this in any chat. Read what it says about itself.</p>
+    <div class="copy"><div class="copy-bar"><span>Ask Claude how it works</span><button data-copy="l1p">Copy</button></div><pre id="l1p">In 3 short sentences, explain how you produce an answer. Then give me 2 kinds of questions where I should always double check what you tell me.</pre></div>
+
+    <div class="finishrow"><button class="btn" type="button" data-done="l1">I get it. Mark lesson 1 done</button></div>
+  </div>
+</section>
+
+<section class="lesson" id="l2" data-id="l2">
+  <div class="lesson-top"><div class="n">2</div><div><h2>What is a prompt?</h2><div class="tease">Four words in, a bland answer out. It is not Claude&#x27;s fault.</div></div><span class="state">1 min</span></div>
+  <div class="lesson-body">
+    <div class="film" id="film2">
+      <div class="stage" tabindex="0" aria-label="Lesson 2 animation. Press space to play or pause.">
+        <div class="scene" data-dur="8.5"><div class="tagline">Start here</div><div class="bubble me a" data-at="0.3">LinkedIn post about our new product</div><div class="bubble ai a" data-at="1.5"><span data-type="Excited to announce our game-changing new product!" data-at="1.7" data-cps="34"></span></div><div class="clear"></div><div class="bigq a pop" data-at="4.4">Sounds like everyone else.</div><div class="capline"><span>Four words in. A post that any company could have written comes out. That is not Claude&#x27;s fault.</span></div></div>
+        <div class="scene" data-dur="9"><div class="tagline">The idea</div><div class="bigtext a" data-at="0.4">A prompt is<br><em>a brief, not a search.</em></div><div class="capline"><span>What you type is called a prompt. Think of it as a brief for a smart new colleague who knows nothing about your work.</span></div></div>
+        <div class="scene" data-dur="9"><div class="tagline">How it works</div><div class="three3" style="grid-template-columns:repeat(4,1fr)"><div class="a" data-at="0.4"><i>1</i><b>Who it is for</b><small>The reader.</small></div><div class="a" data-at="1.85"><i>2</i><b>What you want</b><small>The job and the format.</small></div><div class="a" data-at="3.3"><i>3</i><b>Why</b><small>The goal behind it.</small></div><div class="a" data-at="4.75"><i>4</i><b>What good looks like</b><small>An example.</small></div></div><div class="capline"><span>A good brief has four parts: who it is for, what you want, why, and what good looks like.</span></div></div>
+        <div class="scene" data-dur="9.5"><div class="tagline">See the difference</div><div class="cmp"><div class="col bad a" data-at="0.3"><h4>Weak</h4><p class="a" data-at="0.9">Write a post about our product.</p></div><div class="col good a" data-at="0.3"><h4>Strong</h4><p class="a" data-at="1.25">For busy owners of small shops.</p><p class="a" data-at="2.75">Goal: they download the guide.</p><p class="a" data-at="4.25">Use only the facts in this file.</p><p class="a" data-at="5.75">Match my example post.</p></div></div><div class="capline"><span>Same request, two briefs. The second takes 20 seconds longer to write.</span></div></div>
+        <div class="scene" data-dur="9"><div class="tagline">From the makers</div><div class="three3" style="grid-template-columns:repeat(3,1fr)"><div class="a" data-at="0.4"><i>1</i><b>Say what to do</b><small>Not only what to avoid.</small></div><div class="a" data-at="1.9"><i>2</i><b>Give the reason</b><small>It works better when it knows why.</small></div><div class="a" data-at="3.4"><i>3</i><b>Show an example</b><small>The surest way to get the style you want.</small></div></div><div class="capline"><span>Three habits, straight from the people who build these models.</span></div></div>
+        <div class="scene" data-dur="9"><div class="tagline">The test</div><div class="bigtext a" data-at="0.4">Would a new colleague understand it?<br><em>If not, neither will Claude.</em></div><div class="capline"><span>Anthropic&#x27;s own test: if a new colleague would be confused by your note, Claude will be too.</span></div></div>
+        <div class="scene" data-dur="7.5"><div class="tagline">Next lesson</div><div class="bigtext a" data-at="0.4">Chat and Cowork<br><em>just became one.</em></div><div class="capline"><span>Next: one Claude that talks and works.</span></div></div>
+        <div class="poster"><div><button class="playbig" type="button">Play lesson 2</button><p>One minute. No sound needed.</p></div></div>
+        <div class="endcard" hidden><div><b>That is the idea.</b><button class="playbig again" type="button">Watch again</button><p>Then scroll down and try it yourself.</p></div></div>
+      </div>
+      <div class="ctrl"><button class="pp" type="button">Play</button><button class="back hideS" type="button">Back</button><div class="segs"></div><button class="next" type="button">Next</button></div>
+    </div>
+    <div class="label">The bottom line</div>
+    <div class="bl"><ul><li><b>A prompt is a brief, not a search.</b> Write it for a smart colleague who knows nothing about your work.</li><li>Say who it is for, what you want, why, and what good looks like.</li><li>Say what to do, give the reason, and show an example. If the answer is off, say what is wrong and ask again.</li></ul></div>
+    <div class="label">Quick check</div>
+    <div class="game" data-game="l2"></div>
+    <div class="label">One thing to try today</div>
+    <p>Not sure what to put in a prompt? Let Claude interview you. Paste this and fill in the topic.</p>
+    <div class="copy"><div class="copy-bar"><span>Copy and paste</span><button data-copy="l2p">Copy</button></div><pre id="l2p">I want help with YOUR TASK. Before you write anything, ask me the questions you need answered to do it well. One question at a time.</pre></div>
+    <div class="finishrow"><button class="btn" type="button" data-done="l2">I get it. Mark lesson 2 done</button></div>
+  </div>
+</section>
+
+<section class="lesson" id="l3" data-id="l3">
+  <div class="lesson-top"><div class="n">3</div><div><h2>One Claude: it talks and it works</h2><div class="tease">There used to be two modes. Now there is one. Here is what that means for you.</div></div><span class="state">1 min</span></div>
+  <div class="lesson-body">
+    <div class="film" id="film3">
+      <div class="stage" tabindex="0" aria-label="Lesson 3 animation. Press space to play or pause.">
+        <div class="scene" data-dur="8.5"><div class="tagline">Start here</div><div class="bubble me a" data-at="0.3">Here is part 4 of 9 of my report...</div><div class="bubble ai a" data-at="1.5"><span data-type="Thanks. Please paste part 5." data-at="1.7" data-cps="34"></span></div><div class="clear"></div><div class="bigq a pop" data-at="4.4">You can stop doing that.</div><div class="capline"><span>Ever fed a long document into a chat, piece by piece? You do not have to. Claude can open the file itself.</span></div></div>
+        <div class="scene" data-dur="9.5"><div class="tagline">What changed</div><div class="bigtext a" data-at="0.4">Chat and Cowork<br><em>are now one Claude.</em></div><div class="smalltext a" data-at="2.2">Still see a Cowork button? You are on the older layout. Click it.</div><div class="capline"><span>Claude used to have two modes: Chat to talk, Cowork to work on files. Anthropic merged them into one.</span></div></div>
+        <div class="scene" data-dur="9"><div class="tagline">How it works</div><div class="three3" style="grid-template-columns:repeat(2,1fr)"><div class="a" data-at="0.4"><i>1</i><b>A quick question</b><small>You get a quick answer.</small></div><div class="a" data-at="1.9"><i>2</i><b>A real job</b><small>Claude plans, opens files and builds the result, step by step.</small></div></div><div class="capline"><span>You do not pick a mode. A quick question gets a quick answer. A real job gets real work.</span></div></div>
+        <div class="scene" data-dur="9.5"><div class="tagline">The new word</div><div class="cmp"><div class="col  a" data-at="0.3"><h4>Only talking</h4><p class="a" data-at="0.9">You copy the text in</p><p class="a" data-at="2.4">You copy the answer out</p><p class="a" data-at="3.9">You make the file</p></div><div class="col good a" data-at="0.3"><h4>Agentic</h4><p class="a" data-at="1.25">It opens the file itself</p><p class="a" data-at="2.75">It writes the new file</p><p class="a" data-at="4.25">It saves it in your folder</p></div></div><div class="capline"><span>The word for this is agentic. Claude does the steps itself. It does not only tell you what to do.</span></div></div>
+        <div class="scene" data-dur="9.5"><div class="tagline">Your rule</div><div class="three3" style="grid-template-columns:repeat(3,1fr)"><div class="a" data-at="0.4"><i>1</i><b>Give it your folder</b><small>So it can reach your files.</small></div><div class="a" data-at="1.9"><i>2</i><b>Ask for the result</b><small>A deck, a summary, a file. Not advice.</small></div><div class="a" data-at="3.4"><i>3</i><b>Keep it on Manual</b><small>It asks before each action.</small></div></div><div class="capline"><span>To get work and not only talk: give it your folder, ask for the finished result, and keep it on Manual.</span></div></div>
+        <div class="scene" data-dur="9"><div class="tagline">One thing stayed apart</div><div class="three3" style="grid-template-columns:repeat(2,1fr)"><div class="a" data-at="0.4"><i>1</i><b>One conversation</b><small>Talking and working. This is where you live.</small></div><div class="a" data-at="1.9"><i>2</i><b>The Code tab</b><small>For building software. Leave it for now.</small></div></div><div class="capline"><span>The Code tab is still separate. It is for building software. You do not need it for everyday work.</span></div></div>
+        <div class="scene" data-dur="7.5"><div class="tagline">Next lesson</div><div class="bigtext a" data-at="0.4">Claude in the browser.<br>Claude the app. <em>Which one?</em></div><div class="capline"><span>Next: the app or the browser.</span></div></div>
+        <div class="poster"><div><button class="playbig" type="button">Play lesson 3</button><p>One minute. No sound needed.</p></div></div>
+        <div class="endcard" hidden><div><b>That is the idea.</b><button class="playbig again" type="button">Watch again</button><p>Then scroll down and try it yourself.</p></div></div>
+      </div>
+      <div class="ctrl"><button class="pp" type="button">Play</button><button class="back hideS" type="button">Back</button><div class="segs"></div><button class="next" type="button">Next</button></div>
+    </div>
+    <div class="label">The bottom line</div>
+    <div class="bl"><ul><li><b>Chat and Cowork are now one Claude.</b> No Cowork button? That is fine. It is built into every chat.</li><li>A quick question gets a quick answer. A real job gets real work: Claude opens files and builds the result itself.</li><li>Give it your folder, ask for the finished result, and keep it on Manual. The Code tab is separate, for building software.</li></ul></div>
+    <div class="label">Quick check</div>
+    <div class="game" data-game="l3"></div>
+    <div class="label">One thing to try today</div>
+    <p>Open the Claude app with your Claude folder and paste this.</p>
+    <div class="copy"><div class="copy-bar"><span>Copy and paste</span><button data-copy="l3p">Copy</button></div><pre id="l3p">Look at my 00_Inbox folder and tell me in plain words what is in it. Do not change anything.</pre></div>
+    <div class="finishrow"><button class="btn" type="button" data-done="l3">I get it. Mark lesson 3 done</button></div>
+  </div>
+</section>
+
+<section class="lesson" id="l4" data-id="l4">
+  <div class="lesson-top"><div class="n">4</div><div><h2>The app or the browser?</h2><div class="tease">Why we work in the Claude app on your desktop, not in the browser.</div></div><span class="state">1 min</span></div>
+  <div class="lesson-body">
+    <div class="film" id="film4">
+      <div class="stage" tabindex="0" aria-label="Lesson 4 animation. Press space to play or pause.">
+        <div class="scene" data-dur="7.5"><div class="tagline">Start here</div><div class="bigtext a" data-at="0.4">Claude in the browser.<br>Claude the app. <em>Which one?</em></div><div class="capline"><span>The question I get most. There is Claude in the browser and Claude the app. Which one?</span></div></div>
+        <div class="scene" data-dur="8.5"><div class="tagline">The picture</div><div class="flow"><div class="fbox a" data-at="0.4">Your laptop<small>your Claude folder</small></div><span class="arr a" data-at="1.9">&rarr;</span><div class="fbox a" data-at="1.9">Claude&#x27;s brain<small>on Anthropic&#x27;s computers</small></div></div><div class="capline"><span>Your files are on your laptop. Claude&#x27;s brain is far away, on Anthropic&#x27;s computers.</span></div></div>
+        <div class="scene" data-dur="9.5"><div class="tagline">The difference</div><div class="cmp"><div class="col  a" data-at="0.3"><h4>In the browser</h4><p class="a" data-at="0.9">Opens anywhere. Nothing to install.</p><p class="a" data-at="2.4">Sees only the files you upload.</p><p class="a" data-at="3.9">Cannot reach your Claude folder.</p></div><div class="col good a" data-at="0.3"><h4>The desktop app</h4><p class="a" data-at="1.25">Reaches your Claude folder.</p><p class="a" data-at="2.75">Reads and saves files there.</p><p class="a" data-at="4.25">Knows you, your brand and your rules.</p></div></div><div class="capline"><span>The browser cannot reach the files on your computer. The desktop app can.</span></div></div>
+        <div class="scene" data-dur="9"><div class="tagline">Why it matters</div><div class="bigtext a" data-at="0.4">Your Claude folder is<br><em>why we use the app.</em></div><div class="capline"><span>Who you are, your brand files and your projects all live in that folder. So for real work, open the app.</span></div></div>
+        <div class="scene" data-dur="9.5"><div class="tagline">One catch</div><div class="three3" style="grid-template-columns:repeat(3,1fr)"><div class="a" data-at="0.4"><i>1</i><b>App open</b><small>Claude can read and save in your folder.</small></div><div class="a" data-at="1.9"><i>2</i><b>App closed</b><small>A task may keep running, but it cannot reach your files.</small></div><div class="a" data-at="3.4"><i>3</i><b>App open again</b><small>It picks your files up and carries on.</small></div></div><div class="capline"><span>Claude reaches your folder only while the desktop app is open. Close the app, and it loses your files until you open it again.</span></div></div>
+        <div class="scene" data-dur="9"><div class="tagline">Your rule</div><div class="three3" style="grid-template-columns:repeat(3,1fr)"><div class="a" data-at="0.4"><i>1</i><b>Passwords</b><small>Never. Not even once.</small></div><div class="a" data-at="1.9"><i>2</i><b>Bank and card details</b><small>Leave them out.</small></div><div class="a" data-at="3.4"><i>3</i><b>Anything confidential</b><small>If you are not sure, leave it out.</small></div></div><div class="capline"><span>And because your files travel to Claude to be read, three things never go in.</span></div></div>
+        <div class="scene" data-dur="7.5"><div class="tagline">Next lesson</div><div class="bigtext a" data-at="0.4">ChatGPT. Codex. Copilot.<br><em>So many names.</em></div><div class="capline"><span>Next: ChatGPT does the same jobs, with other names.</span></div></div>
+        <div class="poster"><div><button class="playbig" type="button">Play lesson 4</button><p>One minute. No sound needed.</p></div></div>
+        <div class="endcard" hidden><div><b>That is the idea.</b><button class="playbig again" type="button">Watch again</button><p>Then scroll down and try it yourself.</p></div></div>
+      </div>
+      <div class="ctrl"><button class="pp" type="button">Play</button><button class="back hideS" type="button">Back</button><div class="segs"></div><button class="next" type="button">Next</button></div>
+    </div>
+    <div class="label">The bottom line</div>
+    <div class="bl"><ul><li><b>For real work, use the Claude app on your desktop.</b> It is the only way Claude reaches your Claude folder.</li><li>The browser and the phone are fine for a quick question. On their own they only see files you upload.</li><li>What you give Claude is sent to it to be read. So no passwords, no bank details, nothing confidential.</li></ul></div>
+    <div class="label">Quick check</div>
+    <div class="game" data-game="l4"></div>
+    <div class="label">One thing to try today</div>
+    <p>Paste this in the Claude desktop app. It shows you exactly what Claude can reach.</p>
+    <div class="copy"><div class="copy-bar"><span>Copy and paste</span><button data-copy="l4p">Copy</button></div><pre id="l4p">Which folders on my computer can you reach right now? List them. Do not change anything.</pre></div>
+    <div class="finishrow"><button class="btn" type="button" data-done="l4">I get it. Mark lesson 4 done</button></div>
+  </div>
+</section>
+
+<section class="lesson" id="l5" data-id="l5">
+  <div class="lesson-top"><div class="n">5</div><div><h2>ChatGPT and Codex</h2><div class="tease">The same three jobs, from another company.</div></div><span class="state">1 min</span></div>
+  <div class="lesson-body">
+    <div class="film" id="film5">
+      <div class="stage" tabindex="0" aria-label="Lesson 5 animation. Press space to play or pause.">
+        <div class="scene" data-dur="8.5"><div class="tagline">Start here</div><div class="bubble me a" data-at="0.3">Is Codex a different AI from ChatGPT?</div><div class="bubble ai a" data-at="1.5"><span data-type="Good question. Many people mix them up." data-at="1.7" data-cps="34"></span></div><div class="clear"></div><div class="bigq a pop" data-at="4.4">Same idea. Again.</div><div class="capline"><span>ChatGPT, Codex, Claude, Copilot. So many names. The idea behind them is the same.</span></div></div>
+        <div class="scene" data-dur="9"><div class="tagline">The idea</div><div class="cmp"><div class="col  a" data-at="0.3"><h4>Claude</h4><p class="a" data-at="0.9">One conversation: talk and work</p><p class="a" data-at="2.4">The Code tab: build software</p></div><div class="col  a" data-at="0.3"><h4>ChatGPT</h4><p class="a" data-at="1.25">Chat: talk</p><p class="a" data-at="2.75">Work: files and documents</p><p class="a" data-at="4.25">Codex: build software</p></div></div><div class="capline"><span>OpenAI covers the same three jobs. It calls them Chat, Work and Codex.</span></div></div>
+        <div class="scene" data-dur="9"><div class="tagline">How it works</div><div class="three3" style="grid-template-columns:repeat(3,1fr)"><div class="a" data-at="0.4"><i>1</i><b>Talk</b><small>Claude. ChatGPT Chat.</small></div><div class="a" data-at="1.9"><i>2</i><b>Work on files</b><small>Claude. ChatGPT Work.</small></div><div class="a" data-at="3.4"><i>3</i><b>Build software</b><small>Claude Code. Codex.</small></div></div><div class="capline"><span>Talk, work, build. Learn the three jobs and every new name makes sense.</span></div></div>
+        <div class="scene" data-dur="8.5"><div class="tagline">Why it matters</div><div class="bigtext a" data-at="0.4">Names change every few months.<br><em>The three jobs do not.</em></div><div class="capline"><span>A new name will show up next month. Ask one thing: is it for talking, working or building?</span></div></div>
+        <div class="scene" data-dur="8.5"><div class="tagline">Your rule</div><div class="three3" style="grid-template-columns:repeat(3,1fr)"><div class="a" data-at="0.4"><i>1</i><b>Pick one tool</b><small>For each kind of job.</small></div><div class="a" data-at="1.9"><i>2</i><b>Get good at it</b><small>Practice beats switching.</small></div><div class="a" data-at="3.4"><i>3</i><b>Switch with a reason</b><small>Not because it is new.</small></div></div><div class="capline"><span>You do not need all of them. One door, used well, beats five used badly.</span></div></div>
+        <div class="scene" data-dur="7.5"><div class="tagline">Next lesson</div><div class="sizes"><div class="sz s a pop" data-at="0.5"><i></i>Small<small>fast</small></div><div class="sz m a pop" data-at="1.4"><i></i>Medium<small>all-rounder</small></div><div class="sz l hl a pop" data-at="2.3"><i></i>Large<small>deep thinker</small></div></div><div class="capline"><span>Next: why the biggest model is often the wrong choice.</span></div></div>
+        <div class="poster"><div><button class="playbig" type="button">Play lesson 5</button><p>One minute. No sound needed.</p></div></div>
+        <div class="endcard" hidden><div><b>That is the idea.</b><button class="playbig again" type="button">Watch again</button><p>Then scroll down and try it yourself.</p></div></div>
+      </div>
+      <div class="ctrl"><button class="pp" type="button">Play</button><button class="back hideS" type="button">Back</button><div class="segs"></div><button class="next" type="button">Next</button></div>
+    </div>
+    <div class="label">The bottom line</div>
+    <div class="bl"><ul><li><b>Every AI company covers the same three jobs: talk, work, build.</b></li><li>ChatGPT calls them Chat, Work and Codex. Claude does talk and work in one conversation, and keeps Code apart.</li><li>When a new name appears, ask: is it for talking, working or building?</li></ul></div>
+    <div class="label">Quick check</div>
+    <div class="game" data-game="l5"></div>
+    <div class="label">One thing to try today</div>
+    <p>Next time you hear a new AI name, paste this and fill in the name.</p>
+    <div class="copy"><div class="copy-bar"><span>Copy and paste</span><button data-copy="l5p">Copy</button></div><pre id="l5p">I keep hearing about NAME OF THE TOOL. In 3 sentences: is it for talking, for working on files, or for building software? Do I need it for my work?</pre></div>
+    <div class="finishrow"><button class="btn" type="button" data-done="l5">I get it. Mark lesson 5 done</button></div>
+  </div>
+</section>
+
+<section class="lesson" id="l6" data-id="l6">
+  <div class="lesson-top"><div class="n">6</div><div><h2>Small, medium and large models</h2><div class="tease">Why the biggest model is often the wrong choice.</div></div><span class="state">1 min</span></div>
+  <div class="lesson-body">
+    <div class="film" id="film6">
+      <div class="stage" tabindex="0" aria-label="Lesson 6 animation. Press space to play or pause.">
+        <div class="scene" data-dur="7.5"><div class="tagline">Start here</div><div class="bigtext a" data-at="0.4">You would not call a surgeon<br>to <em>put on a plaster.</em></div><div class="capline"><span>Most people pick the biggest model for everything. That is a surgeon for a plaster.</span></div></div>
+        <div class="scene" data-dur="7.5"><div class="tagline">The idea</div><div class="sizes"><div class="sz s a pop" data-at="0.5"><i></i>Small<small>fast</small></div><div class="sz m a pop" data-at="1.4"><i></i>Medium<small>all-rounder</small></div><div class="sz l a pop" data-at="2.3"><i></i>Large<small>deep thinker</small></div></div><div class="capline"><span>Every AI company sells the same three sizes: small, medium and large.</span></div></div>
+        <div class="scene" data-dur="9"><div class="tagline">How it works</div><div class="three3" style="grid-template-columns:repeat(3,1fr)"><div class="a" data-at="0.4"><i>1</i><b>Small</b><small>Sorting, short rewrites, simple lists.</small></div><div class="a" data-at="1.9"><i>2</i><b>Medium</b><small>Drafts, summaries, decks. Most of your day.</small></div><div class="a" data-at="3.4"><i>3</i><b>Large</b><small>Plans, strategy, hard problems.</small></div></div><div class="capline"><span>Small is fast. Medium does most daily work. Large thinks the hardest.</span></div></div>
+        <div class="scene" data-dur="8.5"><div class="tagline">Why it matters</div><div class="bartitle a" data-at="0.3">How fast each size uses your limit</div><div class="note">illustration</div><div class="bars wide"><div class="bar a" data-at="1.2" style="--w:14%"><span>Small</span><i><b></b></i><span></span></div><div class="bar a" data-at="2.7" style="--w:40%"><span>Medium</span><i><b></b></i><span></span></div><div class="bar win a" data-at="4.2" style="--w:88%"><span>Large</span><i><b></b></i><span></span></div></div><div class="capline"><span>Bigger is smarter. It is also slower, and it uses up your limit faster.</span></div></div>
+        <div class="scene" data-dur="8.5"><div class="tagline">Your rule</div><div class="flow"><div class="fbox a" data-at="0.4">Plan<small>large model</small></div><span class="arr a" data-at="1.9">&rarr;</span><div class="fbox a" data-at="1.9">Do the work<small>medium model</small></div><span class="arr a" data-at="3.4">&rarr;</span><div class="fbox a" data-at="3.4">Simple chores<small>small model</small></div></div><div class="capline"><span>A good habit: think with the large one, then do the work with the medium one.</span></div></div>
+        <div class="scene" data-dur="9"><div class="tagline">The names today</div><div class="three3" style="grid-template-columns:repeat(4,1fr)"><div class="a" data-at="0.4"><i>1</i><b>Haiku</b><small>small</small></div><div class="a" data-at="1.85"><i>2</i><b>Sonnet</b><small>medium</small></div><div class="a" data-at="3.3"><i>3</i><b>Opus</b><small>large</small></div><div class="a" data-at="4.75"><i>4</i><b>Fable</b><small>the heaviest</small></div></div><div class="capline"><span>In Claude the sizes are Haiku, Sonnet and Opus, with Fable on top. The names will change. The sizes will not.</span></div></div>
+        <div class="scene" data-dur="7.5"><div class="tagline">Next lesson</div><div class="bigtext a" data-at="0.4">There is a second dial.<br><em>Most people never touch it.</em></div><div class="capline"><span>Next: the effort dial.</span></div></div>
+        <div class="poster"><div><button class="playbig" type="button">Play lesson 6</button><p>One minute. No sound needed.</p></div></div>
+        <div class="endcard" hidden><div><b>That is the idea.</b><button class="playbig again" type="button">Watch again</button><p>Then scroll down and try it yourself.</p></div></div>
+      </div>
+      <div class="ctrl"><button class="pp" type="button">Play</button><button class="back hideS" type="button">Back</button><div class="segs"></div><button class="next" type="button">Next</button></div>
+    </div>
+    <div class="label">The bottom line</div>
+    <div class="bl"><ul><li><b>Models come in small, medium and large.</b> In Claude today: Haiku, Sonnet, Opus, and Fable on top.</li><li>Bigger is smarter, slower, and uses your limit faster.</li><li>Plan with a large model. Do the work with a medium one.</li></ul></div>
+    <div class="label">Quick check</div>
+    <div class="game" data-game="l6"></div>
+    <div class="label">One thing to try today</div>
+    <p>Look at the model name near the message box. Then paste this.</p>
+    <div class="copy"><div class="copy-bar"><span>Copy and paste</span><button data-copy="l6p">Copy</button></div><pre id="l6p">Which model are you right now? Is that a small, medium or large one? Answer in one sentence.</pre></div>
+    <div class="finishrow"><button class="btn" type="button" data-done="l6">I get it. Mark lesson 6 done</button></div>
+  </div>
+</section>
+
+<section class="lesson" id="l7" data-id="l7">
+  <div class="lesson-top"><div class="n">7</div><div><h2>The effort dial</h2><div class="tease">There is a dial for how hard it thinks. Most people never touch it.</div></div><span class="state">1 min</span></div>
+  <div class="lesson-body">
+    <div class="film" id="film7">
+      <div class="stage" tabindex="0" aria-label="Lesson 7 animation. Press space to play or pause.">
+        <div class="scene" data-dur="8.5"><div class="tagline">Start here</div><div class="bubble me a" data-at="0.3">Fix the typo in this sentence.</div><div class="bubble ai a" data-at="1.5"><span data-type="Thinking... still thinking..." data-at="1.7" data-cps="34"></span></div><div class="clear"></div><div class="bigq a pop" data-at="4.4">Why so slow?</div><div class="capline"><span>A tiny request takes a minute. Or a big question gets a rushed answer. Why?</span></div></div>
+        <div class="scene" data-dur="9"><div class="tagline">The idea</div><div class="bigtext a" data-at="0.4">Same model.<br><em>Different effort.</em></div><div class="capline"><span>Next to the model there is a second setting: effort. It is how hard Claude thinks before it answers.</span></div></div>
+        <div class="scene" data-dur="9"><div class="tagline">How it works</div><div class="three3" style="grid-template-columns:repeat(3,1fr)"><div class="a" data-at="0.4"><i>1</i><b>Low</b><small>Simple jobs. Fast. Uses little.</small></div><div class="a" data-at="1.9"><i>2</i><b>Medium</b><small>Most daily work.</small></div><div class="a" data-at="3.4"><i>3</i><b>High</b><small>Hard problems. Slower. Uses more.</small></div></div><div class="capline"><span>Low is quick. Medium is a good default. High thinks it through.</span></div></div>
+        <div class="scene" data-dur="9"><div class="tagline">Why it matters</div><div class="bartitle a" data-at="0.3">Time and usage at each effort level</div><div class="note">illustration</div><div class="bars wide"><div class="bar a" data-at="1.2" style="--w:18%"><span>Low</span><i><b></b></i><span></span></div><div class="bar a" data-at="2.7" style="--w:48%"><span>Medium</span><i><b></b></i><span></span></div><div class="bar win a" data-at="4.2" style="--w:90%"><span>High</span><i><b></b></i><span></span></div></div><div class="capline"><span>More effort gives a better answer on hard problems. It also takes longer and uses more of your limit.</span></div></div>
+        <div class="scene" data-dur="8.5"><div class="tagline">The tip</div><div class="flow"><div class="fbox a" data-at="0.4">Thin answer?</div><span class="arr a" data-at="1.9">&rarr;</span><div class="fbox a hl" data-at="1.9">First: more effort</div><span class="arr a" data-at="3.4">&rarr;</span><div class="fbox a" data-at="3.4">Then: bigger model</div></div><div class="capline"><span>Anthropic&#x27;s own tip: turn up the effort before you switch to a bigger model.</span></div></div>
+        <div class="scene" data-dur="8.5"><div class="tagline">Your rule</div><div class="three3" style="grid-template-columns:repeat(2,1fr)"><div class="a" data-at="0.4"><i>1</i><b>Every day</b><small>Leave it on medium.</small></div><div class="a" data-at="1.9"><i>2</i><b>The answer feels shallow</b><small>Turn the effort up and ask again.</small></div></div><div class="capline"><span>Leave it on medium. Turn it up only when an answer feels shallow.</span></div></div>
+        <div class="scene" data-dur="7.5"><div class="tagline">Next lesson</div><div class="bigtext a" data-at="0.4">Everything you send is counted.<br><em>But in what?</em></div><div class="capline"><span>Next: tokens.</span></div></div>
+        <div class="poster"><div><button class="playbig" type="button">Play lesson 7</button><p>One minute. No sound needed.</p></div></div>
+        <div class="endcard" hidden><div><b>That is the idea.</b><button class="playbig again" type="button">Watch again</button><p>Then scroll down and try it yourself.</p></div></div>
+      </div>
+      <div class="ctrl"><button class="pp" type="button">Play</button><button class="back hideS" type="button">Back</button><div class="segs"></div><button class="next" type="button">Next</button></div>
+    </div>
+    <div class="label">The bottom line</div>
+    <div class="bl"><ul><li><b>Effort is how hard Claude thinks before it answers.</b></li><li>More effort helps on hard problems. It is slower and uses more of your limit.</li><li>Leave it on medium. If an answer feels shallow, raise the effort before you change the model.</li></ul></div>
+    <div class="label">Quick check</div>
+    <div class="game" data-game="l7"></div>
+    <div class="label">One thing to try today</div>
+    <p>Find the effort setting near the model name. Ask this once on low and once on high, then compare.</p>
+    <div class="copy"><div class="copy-bar"><span>Copy and paste</span><button data-copy="l7p">Copy</button></div><pre id="l7p">Give me the 3 biggest risks of launching a product in a market we do not know. Be specific.</pre></div>
+    <div class="finishrow"><button class="btn" type="button" data-done="l7">I get it. Mark lesson 7 done</button></div>
+  </div>
+</section>
+
+<section class="lesson" id="l8" data-id="l8">
+  <div class="lesson-top"><div class="n">8</div><div><h2>What is a token?</h2><div class="tease">You sent five messages and hit a limit. How?</div></div><span class="state">1 min</span></div>
+  <div class="lesson-body">
+    <div class="film" id="film8">
+      <div class="stage" tabindex="0" aria-label="Lesson 8 animation. Press space to play or pause.">
+        <div class="scene" data-dur="8"><div class="tagline">Start here</div><div class="bigtext a" data-at="0.4">Claude does not count messages.<br><em>It counts tokens.</em></div><div class="capline"><span>Five messages, and you hit a limit. How? Because Claude does not count messages.</span></div></div>
+        <div class="scene" data-dur="9"><div class="tagline">The idea</div><div class="words"><span class="a new" data-at="0.5">Add</span><span class="a new" data-at="1.1">itive</span><span class="a new" data-at="1.7"> manu</span><span class="a new" data-at="2.3">factur</span><span class="a new" data-at="2.9">ing</span><span class="a new" data-at="3.5"> works</span><span class="a new" data-at="4.1">.</span></div><div class="note">illustration</div><div class="capline"><span>A token is a small piece of a word. As a rule of thumb, 100 tokens are about 75 words.</span></div></div>
+        <div class="scene" data-dur="9"><div class="tagline">How it works</div><div class="three3" style="grid-template-columns:repeat(3,1fr)"><div class="a" data-at="0.4"><i>1</i><b>What you type</b><small>Your prompt.</small></div><div class="a" data-at="1.9"><i>2</i><b>Every file it reads</b><small>Each page. Each picture.</small></div><div class="a" data-at="3.4"><i>3</i><b>Everything it writes</b><small>The answer counts too.</small></div></div><div class="capline"><span>Everything Claude reads and everything it writes is counted in tokens.</span></div></div>
+        <div class="scene" data-dur="8.5"><div class="tagline">Why it matters</div><div class="bartitle a" data-at="0.3">Tokens used</div><div class="note">illustration</div><div class="bars wide"><div class="bar a" data-at="1.2" style="--w:3%"><span>A short question</span><i><b></b></i><span></span></div><div class="bar a" data-at="2.7" style="--w:12%"><span>A one page email</span><i><b></b></i><span></span></div><div class="bar win a" data-at="4.2" style="--w:92%"><span>A 30 page PDF</span><i><b></b></i><span></span></div></div><div class="capline"><span>A short question costs almost nothing. A long document costs a lot.</span></div></div>
+        <div class="scene" data-dur="9"><div class="tagline">The surprise</div><div class="pile"><div class="a" data-at="0.4">your first message</div><div class="a" data-at="1.1">its answer</div><div class="a" data-at="1.7999999999999998">your second message</div><div class="a" data-at="2.4999999999999996">its answer</div><div class="a hl pop" data-at="3.4">Claude rereads all of it, every time</div></div><div class="capline"><span>And with every new message, Claude reads the whole chat again. So tokens add up fast.</span></div></div>
+        <div class="scene" data-dur="9"><div class="tagline">Your rule</div><div class="three3" style="grid-template-columns:repeat(3,1fr)"><div class="a" data-at="0.4"><i>1</i><b>Be specific</b><small>A clear ask gets it right the first time.</small></div><div class="a" data-at="1.9"><i>2</i><b>Give only what is needed</b><small>One file, not the whole folder.</small></div><div class="a" data-at="3.4"><i>3</i><b>Ask for short answers</b><small>Long answers cost tokens too.</small></div></div><div class="capline"><span>Three ways to spend fewer tokens.</span></div></div>
+        <div class="scene" data-dur="7.5"><div class="tagline">Next lesson</div><div class="bigtext a" data-at="0.4">&ldquo;You have reached<br><em>your limit.</em>&rdquo;</div><div class="capline"><span>Next: the two meters behind that message.</span></div></div>
+        <div class="poster"><div><button class="playbig" type="button">Play lesson 8</button><p>One minute. No sound needed.</p></div></div>
+        <div class="endcard" hidden><div><b>That is the idea.</b><button class="playbig again" type="button">Watch again</button><p>Then scroll down and try it yourself.</p></div></div>
+      </div>
+      <div class="ctrl"><button class="pp" type="button">Play</button><button class="back hideS" type="button">Back</button><div class="segs"></div><button class="next" type="button">Next</button></div>
+    </div>
+    <div class="label">The bottom line</div>
+    <div class="bl"><ul><li><b>Claude counts tokens, not messages.</b> A token is a piece of a word. About 100 tokens are 75 words.</li><li>Everything it reads and everything it writes is counted. Files and pictures too.</li><li>Be specific, give only what is needed, and ask for short answers.</li></ul></div>
+    <div class="label">Quick check</div>
+    <div class="game" data-game="l8"></div>
+    <div class="label">One thing to try today</div>
+    <p>Paste this at the end of any long chat.</p>
+    <div class="copy"><div class="copy-bar"><span>Copy and paste</span><button data-copy="l8p">Copy</button></div><pre id="l8p">Roughly, what in this chat has used the most tokens so far: my messages, your answers, or the files? Answer in two sentences.</pre></div>
+    <div class="finishrow"><button class="btn" type="button" data-done="l8">I get it. Mark lesson 8 done</button></div>
+  </div>
+</section>
+
+<section class="lesson" id="l9" data-id="l9">
+  <div class="lesson-top"><div class="n">9</div><div><h2>Limits</h2><div class="tease">Why Claude suddenly says you hit a limit, and how to make that rare.</div></div><span class="state">1 min</span></div>
+  <div class="lesson-body">
+    <div class="film" id="film9">
+      <div class="stage" tabindex="0" aria-label="Lesson 9 animation. Press space to play or pause.">
+        <div class="scene" data-dur="7.5"><div class="tagline">Start here</div><div class="bigtext a" data-at="0.4">&ldquo;You have reached your limit.<br><em>Try again later.</em>&rdquo;</div><div class="capline"><span>It is 11 in the morning, you are in the middle of something, and Claude stops. Why?</span></div></div>
+        <div class="scene" data-dur="8.5"><div class="tagline">The idea</div><div class="three3" style="grid-template-columns:repeat(2,1fr)"><div class="a" data-at="0.4"><i>1</i><b>The five hour meter</b><small>Starts with your first message. Resets five hours later.</small></div><div class="a" data-at="1.9"><i>2</i><b>The weekly meter</b><small>Resets once a week.</small></div></div><div class="capline"><span>Paid plans have two meters. One resets about every five hours. One resets every week.</span></div></div>
+        <div class="scene" data-dur="9"><div class="tagline">Why it matters</div><div class="bartitle a" data-at="0.3">What uses up your limit</div><div class="note">illustration</div><div class="bars wide"><div class="bar a" data-at="1.2" style="--w:10%"><span>A short chat</span><i><b></b></i><span></span></div><div class="bar a" data-at="2.7" style="--w:55%"><span>One very long chat</span><i><b></b></i><span></span></div><div class="bar win a" data-at="4.2" style="--w:95%"><span>Long chat, largest model, high effort</span><i><b></b></i><span></span></div></div><div class="capline"><span>So a long chat costs more with every message. A bigger model and more effort cost more too.</span></div></div>
+        <div class="scene" data-dur="9"><div class="tagline">Your rule</div><div class="three3" style="grid-template-columns:repeat(3,1fr)"><div class="a" data-at="0.4"><i>1</i><b>New task, new chat</b><small>Do not keep one chat going all day.</small></div><div class="a" data-at="1.9"><i>2</i><b>Right size for the job</b><small>Small model and low effort for simple chores.</small></div><div class="a" data-at="3.4"><i>3</i><b>Give the file, not everything</b><small>Point to the one file Claude needs.</small></div></div><div class="capline"><span>Three habits make the limit message rare.</span></div></div>
+        <div class="scene" data-dur="9"><div class="tagline">One more thing</div><div class="bigtext a" data-at="0.4">A chat can also get<br><em>too long to remember.</em></div><div class="capline"><span>When a chat gets very long, Claude sums up the early part to make room. Small details can get lost.</span></div></div>
+        <div class="scene" data-dur="7.5"><div class="tagline">Next lesson</div><div class="bigtext a" data-at="0.4">One kind of file costs<br><em>far fewer tokens.</em></div><div class="capline"><span>Next: the .md file, and a trick that saves your limit.</span></div></div>
+        <div class="poster"><div><button class="playbig" type="button">Play lesson 9</button><p>One minute. No sound needed.</p></div></div>
+        <div class="endcard" hidden><div><b>That is the idea.</b><button class="playbig again" type="button">Watch again</button><p>Then scroll down and try it yourself.</p></div></div>
+      </div>
+      <div class="ctrl"><button class="pp" type="button">Play</button><button class="back hideS" type="button">Back</button><div class="segs"></div><button class="next" type="button">Next</button></div>
+    </div>
+    <div class="label">The bottom line</div>
+    <div class="bl"><ul><li><b>Two meters: one resets about every five hours, one every week.</b></li><li>Claude rereads the whole chat with every message. Long chats, big models and high effort use the most.</li><li>New task, new chat. Use the right size. Give Claude the one file it needs.</li></ul></div>
+    <div class="label">Quick check</div>
+    <div class="game" data-game="l9"></div>
+    <div class="label">One thing to try today</div>
+    <p>When a chat gets long, paste this. Then start a new chat with the summary.</p>
+    <div class="copy"><div class="copy-bar"><span>Copy and paste</span><button data-copy="l9p">Copy</button></div><pre id="l9p">Sum up what we decided in this chat in 8 short bullets, so I can paste it into a new chat and continue there.</pre></div>
+    <div class="finishrow"><button class="btn" type="button" data-done="l9">I get it. Mark lesson 9 done</button></div>
+  </div>
+</section>
+
+<section class="lesson" id="l10" data-id="l10">
+  <div class="lesson-top"><div class="n">10</div><div><h2>What is a .md file?</h2><div class="tease">Your Claude folder is full of them. Nobody told you what they are.</div></div><span class="state">1 min</span></div>
+  <div class="lesson-body">
+    <div class="film" id="film10">
+      <div class="stage" tabindex="0" aria-label="Lesson 10 animation. Press space to play or pause.">
+        <div class="scene" data-dur="8.5"><div class="tagline">Start here</div><div class="bubble me a" data-at="0.3">What is a .md file? My folder is full of them.</div><div class="bubble ai a" data-at="1.5"><span data-type="The simplest kind of file there is." data-at="1.7" data-cps="34"></span></div><div class="clear"></div><div class="bigq a pop" data-at="4.4">Just words.</div><div class="capline"><span>Your Claude folder is full of files ending in .md. Nobody ever told you what they are.</span></div></div>
+        <div class="scene" data-dur="9"><div class="tagline">The idea</div><div class="monobox"><div class="a" data-at="0.5"># March webinar</div><div class="a" data-at="1.4">- Audience: small business owners</div><div class="a" data-at="2.3">- Date: 12 March</div><div class="a" data-at="3.2">**Goal:** 200 sign-ups</div></div><div class="capline"><span>A .md file is plain text with a few simple marks. A hash makes a title. A dash makes a list.</span></div></div>
+        <div class="scene" data-dur="9.5"><div class="tagline">Why Claude likes it</div><div class="cmp"><div class="col  a" data-at="0.3"><h4>A PDF or Word file</h4><p class="a" data-at="0.9">Words plus layout and fonts.</p><p class="a" data-at="2.4">Claude also gets every page as a picture.</p><p class="a" data-at="3.9">Costs many tokens.</p></div><div class="col good a" data-at="0.3"><h4>A .md file</h4><p class="a" data-at="1.25">Only the words.</p><p class="a" data-at="2.75">Nothing hidden.</p><p class="a" data-at="4.25">Costs few tokens.</p></div></div><div class="capline"><span>A PDF carries layout, fonts and a picture of every page. A .md file carries only the words.</span></div></div>
+        <div class="scene" data-dur="9"><div class="tagline">Why you will like it</div><div class="bigtext a" data-at="0.4">Claude reads it easily.<br><em>So can you.</em></div><div class="capline"><span>That is why Claude&#x27;s notes about you are .md files. Open one. You can read every word, and fix it.</span></div></div>
+        <div class="scene" data-dur="9.5"><div class="tagline">A trick that saves your limit</div><div class="flow"><div class="fbox a" data-at="0.4">Long PDF or email</div><span class="arr a" data-at="1.9">&rarr;</span><div class="fbox a" data-at="1.9">A free AI tool<small>turns it into Markdown</small></div><span class="arr a" data-at="3.4">&rarr;</span><div class="fbox a" data-at="3.4">Save as .md<small>in 00_Inbox</small></div><span class="arr a" data-at="4.9">&rarr;</span><div class="fbox a" data-at="4.9">Claude<small>reads it for less</small></div></div><div class="capline"><span>Let a free AI tool turn a long PDF or email into Markdown first. Then give that to Claude.</span></div></div>
+        <div class="scene" data-dur="9"><div class="tagline">Your rule</div><div class="three3" style="grid-template-columns:repeat(2,1fr)"><div class="a" data-at="0.4"><i>1</i><b>Use it when</b><small>You only need the words: reports, emails, notes.</small></div><div class="a" data-at="1.9"><i>2</i><b>Skip it when</b><small>The charts, tables or layout matter.</small></div></div><div class="capline"><span>Use the trick when you only need the words. Keep the original when the charts or the layout matter.</span></div></div>
+        <div class="scene" data-dur="7.5"><div class="tagline">Next lesson</div><div class="bigtext a" data-at="0.4">Some apps use Claude with<br><em>no chat window at all.</em></div><div class="capline"><span>Next: what an API is.</span></div></div>
+        <div class="poster"><div><button class="playbig" type="button">Play lesson 10</button><p>One minute. No sound needed.</p></div></div>
+        <div class="endcard" hidden><div><b>That is the whole course.</b><button class="playbig again" type="button">Watch again</button><p>Then scroll down and try it yourself.</p></div></div>
+      </div>
+      <div class="ctrl"><button class="pp" type="button">Play</button><button class="back hideS" type="button">Back</button><div class="segs"></div><button class="next" type="button">Next</button></div>
+    </div>
+    <div class="label">The bottom line</div>
+    <div class="bl"><ul><li><b>A .md file is plain text with a few simple marks.</b> .md is short for Markdown. It opens in Notepad.</li><li>Claude reads it easily, and it costs far fewer tokens than a PDF, because a PDF also sends a picture of every page.</li><li>To save your limit: let a free AI tool, such as ChatGPT or Gemini, turn a long PDF or email into Markdown, save it as .md, and give that to Claude.</li></ul></div>
+    <div class="label">Quick check</div>
+    <div class="game" data-game="l10"></div>
+    <div class="label">One thing to try today</div>
+    <p>Paste this in Copilot, ChatGPT or Gemini together with a PDF or a long email. Save the answer in 00_Inbox as a file ending in .md.</p>
+    <div class="copy"><div class="copy-bar"><span>Copy and paste</span><button data-copy="l10p">Copy</button></div><pre id="l10p">Turn this document into clean Markdown. Keep every heading, list and number. Leave out images, page numbers and footers. Give me only the Markdown, in one block.</pre></div>
+    <div class="finishrow"><button class="btn" type="button" data-done="l10">I get it. Mark lesson 10 done</button></div>
+  </div>
+</section>
+
+<section class="lesson" id="l11" data-id="l11">
+  <div class="lesson-top"><div class="n">11</div><div><h2>What an API is</h2><div class="tease">How apps use Claude with no chat window at all.</div></div><span class="state">1 min</span></div>
+  <div class="lesson-body">
+    <div class="film" id="film11">
+      <div class="stage" tabindex="0" aria-label="Lesson 11 animation. Press space to play or pause.">
+        <div class="scene" data-dur="7.5"><div class="tagline">Start here</div><div class="bigtext a" data-at="0.4">You may have used AI today<br><em>without opening a chat.</em></div><div class="capline"><span>A summary button in an app. A smart reply in your inbox. No chat window. How?</span></div></div>
+        <div class="scene" data-dur="8.5"><div class="tagline">The idea</div><div class="flow"><div class="fbox a" data-at="0.4">An app<small>any software</small></div><span class="arr a" data-at="1.9">&rarr;</span><div class="fbox a hl" data-at="1.9">API<small>the doorway</small></div><span class="arr a" data-at="3.4">&rarr;</span><div class="fbox a" data-at="3.4">The AI brain</div></div><div class="capline"><span>The app sends a question to the AI and gets an answer back. That doorway is called an API.</span></div></div>
+        <div class="scene" data-dur="9"><div class="tagline">How it works</div><div class="cmp"><div class="col  a" data-at="0.3"><h4>You, in the chat</h4><p class="a" data-at="0.9">You type the question</p><p class="a" data-at="2.4">You read the answer</p><p class="a" data-at="3.9">You pay a monthly plan</p></div><div class="col  a" data-at="0.3"><h4>An app, through the API</h4><p class="a" data-at="1.25">Code sends the question</p><p class="a" data-at="2.75">Code uses the answer</p><p class="a" data-at="4.25">It pays for each use</p></div></div><div class="capline"><span>It is the same brain. You reach it by typing. Apps reach it with code.</span></div></div>
+        <div class="scene" data-dur="8.5"><div class="tagline">In one line</div><div class="bigtext a" data-at="0.4">API =<br><em>apps talking to the AI.</em></div><div class="capline"><span>No chat window. No person typing. Just two programs passing notes.</span></div></div>
+        <div class="scene" data-dur="8.5"><div class="tagline">Your rule</div><div class="three3" style="grid-template-columns:repeat(2,1fr)"><div class="a" data-at="0.4"><i>1</i><b>Do you need it?</b><small>No. Not for daily work.</small></div><div class="a" data-at="1.9"><i>2</i><b>Why know it?</b><small>So you understand when a vendor says: it uses the API.</small></div></div><div class="capline"><span>You do not need to use it. You only need to know the word.</span></div></div>
+        <div class="scene" data-dur="7.5"><div class="tagline">Next lesson</div><div class="bigtext a" data-at="0.4">And the plug that connects<br>Claude to <em>your tools?</em></div><div class="capline"><span>Next: connectors and MCP.</span></div></div>
+        <div class="poster"><div><button class="playbig" type="button">Play lesson 11</button><p>One minute. No sound needed.</p></div></div>
+        <div class="endcard" hidden><div><b>That is the idea.</b><button class="playbig again" type="button">Watch again</button><p>Then scroll down and try it yourself.</p></div></div>
+      </div>
+      <div class="ctrl"><button class="pp" type="button">Play</button><button class="back hideS" type="button">Back</button><div class="segs"></div><button class="next" type="button">Next</button></div>
+    </div>
+    <div class="label">The bottom line</div>
+    <div class="bl"><ul><li><b>An API is how apps talk to an AI with no chat window.</b></li><li>It is the same brain. You type to it. Apps send it code.</li><li>You do not need it for daily work. You only need to know the word.</li></ul></div>
+    <div class="label">Quick check</div>
+    <div class="game" data-game="l11"></div>
+    <div class="label">One thing to try today</div>
+    <p>Paste this in any chat.</p>
+    <div class="copy"><div class="copy-bar"><span>Copy and paste</span><button data-copy="l11p">Copy</button></div><pre id="l11p">Explain what an API is, using a restaurant as the example. Three sentences, no technical words.</pre></div>
+    <div class="finishrow"><button class="btn" type="button" data-done="l11">I get it. Mark lesson 11 done</button></div>
+  </div>
+</section>
+
+<section class="lesson" id="l12" data-id="l12">
+  <div class="lesson-top"><div class="n">12</div><div><h2>Connectors and MCP</h2><div class="tease">The plug that lets Claude use your other tools.</div></div><span class="state">1 min</span></div>
+  <div class="lesson-body">
+    <div class="film" id="film12">
+      <div class="stage" tabindex="0" aria-label="Lesson 12 animation. Press space to play or pause.">
+        <div class="scene" data-dur="8.5"><div class="tagline">Start here</div><div class="bubble me a" data-at="0.3">Sum up this week&#x27;s emails from my clients.</div><div class="bubble ai a" data-at="1.5"><span data-type="I cannot see your email." data-at="1.7" data-cps="34"></span></div><div class="clear"></div><div class="bigq a pop" data-at="4.4">Why not?</div><div class="capline"><span>You ask about your email and Claude says it cannot see it. It is not broken. It is not plugged in.</span></div></div>
+        <div class="scene" data-dur="8.5"><div class="tagline">The idea</div><div class="flow"><div class="fbox a" data-at="0.4">Claude</div><span class="arr a" data-at="1.9">&rarr;</span><div class="fbox a hl" data-at="1.9">Connector<small>the plug</small></div><span class="arr a" data-at="3.4">&rarr;</span><div class="fbox a" data-at="3.4">Gmail<small>or Drive, or your calendar</small></div></div><div class="capline"><span>A connector is a plug between Claude and one of your tools.</span></div></div>
+        <div class="scene" data-dur="8.5"><div class="tagline">The other word</div><div class="bigtext a" data-at="0.4">MCP =<br><em>the shape of the plug.</em></div><div class="capline"><span>MCP is the standard behind the plugs. One shape that every tool can build for.</span></div></div>
+        <div class="scene" data-dur="8.5"><div class="tagline">Why it matters</div><div class="three3" style="grid-template-columns:repeat(2,1fr)"><div class="a" data-at="0.4"><i>1</i><b>Read</b><small>Look at your calendar. Find a file. Low risk.</small></div><div class="a" data-at="1.9"><i>2</i><b>Write</b><small>Send an email. Change a record. Needs your OK, every time.</small></div></div><div class="capline"><span>A plug can read, or it can also write. Reading is low risk. Writing needs your OK.</span></div></div>
+        <div class="scene" data-dur="9"><div class="tagline">How to add one</div><div class="three3" style="grid-template-columns:repeat(3,1fr)"><div class="a" data-at="0.4"><i>1</i><b>Open Customize</b><small>Then Connectors.</small></div><div class="a" data-at="1.9"><i>2</i><b>Pick your app</b><small>Gmail, Google Drive and more.</small></div><div class="a" data-at="3.4"><i>3</i><b>Sign in</b><small>Claude tells you what it will be able to do.</small></div></div><div class="capline"><span>To add a plug: open Customize, then Connectors, pick your app and sign in.</span></div></div>
+        <div class="scene" data-dur="8.5"><div class="tagline">Your rule</div><div class="flow"><div class="fbox a" data-at="0.4">Download the file</div><span class="arr a" data-at="1.9">&rarr;</span><div class="fbox a" data-at="1.9">Put it in 00_Inbox</div><span class="arr a" data-at="3.4">&rarr;</span><div class="fbox a" data-at="3.4">Ask Claude</div></div><div class="capline"><span>The simple way around it: download the file, put it in your inbox folder, and ask.</span></div></div>
+        <div class="scene" data-dur="7.5"><div class="tagline">Next lesson</div><div class="bigtext a" data-at="0.4">Claude. Copilot. Gemini. ChatGPT.<br><em>Which one, when?</em></div><div class="capline"><span>Last lesson: a simple way to choose.</span></div></div>
+        <div class="poster"><div><button class="playbig" type="button">Play lesson 12</button><p>One minute. No sound needed.</p></div></div>
+        <div class="endcard" hidden><div><b>That is the idea.</b><button class="playbig again" type="button">Watch again</button><p>Then scroll down and try it yourself.</p></div></div>
+      </div>
+      <div class="ctrl"><button class="pp" type="button">Play</button><button class="back hideS" type="button">Back</button><div class="segs"></div><button class="next" type="button">Next</button></div>
+    </div>
+    <div class="label">The bottom line</div>
+    <div class="bl"><ul><li><b>A connector is a plug between Claude and one of your tools.</b> MCP is the standard behind the plugs.</li><li>Reading is low risk. Anything that sends or changes something needs your OK.</li><li>No connector for your app? Download the file, put it in 00_Inbox, and ask.</li></ul></div>
+    <div class="label">Quick check</div>
+    <div class="game" data-game="l12"></div>
+    <div class="label">One thing to try today</div>
+    <p>Paste this in Claude to see what is plugged in for you.</p>
+    <div class="copy"><div class="copy-bar"><span>Copy and paste</span><button data-copy="l12p">Copy</button></div><pre id="l12p">Which of my apps can you connect to right now? List them. If none, tell me how I can still give you a file.</pre></div>
+    <div class="finishrow"><button class="btn" type="button" data-done="l12">I get it. Mark lesson 12 done</button></div>
+  </div>
+</section>
+
+<section class="lesson" id="l13" data-id="l13">
+  <div class="lesson-top"><div class="n">13</div><div><h2>Which tool when</h2><div class="tease">Claude, Copilot, Gemini, ChatGPT. A simple way to choose.</div></div><span class="state">1 min</span></div>
+  <div class="lesson-body">
+    <div class="film" id="film13">
+      <div class="stage" tabindex="0" aria-label="Lesson 13 animation. Press space to play or pause.">
+        <div class="scene" data-dur="7.5"><div class="tagline">Start here</div><div class="bigtext a" data-at="0.4">Four AI tools on your laptop.<br><em>Which one do you open?</em></div><div class="capline"><span>Most people open whichever tool is closest. There is a better way.</span></div></div>
+        <div class="scene" data-dur="8.5"><div class="tagline">The idea</div><div class="bigtext a" data-at="0.4">Ask one question:<br><em>where is the stuff?</em></div><div class="capline"><span>Do not start with the tool. Start with where the information lives.</span></div></div>
+        <div class="scene" data-dur="10"><div class="tagline">How it works</div><div class="three3" style="grid-template-columns:repeat(4,1fr)"><div class="a" data-at="0.4"><i>1</i><b>In my head</b><small>Claude, a quick chat</small></div><div class="a" data-at="1.9"><i>2</i><b>In my files</b><small>Claude, with your folder</small></div><div class="a" data-at="3.4"><i>3</i><b>In my email and calendar</b><small>Gemini or Copilot</small></div><div class="a" data-at="4.9"><i>4</i><b>On the page I am looking at</b><small>Ask Gemini in Chrome</small></div></div><div class="capline"><span>In your head: a quick chat. In your files: Claude with your folder. In your email and calendar: Gemini or Copilot. On a web page or video: Ask Gemini.</span></div></div>
+        <div class="scene" data-dur="9"><div class="tagline">Better together</div><div class="flow"><div class="fbox a" data-at="0.4">Gemini or Copilot<small>sums up the meeting</small></div><span class="arr a" data-at="1.9">&rarr;</span><div class="fbox a" data-at="1.9">You<small>copy the summary</small></div><span class="arr a" data-at="3.4">&rarr;</span><div class="fbox a" data-at="3.4">Claude<small>writes the deck</small></div></div><div class="capline"><span>The tools also work as a team. One finds the facts. Another does the writing.</span></div></div>
+        <div class="scene" data-dur="9"><div class="tagline">In the browser</div><div class="three3" style="grid-template-columns:repeat(2,1fr)"><div class="a" data-at="0.4"><i>1</i><b>Ask Gemini in Chrome</b><small>A button at the top of Chrome. Sums up the page or video in front of you.</small></div><div class="a" data-at="1.9"><i>2</i><b>Claude in Chrome</b><small>Can click and type on websites for you. It is a Chrome extension.</small></div></div><div class="capline"><span>Ask Gemini reads the page you are on. Claude in Chrome can act on it.</span></div></div>
+        <div class="scene" data-dur="8"><div class="tagline">You made it</div><div class="bigtext a" data-at="0.4">You now understand this better than<br><em>most people who use it daily.</em></div><div class="capline"><span>That is the foundation. The rest is practice.</span></div></div>
+        <div class="poster"><div><button class="playbig" type="button">Play lesson 13</button><p>One minute. No sound needed.</p></div></div>
+        <div class="endcard" hidden><div><b>That is the whole course.</b><button class="playbig again" type="button">Watch again</button><p>Then scroll down and try it yourself.</p></div></div>
+      </div>
+      <div class="ctrl"><button class="pp" type="button">Play</button><button class="back hideS" type="button">Back</button><div class="segs"></div><button class="next" type="button">Next</button></div>
+    </div>
+    <div class="label">The bottom line</div>
+    <div class="bl"><ul><li><b>Start with where the information lives, not with the tool.</b></li><li>In your head: a quick chat with Claude. In your files: Claude with your folder. In your email and calendar: Gemini for Google, Copilot for Microsoft. On a page or video: Ask Gemini in Chrome.</li><li>If you do not see a button, your version or country does not have it yet.</li></ul></div>
+    <div class="label">Quick check</div>
+    <div class="game" data-game="l13"></div>
+    <div class="label">One thing to try today</div>
+    <p>Paste this in a chat and fill in your real tasks.</p>
+    <div class="copy"><div class="copy-bar"><span>Copy and paste</span><button data-copy="l13p">Copy</button></div><pre id="l13p">These are my tasks this week: LIST YOUR TASKS. For each one, tell me which fits best: a quick chat, work on my files, or my email and calendar assistant. One line each.</pre></div>
+    <div class="finishrow"><button class="btn" type="button" data-done="l13">I get it. Mark lesson 13 done</button></div>
+  </div>
+</section>
+
+<footer><span>Made by @itsarisouss, with Claude.</span><button class="btn ghost" id="reset" type="button" style="padding:9px 16px;font-size:.85rem">Clear my progress</button></footer>
+</div>
+
+<script>
+(function(){
+var $=function(s,r){return (r||document).querySelector(s)},$$=function(s,r){return [].slice.call((r||document).querySelectorAll(s))};
+var reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion:reduce)').matches;
+
+/* ---------- the film player ---------- */
+function Film(root){
+  var stage=$('.stage',root),scenes=$$('.scene',root),segs=$('.segs',root),pp=$('.pp',root),poster=$('.poster',root),endc=$('.endcard',root);
+  var idx=0,t=0,playing=false,last=0,raf=0;
+  scenes.forEach(function(){var i=document.createElement('i');i.appendChild(document.createElement('b'));segs.appendChild(i)});
+  var fills=$$('b',segs);
+  function dur(i){return +scenes[i].dataset.dur}
+  function draw(){
+    var s=scenes[idx];
+    $$('[data-at]',s).forEach(function(el){
+      var at=+el.dataset.at,on=t>=at;
+      if(el.classList.contains('a'))el.classList.toggle('in',on);
+      if(el.hasAttribute('data-type')){var txt=el.getAttribute('data-type');el.textContent=on?txt.slice(0,Math.floor((t-at)*(+el.dataset.cps||30))):''}
+      if(el.hasAttribute('data-count')){var k=on?Math.min(1,(t-at)/(+el.dataset.len||1.5)):0;k=1-Math.pow(1-k,3);el.textContent=Math.round(Math.pow(10,(+el.dataset.count)*k)).toLocaleString('en-US')}
+    });
+    fills.forEach(function(b,i){b.style.width=(i<idx?100:i>idx?0:Math.min(100,100*t/dur(idx)))+'%'});
+  }
+  function show(i,full){idx=i;scenes.forEach(function(s,j){s.classList.toggle('on',j===i)});t=full?dur(i):0;draw()}
+  function frame(now){if(!playing)return;t+=Math.min(.5,(now-last)/1000);last=now;
+    if(t>=dur(idx)){if(idx<scenes.length-1){show(idx+1)}else{t=dur(idx);draw();stop();endc.hidden=false;return}}
+    draw();raf=requestAnimationFrame(frame)}
+  function play(){poster.hidden=true;endc.hidden=true;if(reduce){show(idx,true);return}
+    if(idx===scenes.length-1&&t>=dur(idx))show(0);playing=true;pp.textContent='Pause';last=performance.now();raf=requestAnimationFrame(frame)}
+  function stop(){playing=false;pp.textContent='Play';cancelAnimationFrame(raf)}
+  function toggle(){playing?stop():play()}
+  function go(d){var i=Math.max(0,Math.min(scenes.length-1,idx+d));poster.hidden=true;endc.hidden=true;show(i,reduce||!playing&&false);if(reduce)show(i,true);else if(!playing)play()}
+  pp.addEventListener('click',toggle);
+  stage.addEventListener('click',function(e){if(e.target.closest('.again')){show(0);play();return}toggle()});
+  stage.addEventListener('keydown',function(e){if(e.key===' '||e.key==='Enter'){e.preventDefault();toggle()}if(e.key==='ArrowRight')go(1);if(e.key==='ArrowLeft')go(-1)});
+  $('.next',root).addEventListener('click',function(){go(1)});
+  $('.back',root).addEventListener('click',function(){go(-1)});
+  document.addEventListener('visibilitychange',function(){if(document.hidden&&playing)stop()});
+  show(0);
+  root._seek=function(i,full){poster.hidden=true;endc.hidden=true;stop();show(i,full)};
+}
+$$('.film').forEach(Film);
+
+/* ---------- the game ---------- */
+var ROUNDS=[
+ {q:'Thank you for your <u>&nbsp;</u>',o:[['time',41],['email',33],['patience',19]],
+  fb:'<b>All three fit.</b> There is no single right answer, only likely ones. That is why Claude writes so easily.'},
+ {q:'Our customers are mostly cafes, bakeries and <u>&nbsp;</u>',o:[['restaurants',46],['hotels',31],['bananas',0]],
+  fb:'<b>You guessed from what usually comes next.</b> So does Claude. It does not know who your customers really are unless you give it the file.'},
+ {q:'The capital of Australia is <u>&nbsp;</u>',o:[['Sydney',0],['Canberra',0],['Melbourne',0]],
+  fb:'<b>It is Canberra.</b> Sydney is the famous one, so it sounds right. Sounding right and being right are two different things. That gap is where mistakes come from.'}
+];
+var GAMES={"l2": [{"q": "Which prompt gets the better post?", "o": [["Write a post about our product", 0], ["A post for small shop owners, to get guide downloads, using this file", 0]], "fb": "The second one names the reader, the goal and the source. Claude has something to work with.", "right": 1}, {"q": "Which is the better instruction?", "o": [["Do not be boring", 0], ["Open with one real customer problem", 0]], "fb": "Say what to do, not only what to avoid. Both Anthropic and OpenAI give this advice.", "right": 1}], "l3": [{"q": "You do not see a Cowork button in Claude. What does that mean?", "o": [["Cowork is built into every chat now", 0], ["Your account is broken", 0], ["You must install something", 0]], "fb": "Anthropic merged the two. If you still see the button, you are on the older layout and can click it.", "right": 0}, {"q": "You want one summary of the 12 PDFs in a folder. What do you do?", "o": [["Paste all 12 in by hand", 0], ["Ask Claude in the app, with your folder connected", 0]], "fb": "Claude opens the files itself and writes the summary. That is what agentic means.", "right": 1}], "l4": [{"q": "You want a brief built from files in your Claude folder. Which one?", "o": [["Claude in the browser", 0], ["The Claude desktop app", 0]], "fb": "Only the desktop app can reach the files on your computer.", "right": 1}, {"q": "You close the Claude app in the middle of a job on your folder. What happens?", "o": [["Claude loses your files until you open the app again", 0], ["Nothing changes", 0], ["Your files are deleted", 0]], "fb": "The task may keep running in the cloud, but your folder is only reachable while the app is open. Nothing is deleted.", "right": 0}, {"q": "Which of these is fine to give Claude?", "o": [["A public brochure", 0], ["Your bank statement", 0], ["Your password", 0]], "fb": "Public material is fine. Bank details and passwords stay out.", "right": 0}], "l5": [{"q": "A new AI tool comes out next month. What is your first question?", "o": [["Is it for talking, working or building?", 0], ["Is it the newest one?", 0], ["What is it called?", 0]], "fb": "The job tells you if you need it. The name tells you nothing.", "right": 0}, {"q": "Codex is closest to which part of Claude?", "o": [["A quick chat", 0], ["Work on your files", 0], ["The Code tab", 0]], "fb": "Both are for building software. Not something you need for everyday work.", "right": 2}], "l6": [{"q": "Turn 40 messy file names into a clean list. Which size?", "o": [["Small", 0], ["Medium", 0], ["Large", 0]], "fb": "A simple chore. A small model does it fast and uses very little.", "right": 0}, {"q": "Plan a product launch across three regions. Which size?", "o": [["Small", 0], ["Medium", 0], ["Large", 0]], "fb": "A hard problem with many parts. This is where a large model earns its cost.", "right": 2}], "l7": [{"q": "Claude gave a thin answer to a hard strategy question. First move?", "o": [["Raise the effort and ask again", 0], ["Start over in a new chat", 0], ["Switch to the largest model", 0]], "fb": "Effort is the cheaper dial. Try it first.", "right": 0}, {"q": "You want 20 subject lines, fast. Which effort?", "o": [["Low", 0], ["Medium", 0], ["High", 0]], "fb": "A quick, simple job. Low effort is fast and uses little.", "right": 0}], "l8": [{"q": "Which uses more tokens?", "o": [["A one line question", 0], ["A 30 page PDF", 0]], "fb": "Claude has to read every page. Reading costs tokens.", "right": 1}, {"q": "Does Claude&#x27;s answer use tokens too?", "o": [["Yes", 0], ["No", 0]], "fb": "Reading and writing both count. A long answer costs more than a short one.", "right": 0}], "l9": [{"q": "You finished the webinar plan. Now you need help with an unrelated email. Best move?", "o": [["Start a new chat", 0], ["Keep going in the same chat", 0], ["Wait five hours", 0]], "fb": "A new chat starts light. The old one would make Claude reread the whole webinar plan first.", "right": 0}, {"q": "Which uses the most of your limit?", "o": [["Ten short chats", 0], ["One very long chat on the largest model", 0]], "fb": "Every new message in a long chat costs more than the one before it.", "right": 1}], "l10": [{"q": "In a .md file, what does a # at the start of a line make?", "o": [["A title", 0], ["A comment", 0], ["A link", 0]], "fb": "One hash is a big title. Two hashes is a smaller one.", "right": 0}, {"q": "Claude needs only the words of a 60 page report. Cheapest way?", "o": [["Upload the PDF as it is", 0], ["Let a free AI tool turn it into Markdown first", 0]], "fb": "The Markdown version has only the words, so Claude reads it for far fewer tokens.", "right": 1}], "l11": [{"q": "A vendor says: our tool uses the Claude API. What does that mean?", "o": [["Their app sends work to Claude behind the scenes", 0], ["You must open Claude yourself", 0], ["It is a different, weaker AI", 0]], "fb": "Their software talks to Claude for you. You never see a chat window.", "right": 0}, {"q": "Do you need an API to use Claude?", "o": [["Yes", 0], ["No", 0]], "fb": "Claude is the app. You just type.", "right": 1}], "l12": [{"q": "Claude says it cannot see a file in your Google Drive. Best move?", "o": [["Download it and put it in 00_Inbox", 0], ["Paste your password so it can log in", 0], ["Give up and do it by hand", 0]], "fb": "Simple and safe. Never share a password.", "right": 0}, {"q": "Which one should need your OK every time?", "o": [["Reading a file", 0], ["Sending an email", 0]], "fb": "Reading changes nothing. Sending cannot be taken back.", "right": 1}], "l13": [{"q": "You need the key points of a 40 minute webinar on YouTube.", "o": [["Ask Gemini in Chrome", 0], ["Claude with your folder", 0], ["Gemini or Copilot", 0]], "fb": "The video is on the page in front of you. Ask Gemini reads what you are looking at.", "right": 0}, {"q": "You need a first draft of a brief from three files in your folder.", "o": [["Ask Gemini in Chrome", 0], ["Claude with your folder", 0], ["Gemini or Copilot", 0]], "fb": "The information is in your files. Open the Claude app with your folder.", "right": 1}, {"q": "What did my client ask me for last week?", "o": [["Claude, a quick chat", 0], ["Claude with your folder", 0], ["Gemini or Copilot", 0]], "fb": "The answer is in your email. Gemini sees Gmail and Copilot sees Outlook. Claude sees neither unless you connect it.", "right": 2}]};GAMES.l1=ROUNDS;
+function Game(root){var r=0,ROUNDS=GAMES[root.dataset.game];
+  function render(){var R=ROUNDS[r];
+    root.innerHTML='<div class="q">'+R.q+'</div><div class="opts">'+R.o.map(function(o,i){return '<button type="button" data-i="'+i+'">'+o[0]+'</button>'}).join('')+'</div><div class="fb"></div>';
+    $$('.opts button',root).forEach(function(b){b.addEventListener('click',function(){
+      $$('.opts button',root).forEach(function(x,i){x.disabled=true;if(R.o[i][1])x.innerHTML=R.o[i][0]+'<small>'+R.o[i][1]+'%</small>'});
+      b.classList.add('pick');var hasRight=typeof R.right==='number';if(hasRight)$$('.opts button',root)[R.right].classList.add('right');
+      $('.fb',root).innerHTML=(hasRight?(+b.dataset.i===R.right?'<b>Yes.</b> ':'<b>Not quite.</b> '):'')+R.fb+(R.o[0][1]?' <span style="color:var(--mut)">(The numbers are an illustration.)</span>':'');
+      var n=document.createElement('button');n.type='button';n.className='btn nextq';
+      n.textContent=r<ROUNDS.length-1?'Next one':'Play again';
+      n.addEventListener('click',function(){r=(r+1)%ROUNDS.length;render()});root.appendChild(n)})})}
+  render()}
+$$('.game').forEach(Game);
+
+/* ---------- lessons, progress, copy ---------- */
+var KEY='ai-bootcamp-v1',saved={};try{saved=JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){saved={}}
+var lessons=$$('.lesson[data-id]');
+function paint(){var c=0;lessons.forEach(function(l){var d=!!saved[l.dataset.id];if(d)c++;l.classList.toggle('done',d);$('.state',l).textContent=d?'Done':'1 min';
+  var b=$('[data-done]',l);if(b)b.textContent=d?'Done. Watch it again any time':'I get it. Mark lesson '+l.dataset.id.slice(1)+' done'});
+  $('#prog').textContent=c+' of '+lessons.length+' lessons'}
+function openOnly(l,scroll){lessons.forEach(function(x){x.classList.toggle('open',x===l)});if(l&&scroll)l.scrollIntoView({behavior:reduce?'auto':'smooth',block:'start'})}
+lessons.forEach(function(l){$('.lesson-top',l).addEventListener('click',function(){if(l.classList.contains('open'))l.classList.remove('open');else openOnly(l,false)});
+  var b=$('[data-done]',l);if(b)b.addEventListener('click',function(){saved[l.dataset.id]=true;try{localStorage.setItem(KEY,JSON.stringify(saved))}catch(e){}paint();var nx=lessons[lessons.indexOf(l)+1];if(nx)openOnly(nx,true)})});
+$('#reset').addEventListener('click',function(){saved={};try{localStorage.removeItem(KEY)}catch(e){}paint()});
+paint();openOnly(lessons.filter(function(l){return !saved[l.dataset.id]})[0]||lessons[0],false);
+$$('[data-copy]').forEach(function(b){b.addEventListener('click',function(){
+  var el=document.getElementById(b.getAttribute('data-copy')),txt=el.textContent,o=b.getAttribute('data-label')||b.textContent;b.setAttribute('data-label',o);
+  function done(){b.textContent='Copied. Now paste it.';b.classList.add('ok');clearTimeout(b._t);b._t=setTimeout(function(){b.textContent=o;b.classList.remove('ok')},2200)}
+  function execCopy(){var ta=document.createElement('textarea');ta.value=txt;ta.setAttribute('readonly','');ta.style.cssText='position:fixed;top:0;left:0;width:1px;height:1px;opacity:0';document.body.appendChild(ta);ta.focus();ta.select();var ok=false;try{ok=document.execCommand('copy')}catch(e){ok=false}document.body.removeChild(ta);return ok}
+  function manual(){var r=document.createRange();r.selectNodeContents(el);var s=window.getSelection();s.removeAllRanges();s.addRange(r);b.textContent='Selected. Press Ctrl+C';clearTimeout(b._t);b._t=setTimeout(function(){b.textContent=o},4500)}
+  if(execCopy()){done();return}
+  try{if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(done,manual)}else{manual()}}catch(e){manual()}
+})});
+})();
+</script>
+</body></html>

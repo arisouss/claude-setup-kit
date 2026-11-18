@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="en" data-look="a"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tips and tricks</title>
+<style>
+/* Same calm look as the setup page. One accent. The animation is the star. */
+:root{--paper:#e9e4d8;--card:#f6f2e9;--bd:#d8d2c4;--ink:#141413;--text:#3d3a34;--mut:#77736a;--acc:#e5262b;--acc-ink:#b3151a;--tint:#f6e7e4;--ok:#2f7d32;--oktint:#e3eddc;--okbd:#c3d6ba;--bad:#b3401f;--badtint:#f4e1d9;--code:#e6e1d4;
+--font:"Segoe UI",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;--mono:Consolas,"Cascadia Mono","SF Mono",Menlo,monospace}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--text);font:18px/1.7 var(--font);-webkit-font-smoothing:antialiased}
+.wrap{max-width:820px;margin:0 auto;padding:0 24px}
+h1,h2,h3{color:var(--ink);margin:0;letter-spacing:-.02em}
+p{margin:0 0 16px}b{color:var(--ink)}
+[hidden]{display:none!important}
+
+.top{position:sticky;top:0;z-index:20;background:rgba(233,228,216,.94);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--bd)}
+.top-in{max-width:980px;margin:0 auto;padding:12px 24px;display:flex;align-items:center;gap:16px}
+.logo{font-weight:800;font-size:.95rem;color:var(--ink);display:flex;align-items:center;gap:9px;white-space:nowrap}
+.logo i{width:20px;height:20px;border-radius:6px;background:var(--acc);display:block}
+.top a{margin-left:auto;font:600 .9rem var(--font);color:var(--text);text-decoration:none;border:1px solid #bdb9ae;border-radius:999px;padding:7px 16px}
+.top a:hover{color:var(--ink);border-color:var(--ink)}
+.prog{font:600 .82rem var(--font);color:var(--mut);white-space:nowrap}
+
+header.hero{padding:84px 0 20px}
+.kicker{font:700 .78rem var(--font);letter-spacing:.16em;text-transform:uppercase;color:var(--acc-ink);margin-bottom:18px}
+h1{font-size:clamp(2.3rem,5.6vw,3.4rem);line-height:1.08;font-weight:800;letter-spacing:-.03em}
+h1 em{font-style:normal;background:linear-gradient(transparent 64%,var(--acc) 64%,var(--acc) 94%,transparent 94%)}
+.lede{font-size:1.2rem;line-height:1.6;max-width:36em;margin:22px 0 0}
+
+/* lessons */
+.lesson{scroll-margin-top:76px;background:var(--card);border:1px solid var(--bd);border-radius:18px;margin-top:22px;box-shadow:0 2px 12px rgba(20,20,19,.04)}
+.lesson-top{display:flex;align-items:center;gap:16px;padding:22px 26px;cursor:pointer}
+.lesson .n{flex:none;width:44px;height:44px;border-radius:50%;background:var(--acc);color:var(--ink);font-weight:800;display:grid;place-items:center}
+.lesson h2{font-size:1.3rem;font-weight:700;line-height:1.25}
+.lesson .tease{font-size:.98rem;color:var(--mut);margin-top:2px}
+.lesson .state{margin-left:auto;flex:none;font:700 .72rem var(--font);letter-spacing:.1em;text-transform:uppercase;color:var(--mut);background:var(--code);border-radius:999px;padding:5px 12px}
+.lesson.done .state{background:var(--oktint);color:var(--ok)}
+.lesson.soon{background:transparent;box-shadow:none}
+.lesson.soon .lesson-top{cursor:default}
+.lesson.soon .n{background:var(--code);color:var(--mut)}
+.lesson.soon h2{color:var(--mut)}
+.lesson.open{border:2px solid var(--ink)}
+.lesson-body{display:none;padding:4px 26px 30px}
+.lesson.open .lesson-body{display:block}
+.label{font:700 .76rem var(--font);letter-spacing:.14em;text-transform:uppercase;color:var(--acc-ink);margin:38px 0 12px}
+
+/* the little film */
+.film{border:1px solid #cfc9ba;border-radius:16px;overflow:hidden;background:#efeadf}
+.stage{position:relative;aspect-ratio:16/10;container-type:inline-size;overflow:hidden;cursor:pointer;background:#f3efe5;user-select:none}
+.scene{position:absolute;inset:0;opacity:0;visibility:hidden;transition:opacity .35s;padding:5cqw 6cqw 17cqw}
+.scene.on{opacity:1;visibility:visible}
+.capline{position:absolute;left:6cqw;right:6cqw;bottom:4cqw;font-size:3.5cqw;line-height:1.3;font-weight:700;color:var(--ink);min-height:9cqw;display:flex;align-items:flex-end}
+.capline span{background:rgba(243,239,229,.9);padding:.4cqw 0}
+.tagline{font:700 1.7cqw var(--font);letter-spacing:.16em;text-transform:uppercase;color:var(--acc-ink);margin-bottom:2.5cqw}
+.a{opacity:0;transform:translateY(2cqw);transition:opacity .45s ease,transform .45s cubic-bezier(.2,.9,.2,1)}
+.a.in{opacity:1;transform:none}
+.a.pop{transform:scale(.6)}.a.pop.in{transform:none;transition:opacity .3s,transform .45s cubic-bezier(.3,1.7,.5,1)}
+.bubble{display:inline-block;max-width:78%;padding:1.6cqw 2.4cqw;border-radius:2cqw;font-size:2.7cqw;line-height:1.35;margin-bottom:1.8cqw}
+.bubble.me{background:var(--ink);color:#fff;float:right;clear:both;border-bottom-right-radius:.5cqw}
+.bubble.ai{background:#fff;color:var(--ink);border:1px solid var(--bd);float:left;clear:both;border-bottom-left-radius:.5cqw;min-width:40%}
+.clear{clear:both}
+.bigq{position:absolute;left:50%;top:57%;translate:-50% -50%;background:var(--acc);color:var(--ink);font-weight:800;font-size:4.6cqw;padding:2cqw 4cqw;border-radius:2.4cqw;white-space:nowrap;box-shadow:0 1.5cqw 4cqw rgba(20,20,19,.18);rotate:-2deg}
+.search{display:flex;align-items:center;gap:1.6cqw;border:.3cqw solid #b9b5aa;border-radius:6cqw;padding:1.4cqw 3cqw;font-size:2.7cqw;color:var(--mut);background:#fff;width:70%}
+.search i{width:2.4cqw;height:2.4cqw;border:.4cqw solid var(--mut);border-radius:50%;display:block;flex:none}
+.quote{position:relative;margin-top:3cqw;background:#fff;border:1px solid var(--bd);border-radius:2cqw;padding:2.6cqw 3cqw;width:78%}
+.quote q{display:block;font-size:3.6cqw;font-weight:700;color:var(--ink);line-height:1.25;quotes:"\201C" "\201D"}
+.quote small{display:block;margin-top:1cqw;font-size:2.2cqw;color:var(--mut)}
+.stamp{position:absolute;right:-12cqw;bottom:-4cqw;border:.6cqw solid var(--bad);color:var(--bad);font-weight:900;font-size:3.4cqw;letter-spacing:.14em;padding:.8cqw 2cqw;border-radius:1.2cqw;background:rgba(246,242,233,.95);rotate:8deg;white-space:nowrap}
+.sentence{font-size:5.4cqw;font-weight:800;color:var(--ink);line-height:1.2}
+.blank{display:inline-block;min-width:16cqw;border-bottom:.7cqw solid var(--ink);text-align:center;color:transparent;transition:color .3s,border-color .3s}
+.blank.in{color:var(--acc-ink);border-color:var(--acc-ink);opacity:1;transform:none}
+.bars{margin-top:3.4cqw;display:grid;gap:1.6cqw;width:86%}
+.bar{display:grid;grid-template-columns:11cqw 1fr 9cqw;align-items:center;gap:2cqw;font-size:2.8cqw;font-weight:700;color:var(--ink)}
+.bar i{display:block;height:3.4cqw;border-radius:2cqw;background:#ddd7c9;overflow:hidden}
+.bar i b{display:block;height:100%;width:0;background:var(--ink);border-radius:2cqw;transition:width .9s cubic-bezier(.2,.9,.2,1)}
+.bar.win i b{background:var(--acc)}
+.bar.in i b{width:var(--w)}
+.bar span:last-child{text-align:right;color:var(--mut);font-weight:600}
+.words{font-size:4.6cqw;font-weight:800;color:var(--ink);line-height:1.5;display:flex;flex-wrap:wrap;gap:1cqw 1.6cqw}
+.words span{background:#fff;border:1px solid var(--bd);border-radius:1.4cqw;padding:.2cqw 1.8cqw}
+.words span.new.in{background:var(--acc);border-color:var(--acc)}
+.counter{margin-top:4cqw;font-size:3cqw;font-weight:700;color:var(--mut)}
+.counter b{font-size:5.4cqw;color:var(--ink);font-variant-numeric:tabular-nums}
+.venn{position:relative;height:30cqw;width:74cqw;margin:1cqw auto 0}
+.venn div{position:absolute;top:0;width:44cqw;height:30cqw;border-radius:50%;display:grid;place-items:center;font-size:2.8cqw;font-weight:800;color:var(--ink);text-align:center;line-height:1.2}
+.venn .l{left:0;background:rgba(229,38,43,.30);padding-right:16cqw}
+.venn .r{right:0;background:rgba(47,125,50,.28);padding-left:16cqw}
+.venn .mid{left:50%;translate:-50% 0;width:20cqw;background:none;font-size:2.2cqw;font-weight:700;color:var(--text)}
+.venn .gap{left:-1cqw;top:auto;bottom:-3cqw;width:auto;height:auto;border-radius:1.4cqw;background:var(--badtint);border:.3cqw solid var(--bad);color:var(--bad);font-size:2.4cqw;padding:.8cqw 2cqw;white-space:nowrap}
+.three3{display:grid;grid-template-columns:repeat(3,1fr);gap:2.4cqw;margin-top:1cqw}
+.three3 div{background:#fff;border:1px solid var(--bd);border-radius:2.2cqw;padding:2.6cqw 2.2cqw}
+.three3 i{width:5.4cqw;height:5.4cqw;border-radius:50%;background:var(--acc);color:var(--ink);font:800 2.8cqw var(--font);display:grid;place-items:center;margin-bottom:1.6cqw}
+.three3 b{display:block;font-size:2.9cqw;line-height:1.2}
+.three3 small{display:block;font-size:2.1cqw;color:var(--mut);margin-top:.8cqw;line-height:1.3}
+.doors{display:flex;gap:4cqw;justify-content:center;margin-top:2cqw}
+.door{width:17cqw;height:25cqw;border:.5cqw solid var(--ink);border-radius:1.6cqw 1.6cqw 0 0;background:#fff;position:relative;display:grid;place-items:end center;padding-bottom:2cqw;font-size:2.8cqw;font-weight:800;color:var(--ink)}
+.door::after{content:"";position:absolute;right:2cqw;top:50%;width:1.6cqw;height:1.6cqw;border-radius:50%;background:var(--ink)}
+.door.hl{background:var(--acc)}
+.note{position:absolute;right:3cqw;top:3cqw;font-size:1.7cqw;color:var(--mut)}
+
+.poster,.endcard{position:absolute;inset:0;display:grid;place-items:center;background:rgba(243,239,229,.9);text-align:center;z-index:3}
+.poster[hidden],.endcard[hidden]{display:none}
+.playbig{display:inline-flex;align-items:center;gap:1.6cqw;background:var(--ink);color:#fff;border:0;border-radius:99cqw;font:700 3cqw var(--font);padding:2.2cqw 4.4cqw;cursor:pointer}
+.playbig::before{content:"";border-left:2.2cqw solid #fff;border-top:1.4cqw solid transparent;border-bottom:1.4cqw solid transparent}
+.poster p,.endcard p{font-size:2.3cqw;color:var(--mut);margin:2cqw 0 0}
+.endcard b{display:block;font-size:4cqw;margin-bottom:2.4cqw}
+.ctrl{display:flex;align-items:center;gap:10px;padding:10px 12px;background:#e4dfd2;border-top:1px solid #d3cdbf}
+.ctrl button{font:700 .86rem var(--font);background:var(--card);color:var(--ink);border:1px solid #bdb9ae;border-radius:9px;padding:8px 14px;cursor:pointer;min-height:38px;white-space:nowrap}
+.ctrl button:hover{border-color:var(--ink)}
+.ctrl .pp{background:var(--ink);color:#fff;border-color:var(--ink);min-width:86px}
+.segs{flex:1;display:flex;gap:4px}
+.segs i{flex:1;height:6px;border-radius:3px;background:#cfc9ba;overflow:hidden;display:block}
+.segs i b{display:block;height:100%;width:0;background:var(--ink)}
+
+/* bottom line, game, try */
+.bl{background:var(--tint);border:1px solid #e6c9c4;border-radius:14px;padding:22px 24px}
+.bl ul{margin:0;padding-left:22px}.bl li{margin:8px 0;color:var(--ink)}
+.game{border:1px solid var(--bd);border-radius:14px;padding:24px;background:#efeadf}
+.game .q{font-size:1.5rem;font-weight:800;color:var(--ink);line-height:1.3;margin-bottom:18px}
+.game .q u{text-decoration:none;display:inline-block;min-width:110px;border-bottom:4px solid var(--ink)}
+.opts{display:flex;flex-wrap:wrap;gap:10px}
+.opts button{font:700 1rem var(--font);background:var(--card);color:var(--ink);border:2px solid #bdb9ae;border-radius:12px;padding:12px 20px;cursor:pointer}
+.opts button:hover:not(:disabled){border-color:var(--ink)}
+.opts button.pick{border-color:var(--ink);background:var(--ink);color:#fff}
+.opts button small{font-weight:600;opacity:.75;margin-left:8px}
+.fb{margin-top:18px;font-size:1rem;color:var(--text);min-height:1.7em}
+.fb b{color:var(--ink)}
+.game .nextq{margin-top:14px}
+.btn{display:inline-flex;align-items:center;gap:10px;font:700 1rem var(--font);border:0;border-radius:12px;padding:13px 22px;cursor:pointer;background:var(--ink);color:#fff}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid #bdb9ae}
+.copy{margin:8px 0 0;border:1px solid #cfcbc0;border-radius:14px;overflow:hidden;background:#efeadf}
+.copy-bar{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 10px 10px 18px;background:#e4dfd2;border-bottom:1px solid #d3cdbf;font:600 .86rem var(--font)}
+.copy button{font:700 .9rem var(--font);background:var(--ink);color:#fff;border:0;border-radius:9px;padding:10px 20px;cursor:pointer;min-height:40px}
+.copy button.ok{background:var(--ok)}
+.copy pre{margin:0;padding:18px;font:14px/1.65 var(--mono);white-space:pre-wrap;word-break:break-word;color:#2b2823}
+.finishrow{display:flex;flex-wrap:wrap;align-items:center;gap:16px;margin-top:34px;padding-top:26px;border-top:1px solid var(--bd)}
+.finishrow span{color:var(--mut);font-size:.98rem}
+footer{margin:100px 0 70px;padding-top:28px;border-top:1px solid var(--bd);color:var(--mut);font-size:.92rem;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;align-items:center}
+button:focus-visible,a:focus-visible{outline:3px solid var(--acc-ink);outline-offset:3px}
+@media (max-width:560px){.lesson-top{padding:18px}.lesson-body{padding:4px 16px 24px}.lesson .state{display:none}.ctrl .hideS{display:none}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important}html{scroll-behavior:auto}}
+@media print{.top,.ctrl,.poster,.endcard,footer{display:none!important}body{background:#fff}.lesson-body{display:block}}
+
+/* extra scene pieces for lessons 2 to 10 */
+.three3 div.hl{background:var(--acc);border-color:var(--acc)}.three3 div.hl i{background:#fff}.three3 div.hl small{color:var(--ink)}
+.flow{display:flex;align-items:center;justify-content:center;gap:1.8cqw;margin-top:5cqw}
+.fbox{background:#fff;border:1px solid var(--bd);border-radius:2cqw;padding:2.4cqw 2.4cqw;font-size:2.7cqw;font-weight:800;color:var(--ink);text-align:center;line-height:1.2;max-width:24cqw}
+.fbox small{display:block;font-weight:600;color:var(--mut);font-size:2cqw;margin-top:.6cqw}
+.fbox.hl{background:var(--acc);border-color:var(--acc)}.fbox.hl small{color:var(--ink)}
+.arr{font-size:4cqw;font-weight:800;color:var(--ink)}
+.cmp{display:grid;grid-template-columns:1fr 1fr;gap:3cqw}
+.col{background:#fff;border:1px solid var(--bd);border-radius:2.2cqw;padding:2.4cqw 2.6cqw}
+.col h4{margin:0 0 1.6cqw;font-size:3cqw;color:var(--ink)}
+.col p{font-size:2.5cqw;line-height:1.3;margin:0 0 1.2cqw;color:var(--text);font-weight:600}
+.col.good{background:var(--oktint);border-color:var(--okbd)}
+.bigtext{font-size:5.6cqw;font-weight:800;color:var(--ink);line-height:1.2;margin-top:4cqw}
+.bigtext em{font-style:normal;background:linear-gradient(transparent 62%,var(--acc) 62%,var(--acc) 94%,transparent 94%)}
+.smalltext{font-size:2.8cqw;color:var(--mut);margin-top:2.4cqw;font-weight:600}
+.bartitle{font-size:3.4cqw;font-weight:800;color:var(--ink);margin-bottom:1cqw}
+.bars.wide{width:100%;margin-top:2.4cqw}.bars.wide .bar{grid-template-columns:34cqw 1fr 1cqw;font-size:2.5cqw}
+.sizes{display:flex;align-items:flex-end;justify-content:center;gap:6cqw;margin-top:1cqw}
+.sz{text-align:center;font-size:2.8cqw;font-weight:800;color:var(--ink)}
+.sz i{display:block;border-radius:50%;background:#fff;border:.5cqw solid var(--ink);margin:0 auto 1.6cqw}
+.sz.s i{width:9cqw;height:9cqw}.sz.m i{width:15cqw;height:15cqw}.sz.l i{width:22cqw;height:22cqw}
+.sz.hl i{background:var(--acc)}.sz small{display:block;color:var(--mut);font-weight:600;font-size:2.1cqw}
+.pile{display:grid;gap:1.1cqw;width:64%}
+.pile div{background:#fff;border:1px solid var(--bd);border-radius:1.3cqw;padding:.9cqw 2.2cqw;font-size:2.4cqw;font-weight:700;color:var(--ink)}
+.pile div.hl{background:var(--acc);border-color:var(--acc);margin-top:1cqw;font-size:2.7cqw}
+.opts button.right{border-color:var(--ok);background:var(--oktint);color:var(--ok)}
+.monobox{font:2.7cqw/1.7 var(--mono);background:#fff;border:1px solid var(--bd);border-radius:2cqw;padding:2.2cqw 3.2cqw;color:var(--ink);width:72%}
+.col.bad{background:var(--badtint);border-color:#e3bfb2}
+
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:34px 0 6px}
+.chips button{font:600 .92rem var(--font);color:var(--text);background:var(--card);border:1px solid #bdb9ae;border-radius:999px;padding:8px 16px;cursor:pointer}
+.chips button[aria-pressed=true]{background:var(--ink);color:#fff;border-color:var(--ink)}
+.group{font-size:1.5rem;font-weight:800;color:var(--ink);margin:64px 0 6px;letter-spacing:-.02em}
+.tip{background:var(--card);border:1px solid var(--bd);border-radius:16px;margin-top:16px;scroll-margin-top:76px}
+.tip-top{display:flex;align-items:center;gap:14px;padding:20px 24px;cursor:pointer}
+.tip h3{font-size:1.2rem;font-weight:700;line-height:1.3;flex:1}
+.tip .hook{font-size:.98rem;color:var(--mut);margin-top:3px;font-weight:400}
+.badge{flex:none;font:700 .7rem var(--font);letter-spacing:.08em;text-transform:uppercase;border-radius:999px;padding:5px 11px;white-space:nowrap}
+.badge.now{background:var(--oktint);color:var(--ok)}.badge.it{background:#f3e9c4;color:#7a5d00}
+.tip-body{display:none;padding:0 24px 26px}
+.tip.open{border:2px solid var(--ink)}.tip.open .tip-body{display:block}
+.get{background:var(--tint);border:1px solid #e6c9c4;border-radius:12px;padding:14px 16px;margin:0 0 18px;color:var(--ink)}
+.tip ol{margin:0 0 6px;padding-left:24px}.tip li{margin:9px 0}
+.gtk{font-size:.95rem;color:var(--mut);border-left:3px solid var(--acc);padding-left:14px;margin:18px 0 0}
+code{font-family:var(--mono);font-size:.9em;background:var(--code);padding:2px 7px;border-radius:6px;color:var(--ink)}
+.top .links{margin-left:auto;display:flex;gap:8px}.top .links a{margin-left:0}
+@media (max-width:560px){.badge{display:none}.tip-top{padding:16px}.tip-body{padding:0 16px 22px}}
+@media print{.tip-body{display:block}.chips{display:none}}
+</style><style>
+/* personal look: black, white, one red accent */
+:root{--paper:#f1efea;--card:#fbfaf7;--bd:#dcd8cf;--acc:#e5262b;--acc-ink:#b3151a;--tint:#f6e7e4;--code:#e9e6de}
+.part-head,.dl,.bl,.get,.finish{border-color:#e6c9c4!important}
+.lesson .n,.part-head .num,.idea .n,.three .n,.three3 i,.logo i{color:#fff}
+.fbox.hl,.fbox.hl small,.three3 div.hl,.three3 div.hl b,.three3 div.hl small,.door.hl,.pile div.hl,.words span.new.in,.bigq{color:#fff}
+.three3 div.hl i{background:#fff;color:#141413}
+.dl .ico svg{stroke:#fff}
+.field.hl{box-shadow:0 0 0 3px #f6e7e4}
+</style>
+<style>
+.sitenav{background:#141413;color:#fff}
+.sitenav-in{max-width:980px;margin:0 auto;padding:0 24px;display:flex;align-items:center;gap:6px;overflow-x:auto;scrollbar-width:none}
+.sitenav .brand{font:800 .9rem var(--font);white-space:nowrap;margin-right:14px;padding:14px 0;color:#fff;text-decoration:none}
+.sitenav .brand span{color:#ff6b61}
+.sitenav a.tabl{font:600 .88rem var(--font);color:#c9c7c1;text-decoration:none;white-space:nowrap;padding:14px 12px;border-bottom:3px solid transparent}
+.sitenav a.tabl:hover{color:#fff}
+.sitenav a.tabl.cur{color:#fff;border-bottom-color:#e5262b}
+.sitenav a.dlall{margin-left:auto;color:#fff}
+.top .links,.top-in>a{display:none!important}
+@media print{.sitenav{display:none}}
+</style>
+<style id="look">
+/* the look: warm paper, white cards, one red accent used very little */
+html[data-look]{--acc:#e5262b;--acc-ink:#b3151a;--tint:#fbeceb;--wash:#f8e9da;--accbd:#f1cdc8;
+  --paper:#f4f1ea;--card:#ffffff;--bd:#e8e2d5;--ink:#2e2b25;--text:#4a463e;--mut:#8c8576;--code:#f1ede4;
+  --lift:0 1px 2px rgba(40,30,10,.05),0 10px 24px rgba(40,30,10,.07)}
+html[data-look] body{background-color:var(--paper);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .32  0 0 0 0 .27  0 0 0 0 .2  0 0 0 .09 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),linear-gradient(180deg,var(--wash) 0,var(--paper) 100%);
+  background-repeat:repeat,no-repeat;background-size:180px 180px,100% 640px}
+
+/* top bars: light */
+html[data-look] .sitenav{background:transparent;color:var(--ink)}
+html[data-look] .sitenav .brand{color:var(--ink)}
+html[data-look] .sitenav .brand span{color:var(--acc-ink)}
+html[data-look] .sitenav a.tabl{color:var(--mut)}
+html[data-look] .sitenav a.tabl:hover{color:var(--ink)}
+html[data-look] .sitenav a.tabl.cur{color:var(--ink);border-bottom-color:var(--acc)}
+html[data-look] .sitenav a.dlall{color:var(--ink);border:1px solid #cfc8b8;border-radius:999px;padding:7px 16px;margin:8px 0 8px auto;background:rgba(255,255,255,.6)}
+html[data-look] .top{background:rgba(255,255,255,.78);border-bottom-color:var(--bd)}
+html[data-look] .tabs{background:rgba(255,255,255,.7)}
+html[data-look] .seg{background:#e3ddcf}
+
+/* headline and the one red button */
+html[data-look] .kicker{color:var(--mut)}
+html[data-look] h1 em{background:none;color:var(--acc)}
+html[data-look] .hero .btn{background:var(--acc);box-shadow:0 3px 0 var(--acc-ink);border-radius:14px;padding:15px 26px}
+html[data-look] .hero .btn:hover{background:var(--acc-ink)}
+html[data-look] .btn:hover{background:#1d1b17}
+
+/* cards: white, thin warm line, soft shadow underneath */
+html[data-look] .step,html[data-look] .card,html[data-look] .idea div,html[data-look] .three div,html[data-look] .fix div,html[data-look] .lesson,html[data-look] .tip{border-radius:20px;box-shadow:var(--lift)}
+html[data-look] .idea .n,html[data-look] .three .n{background:#f1ede4;color:var(--ink);box-shadow:none;border-radius:50%;padding:0}
+html[data-look] .lesson .n{background:var(--tint);color:var(--acc-ink)}
+html[data-look] .lesson.soon .n{background:var(--code);color:var(--mut)}
+html[data-look] .part-head{background:#fff;border-color:var(--bd)!important;box-shadow:var(--lift);border-radius:24px}
+html[data-look] .part-head .num{background:var(--tint);color:var(--acc-ink)}
+html[data-look] .eyebrow{color:var(--mut)}
+html[data-look] .why{border-left-color:var(--accbd)}
+html[data-look] .dl{background:#fff;border-color:var(--bd)!important;box-shadow:var(--lift);border-radius:20px}
+html[data-look] .dl .ico{background:var(--tint)}
+html[data-look] .dl .ico svg{stroke:var(--acc-ink)}
+html[data-look] .bl,html[data-look] .get,html[data-look] .finish{border-color:var(--accbd)!important}
+html[data-look] .field.hl{box-shadow:0 0 0 3px var(--tint)}
+html[data-look] .copy{background:#faf8f3;border-color:var(--bd)}
+html[data-look] .copy-bar{background:#f3efe6;border-bottom-color:var(--bd)}
+html[data-look] .win-bar{background:#f7f4ee}
+html[data-look] .bub.ai{background:#f1ede4}
+html[data-look] .tree{background:#faf8f3}
+</style>
+</head><body>
+<nav class="sitenav" aria-label="Kit pages"><div class="sitenav-in"><a class="brand" href="Claude-Cowork-Setup.html">Claude Setup Kit <span>@itsarisouss</span></a><a class="tabl" href="Claude-Cowork-Setup.html">1 Setup</a><a class="tabl" href="AI-Bootcamp.html">2 The basics</a><a class="tabl cur" href="Tips-and-Tricks.html">3 Tips</a><a class="tabl" href="AI-Bootcamp-Advanced.html">4 Skills and agents</a><a class="tabl" href="Claude-Code.html">5 Claude Code</a><a class="tabl dlall" href="claude-setup-kit.zip" download>Download the kit</a></div></nav>
+
+<div class="top"><div class="top-in">
+  <div class="logo"><i></i><span>Tips and tricks</span></div>
+  <div class="links"><a href="Claude-Cowork-Setup.html">Setup page</a><a href="AI-Bootcamp.html">Bootcamp</a><a href="AI-Bootcamp-Advanced.html">Level 2</a><a href="Claude-Code.html">Claude Code</a></div>
+</div></div>
+<div class="wrap">
+<header class="hero">
+  <div class="kicker">AI Bootcamp · tips and tricks</div>
+  <h1>Small moves that <em>save you hours.</em></h1>
+  <p class="lede">16 tips. Fourteen work today, and two need a small setup first. Each one starts with a real problem, then gives you the steps and a prompt to copy. Click a tip to open it.</p>
+</header>
+<div class="chips" id="chips"><button data-f="all" aria-pressed="true">All tips</button><button data-f="save" aria-pressed="false">Save your limit</button><button data-f="better" aria-pressed="false">Get better answers</button><button data-f="video" aria-pressed="false">Video and audio</button><button data-f="browser" aria-pressed="false">In the browser</button></div>
+<h2 class="group" data-g="save">Save your limit</h2>
+<article class="tip" data-g="save" id="tip1"><div class="tip-top"><div style="flex:1"><h3>Turn long files into Markdown before Claude reads them</h3><div class="hook">A 60 page PDF can eat a big piece of your limit in one go.</div></div><span class="badge now">Works today</span></div><div class="tip-body"><p class="get"><b>What you get:</b> The same words, for far fewer tokens. A PDF also sends a picture of every page. A Markdown file sends only the words.</p><ol><li>Open a free AI tool you already have, such as <b>Copilot</b>, <b>ChatGPT</b> or <b>Gemini</b>, and attach the PDF or paste the long email.</li><li>Paste the prompt below.</li><li>Copy the answer into Notepad and save it in <code>00_Inbox</code> with a name that ends in <code>.md</code></li><li>Tell Claude: <code>Read the .md file in 00_Inbox.</code></li></ol><div class="copy"><div class="copy-bar"><span>Paste this in the other AI tool</span><button data-copy="tp1">Copy</button></div><pre id="tp1">Turn this document into clean Markdown. Keep every heading, list and number. Leave out images, page numbers and footers. Give me only the Markdown, in one block.</pre></div><p class="gtk"><b>Good to know:</b> Use this when you only need the words. Keep the original file when the charts, tables or layout matter.</p></div></article>
+<article class="tip" data-g="save" id="tip2"><div class="tip-top"><div style="flex:1"><h3>New task, new chat</h3><div class="hook">Claude rereads the whole chat with every message. A chat that runs all day gets expensive.</div></div><span class="badge now">Works today</span></div><div class="tip-body"><p class="get"><b>What you get:</b> A fresh, light start, without losing what you decided.</p><ol><li>When a chat gets long, paste the prompt below.</li><li>Copy the summary.</li><li>Start a new chat and paste it as your first message.</li></ol><div class="copy"><div class="copy-bar"><span>Paste this in the long chat</span><button data-copy="tp2">Copy</button></div><pre id="tp2">Sum up what we decided in this chat in 8 short bullets, so I can paste it into a new chat and continue there.</pre></div></div></article>
+<article class="tip" data-g="save" id="tip3"><div class="tip-top"><div style="flex:1"><h3>Let Gemini or Copilot find it, let Claude write it</h3><div class="hook">Claude cannot see your inbox or your calendar. Gemini (for Google) or Copilot (for Microsoft) can.</div></div><span class="badge now">Works today</span></div><div class="tip-body"><p class="get"><b>What you get:</b> Facts from your emails and meetings, turned into a finished deck or brief.</p><ol><li>Ask <b>Gemini</b> or <b>Copilot</b> for the facts. For example: what a client asked for last week.</li><li>Read its answer and delete anything confidential.</li><li>Paste it into Claude with the prompt below.</li></ol><div class="copy"><div class="copy-bar"><span>Paste this in Claude, with the answer under it</span><button data-copy="tp3">Copy</button></div><pre id="tp3">Here are my notes from a meeting. Turn them into WHAT YOU NEED, for WHO READS IT. Use only what is in the notes. Tell me what is missing.</pre></div></div></article>
+<h2 class="group" data-g="better">Get better answers</h2>
+<article class="tip" data-g="better" id="tip4"><div class="tip-top"><div style="flex:1"><h3>Let Claude interview you first</h3><div class="hook">You do not know what to put in the prompt. So you write four words.</div></div><span class="badge now">Works today</span></div><div class="tip-body"><p class="get"><b>What you get:</b> Claude asks for what it needs. You only answer.</p><ol><li>Paste the prompt below and fill in your task.</li><li>Answer the questions, one at a time.</li></ol><div class="copy"><div class="copy-bar"><span>Paste this in Claude</span><button data-copy="tp4">Copy</button></div><pre id="tp4">I want help with YOUR TASK. Before you write anything, ask me the questions you need answered to do it well. One question at a time.</pre></div></div></article>
+<article class="tip" data-g="better" id="tip5"><div class="tip-top"><div style="flex:1"><h3>Talk instead of typing</h3><div class="hook">Good prompts are longer than we like to type.</div></div><span class="badge now">Works today</span></div><div class="tip-body"><p class="get"><b>What you get:</b> A full, natural brief in 30 seconds. People say much more than they type.</p><ol><li>Click in the Claude message box.</li><li>Press the <b>Windows key + H</b>. A small microphone appears. On a Mac, switch on Dictation under System Settings, Keyboard.</li><li>Talk as if you are briefing a colleague. Then press Enter.</li></ol><p class="gtk"><b>Good to know:</b> Voice typing needs an internet connection and a microphone. Do not dictate anything private with other people around.</p></div></article>
+<article class="tip" data-g="better" id="tip6"><div class="tip-top"><div style="flex:1"><h3>Show an example of good work</h3><div class="hook">You describe the style you want with ten adjectives. Claude still misses it.</div></div><span class="badge now">Works today</span></div><div class="tip-body"><p class="get"><b>What you get:</b> Claude copies the structure, the length and the tone of a real piece.</p><ol><li>Put one or two pieces of work you are proud of in <code>06_Templates</code></li><li>Add the line below to your prompt.</li></ol><div class="copy"><div class="copy-bar"><span>Add this line to any prompt</span><button data-copy="tp6">Copy</button></div><pre id="tp6">Match the style, length and structure of my example in 06_Templates. Do not copy its content.</pre></div><p class="gtk"><b>Good to know:</b> Anthropic calls examples one of the most reliable ways to steer the result.</p></div></article>
+<article class="tip" data-g="better" id="tip7"><div class="tip-top"><div style="flex:1"><h3>Make Claude check its own work</h3><div class="hook">You spend as long checking the draft as you would have spent writing it.</div></div><span class="badge now">Works today</span></div><div class="tip-body"><p class="get"><b>What you get:</b> A draft that comes with its own list of what is checked and what is not.</p><ol><li>Add the lines below to the end of your prompt.</li></ol><div class="copy"><div class="copy-bar"><span>Add this to the end of a prompt</span><button data-copy="tp7">Copy</button></div><pre id="tp7">Before you show me the result: check every number, name and date against the source file. If something is not in the file, write &quot;not in the file&quot; and do not guess. End with one line: Checked / Could not check.</pre></div></div></article>
+<article class="tip" data-g="better" id="tip8"><div class="tip-top"><div style="flex:1"><h3>Ask for the plan first</h3><div class="hook">Claude ran for five minutes and built the wrong thing.</div></div><span class="badge now">Works today</span></div><div class="tip-body"><p class="get"><b>What you get:</b> You catch a wrong direction in ten seconds, before any work is done.</p><ol><li>Add the line below to any larger job.</li><li>Read the plan. Say yes, or say what to change.</li></ol><div class="copy"><div class="copy-bar"><span>Add this line</span><button data-copy="tp8">Copy</button></div><pre id="tp8">Show me your plan in 5 short steps and wait for my yes before you start.</pre></div></div></article>
+<article class="tip" data-g="better" id="tip9"><div class="tip-top"><div style="flex:1"><h3>Say what is wrong, do not start over</h3><div class="hook">The answer is 80 percent right. You delete the chat and try again from zero.</div></div><span class="badge now">Works today</span></div><div class="tip-body"><p class="get"><b>What you get:</b> A fix in one message, with everything Claude already knows kept.</p><ol><li>Tell Claude what is wrong, in plain words.</li><li>Or paste the prompt below.</li></ol><div class="copy"><div class="copy-bar"><span>Paste this in the same chat</span><button data-copy="tp9">Copy</button></div><pre id="tp9">This is not right yet. The problem is WHAT IS WRONG. Ask me up to 3 questions you need answered, then try again.</pre></div></div></article>
+<article class="tip" data-g="better" id="tip10"><div class="tip-top"><div style="flex:1"><h3>Teach Claude once</h3><div class="hook">You correct the same thing every week.</div></div><span class="badge now">Works today</span></div><div class="tip-body"><p class="get"><b>What you get:</b> Claude writes it into your MEMORY.md file and uses it from then on.</p><ol><li>When you correct Claude, add the line below.</li></ol><div class="copy"><div class="copy-bar"><span>Paste this after your correction</span><button data-copy="tp10">Copy</button></div><pre id="tp10">Remember this: WHAT CLAUDE SHOULD KNOW. Add it to MEMORY.md with today&#x27;s date.</pre></div><p class="gtk"><b>Good to know:</b> You can open MEMORY.md in Notepad at any time to read or fix what Claude remembers.</p></div></article>
+<h2 class="group" data-g="video">Video and audio</h2>
+<article class="tip" data-g="video" id="tip11"><div class="tip-top"><div style="flex:1"><h3>Get the key points of a YouTube video</h3><div class="hook">A 40 minute webinar. You need the five things that matter.</div></div><span class="badge now">Works today</span></div><div class="tip-body"><p class="get"><b>What you get:</b> The key points in a minute, and the exact words when you need a quote.</p><ol><li>Open the video in <b>Chrome</b>.</li><li><b>For the key points:</b> click <b>Ask Gemini</b> at the top of Chrome and ask for them.</li><li><b>For the exact words:</b> open the video description and click <b>Show transcript</b>. Copy the text into a file in <code>00_Inbox</code></li><li>Give that file to Claude for a summary, a post or a brief.</li></ol><div class="copy"><div class="copy-bar"><span>Ask Gemini this</span><button data-copy="tp11">Copy</button></div><pre id="tp11">Give me the 5 key points of this video, each with the time it is said.</pre></div><p class="gtk"><b>Good to know:</b> Show transcript only appears on videos that have captions. If you do not see the Ask Gemini button, your country or version does not have it yet.</p></div></article>
+<article class="tip" data-g="video" id="tip12"><div class="tip-top"><div style="flex:1"><h3>Get a transcript of a recording that is not on YouTube</h3><div class="hook">A recorded call, a webinar file, a customer interview. Nobody will watch an hour of it.</div></div><span class="badge now">Works today</span></div><div class="tip-body"><p class="get"><b>What you get:</b> The full text, ready for Claude to turn into notes, posts or a brief.</p><ol><li><b>A recorded video call:</b> Teams, Zoom and Google Meet can save a transcript with the recording. Download it.</li><li><b>Any other recording:</b> open <b>Word</b> in your browser. Click <b>Home</b>, then <b>Dictate</b>, then <b>Transcribe</b>, then <b>Upload audio</b>.</li><li>Save the text in <code>00_Inbox</code></li><li>Give it to Claude with the prompt below.</li></ol><div class="copy"><div class="copy-bar"><span>Paste this in Claude</span><button data-copy="tp12">Copy</button></div><pre id="tp12">Read the transcript in 00_Inbox. Give me a two sentence summary, the 5 key points, every decision, and a list of actions with who each one is for. Use only what is in the transcript.</pre></div><p class="gtk"><b>Good to know:</b> Word accepts .wav, .mp4, .m4a and .mp3 files, up to 300 minutes a month, with a Microsoft 365 subscription. Ask the people in the recording before you transcribe it.</p></div></article>
+<article class="tip" data-g="video" id="tip13"><div class="tip-top"><div style="flex:1"><h3>Let Claude cut and subtitle a video</h3><div class="hook">You need a 30 second clip with subtitles from a long recording. The video team is busy.</div></div><span class="badge it">Needs setup</span></div><div class="tip-body"><p class="get"><b>What you get:</b> A trimmed clip, a vertical version, or burned-in subtitles, made from a plain request.</p><ol><li>Install <b>FFmpeg</b> (free). For subtitles made on your own computer, also <b>Whisper</b> (free).</li><li>Put the video in a new folder: <code>01_Projects</code> / <code>video</code></li><li>Paste the prompt below and fill in what you want.</li><li>Read the plan. Say yes. Claude makes a new file and never changes the original.</li></ol><div class="copy"><div class="copy-bar"><span>Paste this in Claude</span><button data-copy="tp13">Copy</button></div><pre id="tp13">There is a video in 01_Projects/video. First check that FFmpeg is installed. If it is not, stop and tell me.
+
+What I want: DESCRIBE THE EDIT. For example: cut from 02:10 to 02:45, make it vertical, add subtitles.
+
+Rules: show me your plan first and wait for my yes. Never change the original file. Save the result as a new file in the same folder. Tell me what you could not do.</pre></div><p class="gtk"><b>Good to know:</b> Free tools, from their official pages: FFmpeg at ffmpeg.org. Whisper at github.com/openai/whisper. yt-dlp at github.com/yt-dlp/yt-dlp, only for videos you have the right to download.</p></div></article>
+<h2 class="group" data-g="browser">In the browser</h2>
+<article class="tip" data-g="browser" id="tip14"><div class="tip-top"><div style="flex:1"><h3>Let Claude do the clicking</h3><div class="hook">Downloading 20 assets from a portal. Filling in the same web form again and again.</div></div><span class="badge it">Needs setup</span></div><div class="tip-body"><p class="get"><b>What you get:</b> Claude in Chrome opens the pages, clicks, types and downloads for you, while you watch.</p><ol><li>Add the <b>Claude</b> extension from the Chrome Web Store and sign in.</li><li>Open the website in Chrome and click the Claude icon.</li><li>Describe the job with the prompt below.</li><li>Keep it on <b>Manual</b> so it asks before each action.</li></ol><div class="copy"><div class="copy-bar"><span>Paste this in Claude in Chrome</span><button data-copy="tp14">Copy</button></div><pre id="tp14">On this website, WHAT YOU WANT DONE. For example: download every logo file on this page into my Downloads folder. Ask me before you submit any form, send anything or log in anywhere.</pre></div><p class="gtk"><b>Good to know:</b> Anthropic advises against using it on pages with sensitive information. Close tabs with banking or other private data first. You stay responsible for what it does in your name.</p></div></article>
+<article class="tip" data-g="browser" id="tip15"><div class="tip-top"><div style="flex:1"><h3>Ask about the page you are looking at</h3><div class="hook">A long article, a competitor&#x27;s product page, a dense report in your browser.</div></div><span class="badge now">Works today</span></div><div class="tip-body"><p class="get"><b>What you get:</b> A summary or an answer about that page, without copying anything.</p><ol><li>Click <b>Ask Gemini</b> at the top of Chrome.</li><li>Ask your question about the page.</li></ol><div class="copy"><div class="copy-bar"><span>Ask Gemini this</span><button data-copy="tp15">Copy</button></div><pre id="tp15">Sum up this page in 5 bullets. Then tell me what it says about TOPIC.</pre></div><p class="gtk"><b>Good to know:</b> If you do not see the button, your country or version does not have it yet.</p></div></article>
+<article class="tip" data-g="browser" id="tip16"><div class="tip-top"><div style="flex:1"><h3>Show Claude your screen</h3><div class="hook">An error message, a chart, a strange setting. Hard to describe in words.</div></div><span class="badge now">Works today</span></div><div class="tip-body"><p class="get"><b>What you get:</b> Claude sees what you see and explains it.</p><ol><li>Press <b>Windows key + Shift + S</b> (Mac: <b>Cmd + Ctrl + Shift + 4</b>) and drag over the part of the screen.</li><li>Click in the Claude message box and press <b>Ctrl + V</b> (Mac: <b>Cmd + V</b>).</li><li>Ask your question.</li></ol><p class="gtk"><b>Good to know:</b> A picture uses more tokens than text. Crop it tight, and leave out anything confidential.</p></div></article>
+
+<footer><span>Made by @itsarisouss, with Claude. Every tip was checked against Anthropic, Google or Microsoft's own help pages.</span></footer>
+</div>
+<script>
+(function(){
+var $$=function(s,r){return [].slice.call((r||document).querySelectorAll(s))};
+$$('.tip').forEach(function(t){t.querySelector('.tip-top').addEventListener('click',function(){var o=t.classList.contains('open');$$('.tip.open').forEach(function(x){x.classList.remove('open')});if(!o)t.classList.add('open')})});
+$$('#chips button').forEach(function(b){b.addEventListener('click',function(){var f=b.dataset.f;$$('#chips button').forEach(function(x){x.setAttribute('aria-pressed',x===b)});
+  $$('[data-g]').forEach(function(el){el.hidden=!(f==='all'||el.dataset.g===f)})})});
+$$('[data-copy]').forEach(function(b){b.addEventListener('click',function(e){e.stopPropagation();
+  var el=document.getElementById(b.getAttribute('data-copy')),txt=el.textContent,o=b.getAttribute('data-label')||b.textContent;b.setAttribute('data-label',o);
+  function done(){b.textContent='Copied. Now paste it.';b.classList.add('ok');clearTimeout(b._t);b._t=setTimeout(function(){b.textContent=o;b.classList.remove('ok')},2200)}
+  function execCopy(){var ta=document.createElement('textarea');ta.value=txt;ta.setAttribute('readonly','');ta.style.cssText='position:fixed;top:0;left:0;width:1px;height:1px;opacity:0';document.body.appendChild(ta);ta.focus();ta.select();var ok=false;try{ok=document.execCommand('copy')}catch(e){ok=false}document.body.removeChild(ta);return ok}
+  function manual(){var r=document.createRange();r.selectNodeContents(el);var s=window.getSelection();s.removeAllRanges();s.addRange(r);b.textContent='Selected. Press Ctrl+C';clearTimeout(b._t);b._t=setTimeout(function(){b.textContent=o},4500)}
+  if(execCopy()){done();return}
+  try{if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(done,manual)}else{manual()}}catch(e){manual()}
+})});
+})();
+</script>
+</body></html>

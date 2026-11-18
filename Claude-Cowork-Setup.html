@@ -1,0 +1,714 @@
+<!doctype html>
+<html lang="en" data-look="a"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Claude Setup Kit</title>
+<script>document.documentElement.className='js'</script>
+<style>
+/* Calm and light. One accent. Lots of space. One thing at a time. */
+:root{--paper:#e9e4d8;--card:#f6f2e9;--bd:#d8d2c4;--ink:#141413;--text:#3d3a34;--mut:#77736a;--acc:#e5262b;--acc-ink:#b3151a;--tint:#f6e7e4;--ok:#2f7d32;--oktint:#e3eddc;--okbd:#c3d6ba;--code:#e6e1d4;
+--p1:var(--acc);--p2:var(--acc);--p3:var(--acc);--p4:var(--acc);--sk:var(--acc);--c:var(--acc);
+--font:"Segoe UI",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;
+--mono:Consolas,"Cascadia Mono","SF Mono",Menlo,monospace}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--text);font:18px/1.7 var(--font);-webkit-font-smoothing:antialiased}
+a{color:inherit}
+.wrap{max-width:780px;margin:0 auto;padding:0 24px}
+h1,h2,h3{font-family:var(--font);color:var(--ink);margin:0;letter-spacing:-.02em}
+p{margin:0 0 16px}
+b,strong{font-weight:700;color:var(--ink)}
+[hidden]{display:none!important}
+
+/* top bar */
+.top{position:sticky;top:0;z-index:20;background:rgba(233,228,216,.94);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--bd)}
+.top-in{max-width:980px;margin:0 auto;padding:12px 24px;display:flex;align-items:center;gap:16px}
+.logo{font-weight:800;font-size:.95rem;color:var(--ink);white-space:nowrap;display:flex;align-items:center;gap:9px}
+.logo i{width:20px;height:20px;border-radius:6px;background:var(--acc);display:block}
+.tabs{display:flex;gap:4px;margin:0 auto;background:var(--card);border:1px solid var(--bd);border-radius:999px;padding:4px;overflow-x:auto}
+.tabs button{font:600 .92rem var(--font);color:var(--mut);background:transparent;border:0;border-radius:999px;padding:8px 18px;cursor:pointer;white-space:nowrap}
+.tabs button:hover{color:var(--ink)}
+.tabs button[aria-selected=true]{background:var(--ink);color:#fff}
+.prog{display:flex;align-items:center;gap:10px;font:600 .82rem var(--font);color:var(--mut);white-space:nowrap}
+.segs{display:flex;gap:4px}.seg{width:32px;height:6px;border-radius:3px;background:#cfc9ba;overflow:hidden}
+.seg b{display:block;height:100%;width:0;background:var(--ink);border-radius:3px;transition:width .4s ease}
+@media (max-width:760px){.logo span,.prog .segs{display:none}.top-in{gap:8px;padding:10px 14px}.tabs button{padding:7px 12px;font-size:.86rem}}
+
+/* header */
+.hero{padding:84px 0 28px}
+.blob,.grid,.mq,.side,.hero-in>div:last-child{display:none!important}
+.hero-in{max-width:780px;margin:0 auto;padding:0 24px}
+.kicker{font:700 .78rem var(--font);letter-spacing:.16em;text-transform:uppercase;color:var(--acc-ink);margin-bottom:18px}
+.kicker i{display:none}
+h1{font-size:clamp(2.3rem,5.6vw,3.4rem);line-height:1.08;font-weight:800;letter-spacing:-.03em}
+h1 em{font-style:normal;background:linear-gradient(transparent 64%,var(--acc) 64%,var(--acc) 94%,transparent 94%)}
+.lede{font-size:1.2rem;line-height:1.6;color:var(--text);max-width:36em;margin:22px 0 30px}
+.cta{display:flex;flex-wrap:wrap;gap:14px;align-items:center}
+.btn{display:inline-flex;align-items:center;gap:10px;font:700 1rem var(--font);text-decoration:none;border:0;border-radius:12px;padding:14px 24px;cursor:pointer;background:var(--ink);color:#fff;transition:background .2s}
+.btn:hover{background:#000}
+.btn.c{background:var(--ink);color:#fff}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid #bdb9ae}
+.meta{font-size:.95rem;color:var(--mut)}
+
+/* the idea */
+.sec-title{font-size:1.6rem;font-weight:800;margin:72px 0 22px}
+.idea{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+@media (max-width:760px){.idea{grid-template-columns:1fr}}
+.idea div{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:24px}
+.idea .n{width:36px;height:36px;border-radius:50%;background:var(--acc);color:var(--ink);font-weight:800;font-size:1rem;display:grid;place-items:center;margin-bottom:14px}
+.idea h3{font-size:1.1rem;margin-bottom:6px}.idea p{color:var(--text);font-size:.98rem;margin:0}
+.rule{display:flex;gap:14px;align-items:flex-start;background:#f3e9c4;border:1px solid #dcc77c;border-radius:16px;padding:20px 22px;margin-top:40px;font-size:1rem}
+.rule svg{flex:none;margin-top:5px;stroke:#8a6d00}
+
+/* parts */
+.part{margin-top:120px;scroll-margin-top:80px}
+.part-head{display:grid;grid-template-columns:64px 1fr;column-gap:20px;align-items:start;background:var(--tint);border:1px solid #e6c9c4;border-radius:20px;padding:30px 30px 28px}
+.part-head .num{grid-row:1 / span 4;width:64px;height:64px;border-radius:50%;background:var(--acc);color:var(--ink);font:800 1.45rem var(--font);display:grid;place-items:center}
+.eyebrow{font:700 .76rem var(--font);letter-spacing:.14em;text-transform:uppercase;color:var(--acc-ink)}
+.part-head h2{font-size:clamp(1.7rem,4.4vw,2.2rem);font-weight:800;line-height:1.12;margin:6px 0 10px}
+.part-head p{color:var(--text);margin:0;max-width:34em}
+.part-head .time{display:inline-block;margin-top:14px;font-size:.9rem;color:var(--mut)}
+@media (max-width:560px){.part-head{grid-template-columns:1fr}.part-head .num{grid-row:auto;margin-bottom:14px;width:52px;height:52px;font-size:1.2rem}}
+.rail{margin-top:8px}
+
+/* steps */
+.step{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:30px 30px 28px;margin-top:22px;box-shadow:0 2px 12px rgba(20,20,19,.04);transition:border-color .2s,background .2s}
+.step-top{display:flex;align-items:flex-start;gap:16px;margin-bottom:16px}
+.step-top>div{flex:1}
+.tag{flex:none;font:700 .74rem var(--font);letter-spacing:.1em;text-transform:uppercase;color:var(--mut);background:var(--code);border-radius:8px;padding:5px 10px;margin-top:4px;white-space:nowrap}
+.tag::before{content:"Step "}
+.step h3{font-size:1.35rem;font-weight:700;line-height:1.25;flex:1}
+.check{flex:none;position:relative;width:38px;height:38px;cursor:pointer}
+.check input{position:absolute;inset:0;opacity:0;cursor:pointer;margin:0;width:100%;height:100%}
+.check span{position:absolute;inset:0;border-radius:50%;border:2px solid #a9a497;background:var(--card);display:grid;place-items:center;transition:background .2s,border-color .2s}
+.check svg{width:18px;height:18px;stroke:#fff;stroke-width:3.2;fill:none;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:24;stroke-dashoffset:24;transition:stroke-dashoffset .25s}
+.check:hover span{border-color:var(--ink)}
+.check input:checked+span{background:var(--ok);border-color:var(--ok)}
+.check input:checked+span svg{stroke-dashoffset:0}
+.check input:focus-visible+span{outline:3px solid var(--acc-ink);outline-offset:3px}
+.step ol,.step ul{margin:0 0 16px;padding-left:24px}.step li{margin:10px 0}
+.why{font-size:.98rem;color:var(--mut)!important;border-left:3px solid var(--acc);padding-left:14px}
+.see{margin:22px 0 0;font-size:1rem;background:var(--oktint);border:1px solid var(--okbd);border-radius:12px;padding:14px 16px;color:var(--text)}
+.see b{color:var(--ok)}
+.shot{margin:20px 0 6px;max-width:440px}
+.cap{font-size:.82rem;color:var(--mut);margin:8px 2px 0}
+code{font-family:var(--mono);font-size:.9em;background:var(--code);padding:2px 7px;border-radius:6px;word-break:break-word;color:var(--ink)}
+kbd{font:600 .82em var(--mono);background:var(--card);border:1px solid #c9c5ba;border-bottom-width:2px;border-radius:6px;padding:1px 7px;color:var(--ink)}
+
+/* one step open at a time */
+.step.done:not(.open)>*:not(.step-top),.step.wait:not(.open)>*:not(.step-top){display:none}
+.step.done:not(.open),.step.wait:not(.open){padding-top:20px;padding-bottom:20px;box-shadow:none}
+.step.done:not(.open) .step-top,.step.wait:not(.open) .step-top{margin-bottom:0;align-items:center}
+.step.done:not(.open) .tag,.step.wait:not(.open) .tag{margin-top:0}
+.step.done,.step.wait{background:transparent}
+.step.done.open,.step.wait.open{background:var(--card)}
+.step.done h3,.step.wait h3{cursor:pointer;font-size:1.1rem}
+.step.wait:not(.open) h3{color:var(--mut)}
+.step.done:not(.open) h3{color:var(--mut);text-decoration:line-through;text-decoration-color:#c9c5ba}
+.step:not(.done):not(.wait){border-color:var(--ink);border-width:2px}
+
+/* small illustrations */
+.win{background:var(--card);border:1px solid var(--bd);border-radius:14px;overflow:hidden;font-size:.9rem;box-shadow:0 4px 18px rgba(20,20,19,.06)}
+.win-bar{display:flex;align-items:center;gap:6px;padding:10px 14px;border-bottom:1px solid var(--bd);color:var(--mut);font-size:.78rem;background:#ece7db}
+.win-bar i{width:9px;height:9px;border-radius:50%;background:#d6d2c7}.win-bar span{margin-left:8px}
+.win-body{padding:16px;display:grid;gap:10px}
+.bub{max-width:90%;padding:9px 13px;border-radius:12px;line-height:1.45}
+.bub.me{justify-self:end;background:var(--ink);color:#fff}
+.bub.ai{background:#e6e1d4;color:var(--ink)}
+.composer{border:1px solid var(--bd);border-radius:12px;padding:12px}
+.composer .ph{color:var(--mut);margin-bottom:12px}
+.pills{display:flex;gap:6px;flex-wrap:wrap}
+.pill{font:600 .78rem var(--font);border:1px solid var(--bd);border-radius:999px;padding:4px 12px;color:var(--mut)}
+.pill.on{background:var(--ink);border-color:var(--ink);color:#fff}
+.dialog{display:grid;gap:10px}.dialog label{font-size:.74rem;color:var(--mut);display:block;margin-bottom:3px}
+.field{border:1px solid var(--bd);border-radius:8px;padding:7px 11px;color:var(--ink)}
+.field.hl{border-color:var(--acc-ink);box-shadow:0 0 0 3px var(--tint)}
+.tree{font:14px/1.9 var(--mono);background:#efeadf;border:1px solid var(--bd);border-radius:12px;padding:16px 18px;color:var(--ink);overflow-x:auto}
+.tree div{white-space:nowrap}.tree .f{font-weight:700}.tree .n{color:var(--acc-ink)}.tree small{color:var(--mut);font-size:13px;margin-left:12px;font-family:var(--font)}
+
+/* copy block */
+.copy{margin:20px 0;border:1px solid #cfcbc0;border-radius:14px;overflow:hidden;background:#efeadf}
+.copy-bar{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 10px 10px 18px;background:#e4dfd2;border-bottom:1px solid #d3cdbf;font:600 .86rem var(--font);color:var(--text)}
+.copy button{font:700 .9rem var(--font);background:var(--ink);color:#fff;border:0;border-radius:9px;padding:10px 20px;cursor:pointer;min-height:40px}
+.copy button:hover{background:#000}
+.copy button.ok{background:var(--ok)}
+.copy pre{margin:0;padding:18px;font:14px/1.65 var(--mono);white-space:pre-wrap;word-break:break-word;max-height:190px;overflow:auto;color:#2b2823}
+.copy.short pre{max-height:none}
+
+/* download */
+.dl{display:flex;gap:18px;align-items:center;flex-wrap:wrap;border:1px solid #e6c9c4;border-radius:14px;padding:20px;margin:20px 0;background:var(--tint)}
+.dl .ico{flex:none;width:52px;height:52px;border-radius:13px;background:var(--acc);display:grid;place-items:center}
+.dl .t{flex:1;min-width:200px}.dl .t b{display:block;font-size:1.05rem}.dl .t span{font-size:.9rem;color:var(--text)}
+.sw{display:flex;gap:6px;margin-top:10px}.sw i{width:20px;height:20px;border-radius:5px;border:1px solid #bdb9ae}
+
+/* finish */
+.finish{display:none;margin-top:36px;border-radius:20px;padding:40px 30px;text-align:center;background:var(--tint);border:1px solid #e6c9c4}
+.finish.on{display:block}
+.finish h2{font-size:2rem;font-weight:800}
+.finish p{margin:10px auto 22px;max-width:30em}
+
+/* other tabs */
+.page-head{padding:84px 0 8px}
+.page-head h1{font-size:clamp(2rem,5vw,2.9rem)}
+.cards{display:grid;gap:22px;margin-top:28px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:30px;box-shadow:0 2px 12px rgba(20,20,19,.04)}
+.card h3{font-size:1.3rem;font-weight:700;margin-bottom:8px}
+.bad,.good{border-radius:12px;padding:14px 16px;margin:14px 0;font-size:1rem}
+.bad{background:#fdf0ec;border:1px solid #f0c9bd}
+.good{background:var(--oktint);border:1px solid var(--okbd)}
+.lab{display:block;font:800 .72rem var(--font);letter-spacing:.12em;text-transform:uppercase;margin-bottom:6px}
+.bad .lab{color:#b3401f}.good .lab{color:var(--ok)}
+.three{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:24px}
+@media (max-width:760px){.three{grid-template-columns:1fr}}
+.three div{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:24px}
+.three .n{width:36px;height:36px;border-radius:50%;background:var(--acc);color:var(--ink);font-weight:800;display:grid;place-items:center;margin-bottom:14px}
+.three p{color:var(--text);font-size:.98rem;margin:6px 0 0}
+.skill .name{font:700 .8rem var(--mono);color:var(--acc-ink)}
+details{margin-top:12px;border-top:1px solid var(--bd);padding-top:14px}
+summary{cursor:pointer;font-weight:600;color:var(--text)}
+.fix{display:grid;gap:14px;margin-top:28px}
+.fix div{display:grid;grid-template-columns:1fr 1.3fr;gap:20px;background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:20px 22px}
+@media (max-width:640px){.fix div{grid-template-columns:1fr;gap:6px}}
+footer{margin:110px 0 70px;padding-top:28px;border-top:1px solid var(--bd);display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;color:var(--mut);font-size:.92rem}
+.toast{position:fixed;left:50%;bottom:26px;transform:translate(-50%,90px);background:var(--ink);color:#fff;font-weight:700;border-radius:999px;padding:12px 22px;box-shadow:0 10px 30px rgba(0,0,0,.25);transition:transform .35s ease;z-index:40;pointer-events:none}
+.toast.on{transform:translate(-50%,0)}
+.js .rv{opacity:0;transition:opacity .5s}
+.js .rv.in{opacity:1}
+.js .seq{opacity:1}
+button:focus-visible,a:focus-visible,summary:focus-visible{outline:3px solid var(--acc-ink);outline-offset:3px}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}.js .rv{opacity:1}html{scroll-behavior:auto}}
+@media print{.top,.copy button,footer,.toast{display:none!important}body{background:#fff;font-size:11pt}[hidden]{display:block!important}.js .rv{opacity:1}.step,.card{break-inside:avoid}.copy pre{max-height:none}
+.step.done:not(.open)>*:not(.step-top),.step.wait:not(.open)>*:not(.step-top){display:block}}
+</style><style>
+/* personal look: black, white, one red accent */
+:root{--paper:#f1efea;--card:#fbfaf7;--bd:#dcd8cf;--acc:#e5262b;--acc-ink:#b3151a;--tint:#f6e7e4;--code:#e9e6de}
+.part-head,.dl,.bl,.get,.finish{border-color:#e6c9c4!important}
+.lesson .n,.part-head .num,.idea .n,.three .n,.three3 i,.logo i{color:#fff}
+.fbox.hl,.fbox.hl small,.three3 div.hl,.three3 div.hl b,.three3 div.hl small,.door.hl,.pile div.hl,.words span.new.in,.bigq{color:#fff}
+.three3 div.hl i{background:#fff;color:#141413}
+.dl .ico svg{stroke:#fff}
+.field.hl{box-shadow:0 0 0 3px #f6e7e4}
+</style>
+<style>
+.sitenav{background:#141413;color:#fff}
+.sitenav-in{max-width:980px;margin:0 auto;padding:0 24px;display:flex;align-items:center;gap:6px;overflow-x:auto;scrollbar-width:none}
+.sitenav .brand{font:800 .9rem var(--font);white-space:nowrap;margin-right:14px;padding:14px 0;color:#fff;text-decoration:none}
+.sitenav .brand span{color:#ff6b61}
+.sitenav a.tabl{font:600 .88rem var(--font);color:#c9c7c1;text-decoration:none;white-space:nowrap;padding:14px 12px;border-bottom:3px solid transparent}
+.sitenav a.tabl:hover{color:#fff}
+.sitenav a.tabl.cur{color:#fff;border-bottom-color:#e5262b}
+.sitenav a.dlall{margin-left:auto;color:#fff}
+.top .links,.top-in>a{display:none!important}
+@media print{.sitenav{display:none}}
+</style>
+<style id="look">
+/* the look: warm paper, white cards, one red accent used very little */
+html[data-look]{--acc:#e5262b;--acc-ink:#b3151a;--tint:#fbeceb;--wash:#f8e9da;--accbd:#f1cdc8;
+  --paper:#f4f1ea;--card:#ffffff;--bd:#e8e2d5;--ink:#2e2b25;--text:#4a463e;--mut:#8c8576;--code:#f1ede4;
+  --lift:0 1px 2px rgba(40,30,10,.05),0 10px 24px rgba(40,30,10,.07)}
+html[data-look] body{background-color:var(--paper);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .32  0 0 0 0 .27  0 0 0 0 .2  0 0 0 .09 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),linear-gradient(180deg,var(--wash) 0,var(--paper) 100%);
+  background-repeat:repeat,no-repeat;background-size:180px 180px,100% 640px}
+
+/* top bars: light */
+html[data-look] .sitenav{background:transparent;color:var(--ink)}
+html[data-look] .sitenav .brand{color:var(--ink)}
+html[data-look] .sitenav .brand span{color:var(--acc-ink)}
+html[data-look] .sitenav a.tabl{color:var(--mut)}
+html[data-look] .sitenav a.tabl:hover{color:var(--ink)}
+html[data-look] .sitenav a.tabl.cur{color:var(--ink);border-bottom-color:var(--acc)}
+html[data-look] .sitenav a.dlall{color:var(--ink);border:1px solid #cfc8b8;border-radius:999px;padding:7px 16px;margin:8px 0 8px auto;background:rgba(255,255,255,.6)}
+html[data-look] .top{background:rgba(255,255,255,.78);border-bottom-color:var(--bd)}
+html[data-look] .tabs{background:rgba(255,255,255,.7)}
+html[data-look] .seg{background:#e3ddcf}
+
+/* headline and the one red button */
+html[data-look] .kicker{color:var(--mut)}
+html[data-look] h1 em{background:none;color:var(--acc)}
+html[data-look] .hero .btn{background:var(--acc);box-shadow:0 3px 0 var(--acc-ink);border-radius:14px;padding:15px 26px}
+html[data-look] .hero .btn:hover{background:var(--acc-ink)}
+html[data-look] .btn:hover{background:#1d1b17}
+
+/* cards: white, thin warm line, soft shadow underneath */
+html[data-look] .step,html[data-look] .card,html[data-look] .idea div,html[data-look] .three div,html[data-look] .fix div,html[data-look] .lesson,html[data-look] .tip{border-radius:20px;box-shadow:var(--lift)}
+html[data-look] .idea .n,html[data-look] .three .n{background:#f1ede4;color:var(--ink);box-shadow:none;border-radius:50%;padding:0}
+html[data-look] .lesson .n{background:var(--tint);color:var(--acc-ink)}
+html[data-look] .lesson.soon .n{background:var(--code);color:var(--mut)}
+html[data-look] .part-head{background:#fff;border-color:var(--bd)!important;box-shadow:var(--lift);border-radius:24px}
+html[data-look] .part-head .num{background:var(--tint);color:var(--acc-ink)}
+html[data-look] .eyebrow{color:var(--mut)}
+html[data-look] .why{border-left-color:var(--accbd)}
+html[data-look] .dl{background:#fff;border-color:var(--bd)!important;box-shadow:var(--lift);border-radius:20px}
+html[data-look] .dl .ico{background:var(--tint)}
+html[data-look] .dl .ico svg{stroke:var(--acc-ink)}
+html[data-look] .bl,html[data-look] .get,html[data-look] .finish{border-color:var(--accbd)!important}
+html[data-look] .field.hl{box-shadow:0 0 0 3px var(--tint)}
+html[data-look] .copy{background:#faf8f3;border-color:var(--bd)}
+html[data-look] .copy-bar{background:#f3efe6;border-bottom-color:var(--bd)}
+html[data-look] .win-bar{background:#f7f4ee}
+html[data-look] .bub.ai{background:#f1ede4}
+html[data-look] .tree{background:#faf8f3}
+
+/* home page only: words left, the moving chat right, the maker on the corner */
+html[data-look] .hero{padding:64px 0 44px}
+html[data-look] .hero-in{max-width:1100px;display:grid;grid-template-columns:1.05fr .95fr;gap:60px;align-items:center}
+html[data-look] .hero-in>div{min-width:0}
+html[data-look] .hero-in>div:last-child{display:block!important;position:relative}
+@media (max-width:900px){html[data-look] .hero-in{grid-template-columns:1fr;gap:44px}}
+html[data-look] #heroWin{border-radius:20px;box-shadow:0 2px 4px rgba(40,30,10,.05),0 28px 64px rgba(40,30,10,.13)}
+html[data-look] .maker{position:absolute;top:-38px;right:-14px;width:104px;height:104px;border-radius:50%;overflow:hidden;
+  border:5px solid #fff;box-shadow:0 10px 26px rgba(40,30,10,.2);z-index:2;background:#ddd}
+html[data-look] .maker img{width:100%;height:100%;object-fit:cover;display:block}
+html[data-look] .maker::after{content:"";position:absolute;right:9px;bottom:9px;width:15px;height:15px;border-radius:50%;background:var(--acc);border:3px solid #fff}
+@media (max-width:900px){html[data-look] .maker{right:10px}}
+@keyframes sq0{0%,3%{opacity:0;transform:translateY(8px)}7%,93%{opacity:1;transform:none}98%,100%{opacity:0;transform:none}}
+html[data-look] #heroWin .seq.q0{animation:sq0 16s ease infinite both}
+@keyframes sq1{0%,10%{opacity:0;transform:translateY(8px)}14%,93%{opacity:1;transform:none}98%,100%{opacity:0;transform:none}}
+html[data-look] #heroWin .seq.q1{animation:sq1 16s ease infinite both}
+@keyframes sq2{0%,19%{opacity:0;transform:translateY(8px)}23%,93%{opacity:1;transform:none}98%,100%{opacity:0;transform:none}}
+html[data-look] #heroWin .seq.q2{animation:sq2 16s ease infinite both}
+@keyframes sq3{0%,26%{opacity:0;transform:translateY(8px)}30%,93%{opacity:1;transform:none}98%,100%{opacity:0;transform:none}}
+html[data-look] #heroWin .seq.q3{animation:sq3 16s ease infinite both}
+@keyframes sq4{0%,34%{opacity:0;transform:translateY(8px)}38%,93%{opacity:1;transform:none}98%,100%{opacity:0;transform:none}}
+html[data-look] #heroWin .seq.q4{animation:sq4 16s ease infinite both}
+@keyframes sq5{0%,38%{opacity:0;transform:translateY(8px)}42%,93%{opacity:1;transform:none}98%,100%{opacity:0;transform:none}}
+html[data-look] #heroWin .seq.q5{animation:sq5 16s ease infinite both}
+@keyframes sq6{0%,42%{opacity:0;transform:translateY(8px)}46%,93%{opacity:1;transform:none}98%,100%{opacity:0;transform:none}}
+html[data-look] #heroWin .seq.q6{animation:sq6 16s ease infinite both}
+@keyframes sq7{0%,46%{opacity:0;transform:translateY(8px)}50%,93%{opacity:1;transform:none}98%,100%{opacity:0;transform:none}}
+html[data-look] #heroWin .seq.q7{animation:sq7 16s ease infinite both}
+@keyframes sq8{0%,50%{opacity:0;transform:translateY(8px)}54%,93%{opacity:1;transform:none}98%,100%{opacity:0;transform:none}}
+html[data-look] #heroWin .seq.q8{animation:sq8 16s ease infinite both}
+@keyframes sq9{0%,54%{opacity:0;transform:translateY(8px)}58%,93%{opacity:1;transform:none}98%,100%{opacity:0;transform:none}}
+html[data-look] #heroWin .seq.q9{animation:sq9 16s ease infinite both}
+</style>
+</head><body>
+<nav class="sitenav" aria-label="Kit pages"><div class="sitenav-in"><a class="brand" href="Claude-Cowork-Setup.html">Claude Setup Kit <span>@itsarisouss</span></a><a class="tabl cur" href="Claude-Cowork-Setup.html">1 Setup</a><a class="tabl" href="AI-Bootcamp.html">2 The basics</a><a class="tabl" href="Tips-and-Tricks.html">3 Tips</a><a class="tabl" href="AI-Bootcamp-Advanced.html">4 Skills and agents</a><a class="tabl" href="Claude-Code.html">5 Claude Code</a><a class="tabl dlall" href="claude-setup-kit.zip" download>Download the kit</a></div></nav>
+
+
+<div class="top"><div class="top-in">
+  <div class="logo"><i></i><span>Claude Setup Kit</span></div>
+  <div class="tabs" role="tablist">
+    <button role="tab" data-go="setup" aria-selected="true">Setup</button>
+    <button role="tab" data-go="prompts" aria-selected="false">Prompts</button>
+    <button role="tab" data-go="skills" aria-selected="false">Skills</button>
+    <button role="tab" data-go="help" aria-selected="false">If stuck</button>
+  </div>
+  <div class="prog"><div class="segs">
+    <div class="seg" style="--c:var(--p1)"><b data-seg="1"></b></div><div class="seg" style="--c:var(--p2)"><b data-seg="2"></b></div>
+    <div class="seg" style="--c:var(--p3)"><b data-seg="3"></b></div><div class="seg" style="--c:var(--p4)"><b data-seg="4"></b></div>
+  </div><span id="count">0 / 14</span></div>
+</div></div>
+
+<!-- ============ SETUP ============ -->
+<main class="tab" data-tab="setup">
+<header class="hero">
+  <div class="blob a"></div><div class="blob b"></div><div class="blob c"></div><div class="grid"></div>
+  <div class="hero-in">
+    <div>
+      <div class="kicker"><i></i>The Claude setup kit · by @itsarisouss</div>
+      <h1>Set up Claude once. <em>Never explain yourself again.</em></h1>
+      <p class="lede">In 30 minutes Claude will know who you are and how you work. You do it alone, at your own speed, one box at a time.</p>
+      <div class="cta"><a class="btn" href="#p1">Start part 1 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a><span class="meta">4 parts. 14 small steps. One step at a time.</span></div>
+    </div>
+    <div>
+      <div class="win" id="heroWin">
+        <div class="win-bar"><i></i><i></i><i></i><span>Claude · Cowork · My Claude Setup</span></div>
+        <div class="win-body">
+          <div class="bub me seq q0">Set up Claude for my work. One question at a time.</div>
+          <div class="bub ai seq q1"><b>Question 1 of 7.</b> What is your first name and your job title?</div>
+          <div class="bub me seq q2">Dana, product marketing manager.</div>
+          <div class="bub ai seq q3">Thanks Dana. Here is what I will build in your folder:</div>
+          <div class="tree seq q4">
+            <div class="f seq q5">Claude/</div>
+            <div class="seq q6">&nbsp;&nbsp;<span class="f">02_Brand</span><small>logos, colors, rules</small></div>
+            <div class="seq q7">&nbsp;&nbsp;<span class="f">01_Projects</span><small>one per project</small></div>
+            <div class="seq q8">&nbsp;&nbsp;<span class="n">working-profile.md</span><small>who you are</small></div>
+            <div class="seq q9">&nbsp;&nbsp;<span class="n">MEMORY.md</span><small>what Claude remembers</small></div>
+          </div>
+        </div>
+      </div>
+      <p class="cap">Illustration of the setup chat. Dana is a made-up example.</p>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <h2 class="sec-title rv">The whole idea, in three lines</h2>
+  <div class="idea">
+    <div class="rv" style="--c:var(--p1)"><div class="n">1</div><h3>Claude forgets</h3><p>Every new chat starts from zero. It does not know your name, your job or the brand.</p></div>
+    <div class="rv" style="--c:var(--p3)"><div class="n">2</div><h3>So we give it a folder</h3><p>One folder holds who you are, how you work and the brand files. Claude reads it first.</p></div>
+    <div class="rv" style="--c:var(--p4)"><div class="n">3</div><h3>Every project uses it</h3><p>New work, new project, same folder. You never explain yourself twice.</p></div>
+  </div>
+</div>
+
+<div class="mq" aria-hidden="true">
+  <div class="mq-row" style="--c:var(--p2)"><span>Sum up a 40 page PDF</span><span>Draft a LinkedIn post, on brand</span><span>Turn meeting notes into actions</span><span>Build a deck from a brief</span><span>Tidy a messy folder</span><span>Turn a spreadsheet into a report</span><span>Rewrite an email in plain words</span><span>Plan a webinar</span><span>Sum up a 40 page PDF</span><span>Draft a LinkedIn post, on brand</span><span>Turn meeting notes into actions</span><span>Build a deck from a brief</span><span>Tidy a messy folder</span><span>Turn a spreadsheet into a report</span><span>Rewrite an email in plain words</span><span>Plan a webinar</span></div>
+  <div class="mq-row r" style="--c:var(--p3)"><span>Check a draft against the brand guide</span><span>Compare two documents</span><span>Write a campaign brief</span><span>Turn a white paper into five posts</span><span>Prepare for a meeting</span><span>Clean up a contact list</span><span>Find the key numbers in a report</span><span>Write a first draft, fast</span><span>Check a draft against the brand guide</span><span>Compare two documents</span><span>Write a campaign brief</span><span>Turn a white paper into five posts</span><span>Prepare for a meeting</span><span>Clean up a contact list</span><span>Find the key numbers in a report</span><span>Write a first draft, fast</span></div>
+</div>
+
+<div class="wrap">
+  <div class="rule rv"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ffb224" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l9 16H3z"/><path d="M12 10v4M12 17h.01"/></svg>
+  <div><b>One rule for the whole page.</b> Never give Claude passwords, bank or card details, or anything you would not want a stranger to read.</div></div>
+
+  <!-- PART 1 -->
+  <section class="part p1" id="p1" data-part="1">
+    <div class="part-head rv"><div class="num">1</div><span class="eyebrow">Part 1 of 4</span><h2>Get Claude ready</h2><p>Open the Claude app and make sure it asks before it acts.</p><span class="time">About 10 minutes</span></div>
+    <div class="rail">
+
+    <div class="step rv" data-id="1a"><div class="step-top"><span class="tag">1A</span><h3>Open the Claude app</h3><label class="check"><input type="checkbox" aria-label="Done"><span><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></svg></span></label></div>
+      <p><b>Windows:</b> press the Windows key and type <code>Claude</code>. <b>Mac:</b> press <kbd>Cmd</kbd> + <kbd>Space</kbd> and type <code>Claude</code>. Open the app called <b>Claude</b>.</p>
+      <p>No app? Go to <code>claude.com/download</code>, download it and install it.</p>
+      <p class="see"><span><b>You should see:</b> the Claude app open, not a web page in your browser.</span></p></div>
+
+    <div class="step rv" data-id="1b"><div class="step-top"><span class="tag">1B</span><h3>Sign in</h3><label class="check"><input type="checkbox" aria-label="Done"><span><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></svg></span></label></div>
+      <p>Sign in with your email. Working with your files needs a paid Claude plan. If Claude asks you to upgrade, that is why.</p>
+      <p class="see"><span><b>You should see:</b> a box at the bottom where you can type a message.</span></p></div>
+
+    <div class="step rv" data-id="1c"><div class="step-top"><span class="tag">1C</span><h3>Look for a Cowork button</h3><label class="check"><input type="checkbox" aria-label="Done"><span><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></svg></span></label></div>
+      <p>Start a <b>new chat</b> and look at the message box.</p><ul><li><b>You see Chat and Cowork:</b> click <b>Cowork</b>.</li><li><b>You do not see them:</b> that is fine. Carry on.</li></ul>
+      <p class="why">Why: Anthropic merged Chat and Cowork into one. On the new layout every chat can open, read and create files, so there is no button to press.</p>
+      <div class="shot"><div class="win"><div class="win-body" style="min-height:0"><div class="composer"><div class="ph">How can I help you today?</div><div class="pills"><span class="pill">Chat</span><span class="pill on">Cowork</span><span class="pill">Manual</span></div></div></div></div><p class="cap">Illustration. Your screen may look a little different.</p></div>
+      <p class="see"><span><b>You should see:</b> Cowork selected, or no Cowork button at all. Both are right.</span></p></div>
+
+    <div class="step rv" data-id="1d"><div class="step-top"><span class="tag">1D</span><h3>Make Claude ask before it acts</h3><label class="check"><input type="checkbox" aria-label="Done"><span><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></svg></span></label></div>
+      <p>In the message box there is a setting that says <b>Manual</b> or <b>Auto</b>. Choose <b>Manual</b>. Some versions also show <b>Skip</b>.</p>
+      <p class="why">Why: Manual means Claude asks your permission before each action. Never choose Skip.</p>
+      <p class="see"><span><b>You should see:</b> Manual selected.</span></p></div>
+    </div>
+  </section>
+
+  <!-- PART 2 -->
+  <section class="part p2" id="p2" data-part="2">
+    <div class="part-head rv"><div class="num">2</div><span class="eyebrow">Part 2 of 4</span><h2>Make your Claude folder</h2><p>This folder is your foundation. Everything Claude needs to know about you and your work will live here.</p><span class="time">About 5 minutes</span></div>
+    <div class="rail">
+
+    <div class="step rv" data-id="2a"><div class="step-top"><span class="tag">2A</span><h3>Create an empty folder called Claude</h3><label class="check"><input type="checkbox" aria-label="Done"><span><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></svg></span></label></div>
+      <p>Go to your <b>Desktop</b>. Right-click an empty spot, choose <b>New</b>, then <b>Folder</b>. Name it <code>Claude</code>.</p>
+      <p class="see"><span><b>You should see:</b> an empty folder called Claude on your Desktop.</span></p></div>
+
+    <div class="step rv" data-id="2b"><div class="step-top"><span class="tag">2B</span><h3>Create your first project and give it the folder</h3><label class="check"><input type="checkbox" aria-label="Done"><span><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></svg></span></label></div>
+      <p>A <b>project</b> is a saved workspace in Claude. In the Claude app click <b>Projects</b>, then <b>New project</b>. It may say <b>Create project</b>.</p>
+      <ol><li>In <b>What are you working on?</b> type <code>My Claude Setup</code></li>
+      <li>Click <b>Use a folder</b> and choose the <code>Claude</code> folder on your Desktop.</li>
+      <li>If you see a <b>Visibility</b> choice, pick <b>Private</b>.</li>
+      <li>Click <b>Create project</b>. If Claude asks for access to the folder, click <b>Allow</b>.</li></ol>
+      <div class="shot"><div class="win"><div class="win-bar"><i></i><i></i><i></i><span>Create a project</span></div><div class="win-body dialog" style="min-height:0"><div><label>What are you working on?</label><div class="field">My Claude Setup</div></div><div><label>Use a folder</label><div class="field hl">Desktop / Claude</div></div><div><label>Visibility</label><div class="pills"><span class="pill">Everyone</span><span class="pill on">Private</span></div></div></div></div><p class="cap">Illustration. Your screen may look a little different.</p></div>
+      <p class="see"><span><b>You should see:</b> a project called My Claude Setup, with your Claude folder shown under Folder.</span></p></div>
+    </div>
+  </section>
+
+  <!-- PART 3 -->
+  <section class="part p3" id="p3" data-part="3">
+    <div class="part-head rv"><div class="num">3</div><span class="eyebrow">Part 3 of 4</span><h2>Teach Claude who you are</h2><p>Claude interviews you, picks up what your other AI tool already knows about you, and builds your folder. You stay in one chat the whole time.</p><span class="time">About 20 minutes</span></div>
+    <div class="rail">
+
+    <div class="step rv" data-id="3a"><div class="step-top"><span class="tag">3A</span><h3>Start the interview</h3><label class="check"><input type="checkbox" aria-label="Done"><span><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></svg></span></label></div>
+      <p>Open your <b>My Claude Setup</b> project. Click in the message box, paste this, and press Enter.</p>
+      <div class="copy"><div class="copy-bar"><span>Setup prompt</span><button data-copy="t_setup">Copy</button></div><pre id="t_setup">I am setting up Claude for my work. I am not technical. Read all of this before you do anything.
+
+HOW TO TALK TO ME
+- Ask ONE question per message, then wait for my answer.
+- Use plain words. If you must use a technical word, explain it in one short sentence.
+- Number the choices so I can answer with a number.
+- Never use em dashes.
+- If I say "skip" or "I don't know", pick the simplest option and carry on.
+
+SAFETY RULES (always)
+- Work only inside the folder I gave this project. Touch nothing else on my computer.
+- Never delete a file. Move old files to 99_Archive and tell me.
+- Never change an existing file without showing me the change and asking first.
+- Never invent a number, a customer, a quote or a certification. Say "I don't have that" and ask me.
+- Do not store passwords, bank or card details, or anything confidential.
+
+STEP 1. CHECK THE FOLDER
+Tell me the name of the folder you can see. If you cannot see a folder, stop and tell me in two sentences how to choose my Claude folder for this project. If the folder already has files in it, list them and ask me what to do before you touch anything.
+
+STEP 2. INTERVIEW ME (one question per message)
+1. What is your first name, and what do you do?
+2. What kind of work do you do? 1 Marketing, 2 Sales, 3 I run my own business, 4 Creator or freelancer, 5 Other (ask me to name it).
+3. What are the 3 main things you work on right now? Ask me for a short name for each.
+4. What do you make most often? 1 Emails, 2 Social posts, 3 Decks, 4 Briefs and plans, 5 Reports and spreadsheets, 6 Web pages, 7 Something else. I can pick several.
+5. Who is your work for? For example: clients, customers, followers, a boss.
+6. How do you like answers? 1 Short bullets or 2 full drafts. And 1 formal or 2 casual.
+7. Is there anything I must never do for you? For example: never send an email for me.
+
+STEP 3. WHAT MY OTHER AI TOOLS KNOW ABOUT ME
+8. Say exactly: "Now do step 3C in the setup guide. Paste your other AI tool's answer here, or type skip." Then wait.
+From what I paste, keep only what helps with my work. Leave out health, money, family, home address and passwords. If two facts disagree, ask me which one is right.
+
+STEP 4. SHOW THE PLAN
+Show me, as a simple tree, what you will create in my folder. Then ask "Ready for me to build this?" and wait for my yes.
+
+Folders:
+- 00_Inbox: new files I drop in for you to look at
+- 01_Projects: one subfolder for each project I start
+- 02_Brand: my brand guide, logos, colors and templates
+- 03_Knowledge: reference documents about my customers, products and market. You open these only when a task needs them.
+- 04_Skills: saved routines I use again and again
+- 05_Agents: empty for now
+- 06_Templates: examples of my good work, and templates
+- 99_Archive: old files. Nothing is ever deleted, it goes here.
+
+Files (each one is a plain text note that you read):
+- README.md, under 30 lines: what each folder is for, and 6 exact phrases I can type to you.
+- working-profile.md: who I am, from my interview answers. My name, what I do, my 3 main things, what I make most, who it is for, how I like answers, what you must never do.
+- MEMORY.md: the useful facts from my other AI tool, as short bullets under clear headings. End with a heading "Added later". When I say "remember this", add a dated line there.
+- CLAUDE.md, under 40 lines: the rules you follow in this folder. Read working-profile.md and MEMORY.md before any task. Follow the safety rules above. Keep each project's files in its own subfolder of 01_Projects. When 02_Brand has files in it: before you make anything that must look like my brand, read the brand guide there and use only the logo, icon and template files in 02_Brand. Before you write or edit any copy, read the writing rules there if they exist. Do not read 03_Knowledge at the start of a task. Only when a task is about who I sell to, my customers or my audience, look in 03_Knowledge, read its index if it has one, and open only the one or two files you need. Name finished files YYYY-MM-DD_topic_v1. Before you hand over any draft, check the facts and tell me what you could not check. Never use em dashes.
+
+STEP 5. BUILD AND CHECK
+After my yes, create exactly that. Then check that every folder and file exists and tell me in 5 short bullets what you now know about me. Ask me to correct anything that is wrong, and fix the files.
+
+STEP 6. FIRST REAL TASK
+Say "Your folder is ready." Then ask me for one small real task from my week, something I already know how to do well, and do it with me.
+
+Start now with Step 1.</pre></div>
+      <div class="shot"><div class="win"><div class="win-body" style="min-height:0"><div class="bub ai">I can see your folder: <b>Claude</b>. It is empty.</div><div class="bub ai"><b>Question 1 of 7.</b> What is your first name and your job title?</div></div></div><p class="cap">Illustration. One question at a time.</p></div>
+      <p class="see"><span><b>You should see:</b> Claude names your Claude folder, then asks you one question.</span></p></div>
+
+    <div class="step rv" data-id="3b"><div class="step-top"><span class="tag">3B</span><h3>Answer the 7 questions</h3><label class="check"><input type="checkbox" aria-label="Done"><span><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></svg></span></label></div>
+      <p>Answer one at a time. Short answers are fine. You can answer with a number. If you do not know, type <code>skip</code>.</p>
+      <p class="see"><span><b>You should see:</b> after question 7, Claude asks you to do step 3C.</span></p></div>
+
+    <div class="step rv" data-id="3c"><div class="step-top"><span class="tag">3C</span><h3>Ask your other AI tool what it remembers about you</h3><label class="check"><input type="checkbox" aria-label="Done"><span><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></svg></span></label></div>
+      <p>Only if you already use ChatGPT, Gemini or another AI tool. If you do not, type <code>skip</code> in Claude and go to 3D.</p>
+      <ol><li>Open that tool. Start a new chat. Paste this prompt. Press Enter.</li>
+      <li>Read the answer. Delete anything private (family, health, money) and anything confidential.</li>
+      <li>Copy what is left, go back to Claude, paste it, press Enter.</li></ol>
+      <div class="copy"><div class="copy-bar"><span>Prompt for your other AI tool</span><button data-copy="t_gpt">Copy</button></div><pre id="t_gpt">Export all of my stored memories and any context you've learned about me from past conversations. Preserve my words verbatim where possible, especially for instructions and preferences.
+
+## Categories (output in this order):
+
+1. **Instructions**: Rules I've explicitly asked you to follow going forward — tone, format, style, "always do X", "never do Y", and corrections to your behavior. Only include rules from stored memories, not from conversations.
+
+2. **Identity**: Name, age, location, education, family, relationships, languages, and personal interests.
+
+3. **Career**: Current and past roles, companies, and general skill areas.
+
+4. **Projects**: Projects I meaningfully built or committed to. Ideally ONE entry per project. Include what it does, current status, and any key decisions. Use the project name or a short descriptor as the first words of the entry.
+
+5. **Preferences**: Opinions, tastes, and working-style preferences that apply broadly.
+
+## Format:
+
+Use section headers for each category. Within each category, list one entry per line, sorted by oldest date first. Format each line as:
+
+[YYYY-MM-DD] - Entry content here.
+
+If no date is known, use [unknown] instead.
+
+## Output:
+- Wrap the entire export in a single code block for easy copying.
+- After the code block, state whether this is the complete set or if more remain.</pre></div>
+      <p class="see"><span><b>You should see:</b> Claude shows you a plan with 8 folders and 4 files, and asks "Ready for me to build this?"</span></p></div>
+
+    <div class="step rv" data-id="3d"><div class="step-top"><span class="tag">3D</span><h3>Say yes, and allow Claude to build</h3><label class="check"><input type="checkbox" aria-label="Done"><span><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></svg></span></label></div>
+      <p>Type <code>yes</code>. Claude asks permission to create things. Click <b>Allow</b> each time. This is the Manual setting doing its job.</p>
+      <p class="see"><span><b>You should see:</b> Claude tells you 5 things it now knows about you. Correct anything that is wrong by typing it.</span></p></div>
+
+    <div class="step rv" data-id="3e"><div class="step-top"><span class="tag">3E</span><h3>Look at your folder</h3><label class="check"><input type="checkbox" aria-label="Done"><span><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></svg></span></label></div>
+      <p>Open the <code>Claude</code> folder on your Desktop. It should look like this.</p>
+      <div class="tree" style="margin:12px 0">
+        <div class="f">Claude/</div>
+        <div>&nbsp;&nbsp;<span class="f">00_Inbox</span><small>new files you drop in for Claude</small></div>
+        <div>&nbsp;&nbsp;<span class="f">01_Projects</span><small>one subfolder for each project</small></div>
+        <div>&nbsp;&nbsp;<span class="f">02_Brand</span><small>brand guide, logos, templates</small></div>
+        <div>&nbsp;&nbsp;<span class="f">03_Knowledge</span><small>facts and reference documents</small></div>
+        <div>&nbsp;&nbsp;<span class="f">04_Skills</span><small>saved routines</small></div>
+        <div>&nbsp;&nbsp;<span class="f">05_Agents</span><small>empty for now</small></div>
+        <div>&nbsp;&nbsp;<span class="f">06_Templates</span><small>examples of your good work</small></div>
+        <div>&nbsp;&nbsp;<span class="f">99_Archive</span><small>old files, nothing is deleted</small></div>
+        <div>&nbsp;&nbsp;<span class="n">CLAUDE.md</span><small>the rules Claude follows</small></div>
+        <div>&nbsp;&nbsp;<span class="n">MEMORY.md</span><small>what Claude remembers about you</small></div>
+        <div>&nbsp;&nbsp;<span class="n">working-profile.md</span><small>who you are and how you work</small></div>
+        <div>&nbsp;&nbsp;<span class="n">README.md</span><small>a short cheat sheet for you</small></div>
+      </div>
+      <p>Have a logo, brand colors or a style guide? Put them in <code>02_Brand</code>. Put one or two pieces of your best work in <code>06_Templates</code>.</p>
+      <p class="why">What is a .md file? A plain text note that Claude reads. You do not need to open them. If you want to, they open in Notepad.</p>
+      <p class="see"><span><b>You should see:</b> 8 folders and 4 files. Then do the small first task Claude offers you.</span></p></div>
+    </div>
+  </section>
+
+  <!-- PART 4 -->
+  <section class="part p4" id="p4" data-part="4">
+    <div class="part-head rv"><div class="num">4</div><span class="eyebrow">Part 4 of 4</span><h2>Start real work</h2><p>The setup is done. From now on the routine is always the same: new work, new project, same folder.</p><span class="time">Every time you start something new</span></div>
+    <div class="rail">
+
+    <div class="step rv" data-id="4a"><div class="step-top"><span class="tag">4A</span><h3>Create a project for the work</h3><label class="check"><input type="checkbox" aria-label="Done"><span><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></svg></span></label></div>
+      <p>Click <b>Projects</b>, then <b>New project</b>. Name it after the work, for example <code>March webinar</code>. Click <b>Use a folder</b> and choose the same <code>Claude</code> folder on your Desktop. Click <b>Create project</b>.</p>
+      <p class="why">Why always the same folder: that is how every project knows who you are and has the brand files.</p>
+      <p class="see"><span><b>You should see:</b> a new project with the Claude folder under Folder.</span></p></div>
+
+    <div class="step rv" data-id="4b"><div class="step-top"><span class="tag">4B</span><h3>Paste the starter line as your first message</h3><label class="check"><input type="checkbox" aria-label="Done"><span><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></svg></span></label></div>
+      <div class="copy short"><div class="copy-bar"><span>Starter line for every new project</span><button data-copy="t_start">Copy</button></div><pre id="t_start">Before you do anything in this project, read CLAUDE.md, working-profile.md and MEMORY.md in my Claude folder and follow them. First ask me for a short name for this project. Keep its files in a subfolder of 01_Projects with that name, and create it if it does not exist. Then ask me, one question at a time, what this project is for, who it is for, and what a good result looks like.</pre></div>
+      <p class="see"><span><b>You should see:</b> Claude says it read your files, then asks for a short project name.</span></p></div>
+
+    <div class="step rv" data-id="4c"><div class="step-top"><span class="tag">4C</span><h3>Give Claude the files for this work</h3><label class="check"><input type="checkbox" aria-label="Done"><span><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></svg></span></label></div>
+      <p>Two ways. Both are fine.</p>
+      <ul><li><b>Put them in the folder.</b> Drop them in <code>00_Inbox</code> or in the project's subfolder. Best for files you will keep working on.</li>
+      <li><b>Drag them into the chat.</b> Best for a quick question about one file.</li></ul>
+      <p>If Claude says it cannot find a file, tell it where the file is: <code>It is in 00_Inbox.</code></p>
+      <p class="see"><span><b>You should see:</b> Claude names the file and starts working with it.</span></p></div>
+    </div>
+
+    <div class="finish" id="finish"><h2>You are set up.</h2><p>Claude knows you, your work and the brand. Now use it on one real task today.</p><button class="btn" data-go="prompts">See prompts to try</button></div>
+  </section>
+</div>
+</main>
+
+<!-- ============ PROMPTS ============ -->
+<main class="tab" data-tab="prompts" hidden style="--c:var(--p2)">
+<div class="wrap">
+  <div class="page-head" style="--c:var(--p2)"><div class="kicker"><i style="background:var(--p2)"></i>After setup</div><h1>Ask well, <em>get more.</em></h1><p class="lede">A good prompt says three things: who it is for, what you want, and what good looks like. Copy these and change the words in CAPITALS.</p></div>
+  <div class="three"><div><div class="n">1</div><b>Who it is for</b><p>Name the reader. Claude writes differently for an engineer than for a CFO.</p></div><div><div class="n">2</div><b>What you want</b><p>One job per prompt. Say the format: email, post, table, deck.</p></div><div><div class="n">3</div><b>What good looks like</b><p>Point to an example in 06_Templates. An example beats ten adjectives.</p></div></div>
+  <div class="cards">
+    <div class="card rv"><h3>The difference</h3>
+      <div class="bad"><span class="lab">Weak</span>Write a LinkedIn post about our new product.</div>
+      <div class="good"><span class="lab">Strong</span>Names the reader, the goal, the source and the example. Then asks Claude to check its own work.</div>
+      <div class="copy short"><div class="copy-bar"><span>Draft with a source and an example</span><button data-copy="t_p1">Copy</button></div><pre id="t_p1">Write a LinkedIn post for WHO READS IT about TOPIC. The goal is WHAT THEY SHOULD DO OR THINK. Use the facts in FILE NAME only. Match the style of my example in 06_Templates. Before you show me, check every fact against the file and tell me what you could not check.</pre></div></div>
+    <div class="card rv"><h3>Get the bottom line of a long document</h3><div class="copy short"><div class="copy-bar"><span>Summary</span><button data-copy="t_p2">Copy</button></div><pre id="t_p2">Read FILE NAME in 00_Inbox. Give me a two sentence summary, the 5 key points, and a list of actions with who each one is for. Do not add anything that is not in the file.</pre></div></div>
+    <div class="card rv"><h3>Teach Claude something for next time</h3><div class="copy short"><div class="copy-bar"><span>Memory</span><button data-copy="t_p3">Copy</button></div><pre id="t_p3">Remember this: WHAT CLAUDE SHOULD KNOW. Add it to MEMORY.md with today's date.</pre></div></div>
+    <div class="card rv"><h3>Check what Claude knows about you</h3><div class="copy short"><div class="copy-bar"><span>Profile check</span><button data-copy="t_p4">Copy</button></div><pre id="t_p4">Read working-profile.md and MEMORY.md. Tell me in plain words what you know about me and how I work. Do not change anything.</pre></div></div>
+    <div class="card rv"><h3>Check a draft against the brand</h3><div class="copy short"><div class="copy-bar"><span>Brand check</span><button data-copy="t_p6">Copy</button></div><pre id="t_p6">Check FILE NAME against the brand guide in 02_Brand. Give me a table: rule, pass or fail, what to change. Do not change the file.</pre></div></div>
+    <div class="card rv"><h3>Tidy your inbox folder</h3><div class="copy short"><div class="copy-bar"><span>Tidy</span><button data-copy="t_p5">Copy</button></div><pre id="t_p5">Look at every file in 00_Inbox and tell me in plain words what is there. Suggest where each file should go in my Claude folder. Show me the plan and wait for my yes before you move anything. Never delete anything.</pre></div></div>
+    <div class="card rv"><h3>When the answer is not good enough</h3><p>Do not start over. Tell Claude what is wrong, in plain words.</p><div class="copy short"><div class="copy-bar"><span>Fix it</span><button data-copy="t_p7">Copy</button></div><pre id="t_p7">This is not right yet. The problem is WHAT IS WRONG. Ask me up to 3 questions you need answered, then try again.</pre></div></div>
+  </div>
+</div>
+</main>
+
+<!-- ============ SKILLS ============ -->
+<main class="tab" data-tab="skills" hidden style="--c:var(--sk)">
+<div class="wrap">
+  <div class="page-head"><div class="kicker"><i style="background:var(--sk)"></i>Optional · do this after a few real tasks</div><h1>Skills: explain a job <em>once.</em></h1><p class="lede">A skill is a saved routine. You explain a job one time. After that you ask for it by name, and Claude does it the same way every time.</p></div>
+  <div class="cards"><div class="card"><h3>When is a skill worth it?</h3><p>When you have done the same job three times. A weekly report, a brand check, a summary of every long document. For a one-time job, a normal prompt is enough.</p></div></div>
+
+  <h2 class="sec-title">How to add a skill</h2>
+  <div class="three"><div><div class="n">1</div><b>Download the zip</b><p>Click Download on a skill below. Do not unzip it. Keep a copy in your <code>04_Skills</code> folder.</p></div><div><div class="n">2</div><b>Upload it in Claude</b><p>Click <b>Customize</b>, then <b>Skills</b>, then <b>+</b>, then <b>Create skill</b>, then <b>Upload a skill</b>. Choose the zip.</p></div><div><div class="n">3</div><b>Try it</b><p>Paste the "Try it" prompt. If Claude uses the skill, you are done.</p></div></div>
+  <div class="rule"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ffb224" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l9 16H3z"/><path d="M12 10v4M12 17h.01"/></svg><div><b>Upload blocked, or the menu looks different?</b> Open "No download? Let Claude build it" on the skill and paste that prompt. Claude builds the same skill for you.</div></div>
+
+  <h2 class="sec-title">Four skills that work right away</h2>
+  <div class="cards">
+    <div class="card skill rv"><span class="name">brand-check</span><h3>Brand check</h3><p>Version 2.0. A strict check of the look, the words and AI-sounding copy. It reports first, then asks before it makes an on-brand version.</p>
+      <div class="dl"><div class="ico"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 11l5 5 5-5M4 20h16"/></svg></div><div class="t"><b>brand-check.zip</b><span>Works with your own brand guide</span></div><a class="btn c" href="downloads/skills/brand-check.zip" download>Download</a></div>
+      <div class="copy short"><div class="copy-bar"><span>Try it</span><button data-copy="s1t">Copy</button></div><pre id="s1t">Brand check FILE NAME. It is an organic LinkedIn post.</pre></div>
+      <details><summary>No download? Let Claude build it</summary><div class="copy short"><div class="copy-bar"><span>Build prompt</span><button data-copy="s1b">Copy</button></div><pre id="s1b">Build me a reusable skill called "brand-check". When I give it a post, slide, document or design, it reads 02_Brand/brand-guide.md in my Claude folder and checks the piece against it: logo, colors, fonts, layout and imagery. It first asks if the piece is an organic post, a paid ad or an internal document. It returns a table (rule, pass or fail, what it saw, what to change) and the top 3 fixes first. It uses only the guide, never invents a rule, and ends with one line: Checked / Could not check / Open questions. Trigger phrases: "brand check", "is this on brand". Show me the skill before you save it.</pre></div></details></div>
+
+    <div class="card skill rv"><span class="name">quick-brief</span><h3>Quick brief</h3><p>Turns a long document, a transcript or messy notes into a two sentence bottom line, 5 key points and a list of actions.</p>
+      <div class="dl"><div class="ico"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 11l5 5 5-5M4 20h16"/></svg></div><div class="t"><b>quick-brief.zip</b><span>Works on any document</span></div><a class="btn c" href="downloads/skills/quick-brief.zip" download>Download</a></div>
+      <div class="copy short"><div class="copy-bar"><span>Try it</span><button data-copy="s2t">Copy</button></div><pre id="s2t">Quick brief FILE NAME in 00_Inbox.</pre></div>
+      <details><summary>No download? Let Claude build it</summary><div class="copy short"><div class="copy-bar"><span>Build prompt</span><button data-copy="s2b">Copy</button></div><pre id="s2b">Build me a reusable skill called "quick-brief". When I give it a long document, a transcript or messy notes, it returns: a two sentence bottom line, the 5 key points, a list of actions with who each one is for, and anything that is not clear. It uses only what is in the document and keeps every number exactly as written. Trigger phrases: "quick brief", "summarize this", "break this down". Show me the skill before you save it.</pre></div></details></div>
+
+    <div class="card skill rv"><span class="name">plain-rewrite</span><h3>Plain rewrite</h3><p>Rewrites a draft so it reads like a person wrote it. Short, plain and factual. Every fact stays. The hype goes.</p>
+      <div class="dl"><div class="ico"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 11l5 5 5-5M4 20h16"/></svg></div><div class="t"><b>plain-rewrite.zip</b><span>For emails, posts, announcements and scripts</span></div><a class="btn c" href="downloads/skills/plain-rewrite.zip" download>Download</a></div>
+      <div class="copy short"><div class="copy-bar"><span>Try it</span><button data-copy="s3t">Copy</button></div><pre id="s3t">Make this plain: PASTE YOUR DRAFT HERE</pre></div></div>
+
+    <div class="card skill rv"><span class="name">fresh-angles</span><h3>Fresh angles</h3><p>Refuses the obvious first idea. Gives you non-obvious angles for a post, an ad, a campaign or a hook.</p>
+      <div class="dl"><div class="ico"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 11l5 5 5-5M4 20h16"/></svg></div><div class="t"><b>fresh-angles.zip</b><span>For brainstorming</span></div><a class="btn c" href="downloads/skills/fresh-angles.zip" download>Download</a></div>
+      <div class="copy short"><div class="copy-bar"><span>Try it</span><button data-copy="s5t">Copy</button></div><pre id="s5t">Give me angles on TOPIC for WHO READS IT.</pre></div></div>
+
+    <div class="card rv"><h3>Make your own skill</h3><p>Finished a job you will do again? Paste this in the same chat, right after the job.</p>
+      <div class="copy short"><div class="copy-bar"><span>Turn this job into a skill</span><button data-copy="s4">Copy</button></div><pre id="s4">We just did a job I will do again. Turn what we just did into a reusable skill. Ask me for a short name and for the words I will use to ask for it. Show me the skill in plain words before you save it.</pre></div>
+      <p style="color:var(--muted);margin:0">More team skills will come later, after everyone is comfortable with the basics.</p></div>
+  </div>
+</div>
+</main>
+
+<!-- ============ HELP ============ -->
+<main class="tab" data-tab="help" hidden>
+<div class="wrap">
+  <div class="page-head" style="--c:var(--p1)"><div class="kicker"><i style="background:var(--p1)"></i>Stuck for more than 5 minutes? Stop. Do not guess.</div><h1>If you get <em>stuck.</em></h1><p class="lede">Find what happened on the left. Do what it says on the right. If it is not here, paste a screenshot into Claude and ask what to do.</p></div>
+  <div class="fix">
+    <div><b>The laptop will not let me install Claude</b><span>Claude needs the desktop app to work with your files. Download it again from claude.com/download and check that your computer allows new apps.</span></div>
+    <div><b>I do not see a Cowork button</b><span>That is fine. Chat and Cowork are now one. Just type your task in a normal chat.</span></div>
+    <div><b>I cannot find Manual or Use a folder</b><span>Menus change between versions. Paste a screenshot into Claude and ask where it is.</span></div>
+    <div><b>Claude asks many questions at once</b><span>Type: <code>One question at a time, please.</code></span></div>
+    <div><b>Claude says it has no access to my folder</b><span>Open the project and check the Claude folder shows under Folder. If not, click Use a folder again.</span></div>
+    <div><b>Claude cannot find a file</b><span>Tell it the folder: <code>It is in 00_Inbox.</code></span></div>
+    <div><b>Claude cannot see a file that is in another app</b><span>Download the file and put it in 00_Inbox. Or connect the app under Customize, then Connectors.</span></div>
+    <div><b>The Download button does nothing</b><span>The files are in the <code>downloads</code> folder next to this page.</span></div>
+    <div><b>Claude gets something wrong about me</b><span>Type the correction, then: <code>Remember this.</code></span></div>
+    <div><b>Claude wrote a number or a claim I do not recognise</b><span>Ask: <code>Where did that come from?</code> If it has no source, remove it.</span></div>
+    <div><b>Claude made something that looks off brand</b><span>Type: <code>Read the brand guide in 02_Brand and fix what does not follow it.</code></span></div>
+  </div>
+</div>
+</main>
+
+<div class="wrap"><footer><span>Made by @itsarisouss, with Claude. Next: <a href="AI-Bootcamp.html"><b>the AI Bootcamp</b></a>, thirteen one-minute lessons on how this works. Then <a href="Tips-and-Tricks.html"><b>tips and tricks</b></a> and <a href="AI-Bootcamp-Advanced.html"><b>skills and agents</b></a>. Ready for more? <a href="Claude-Code.html"><b>Claude Code</b></a>.</span><button class="btn ghost" id="reset" style="padding:9px 16px;font-size:.85rem">Clear my ticks</button></footer></div>
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+var $=function(s,r){return (r||document).querySelector(s)},$$=function(s,r){return [].slice.call((r||document).querySelectorAll(s))};
+var reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion:reduce)').matches;
+
+/* tabs */
+function show(name,keep){var ok=false;$$('.tab').forEach(function(t){var on=t.dataset.tab===name;t.hidden=!on;if(on)ok=true});
+  if(!ok)return show('setup');
+  $$('.tabs button').forEach(function(b){b.setAttribute('aria-selected',b.dataset.go===name)});
+  if(!keep)window.scrollTo(0,0);try{history.replaceState(null,'','#'+name)}catch(e){}reveal()}
+$$('[data-go]').forEach(function(b){b.addEventListener('click',function(){show(b.dataset.go)})});
+$$('a[href^="#p"]').forEach(function(a){a.addEventListener('click',function(e){e.preventDefault();show('setup',true);var el=$(a.getAttribute('href'));if(el)el.scrollIntoView({behavior:reduce?'auto':'smooth'})})});
+
+/* reveal */
+var io=('IntersectionObserver' in window)?new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{rootMargin:'0px 0px -8% 0px'}):null;
+function reveal(){$$('.rv:not(.in)').forEach(function(el){if(io)io.observe(el);else el.classList.add('in')})}
+reveal();
+
+/* hero sequence */
+var seq=$$('#heroWin .seq');
+function play(){seq.forEach(function(el){el.classList.remove('on')});seq.forEach(function(el,i){setTimeout(function(){el.classList.add('on')},500+i*650)})}
+if(reduce){seq.forEach(function(el){el.classList.add('on')})}else{play();setInterval(play,500+seq.length*650+4500)}
+
+/* progress */
+var steps=$$('.step[data-id]'),KEY='claude-cowork-setup-v3',saved={},toastT;
+try{saved=JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){saved={}}
+function toast(msg){var t=$('#toast');t.textContent=msg;t.classList.add('on');clearTimeout(toastT);toastT=setTimeout(function(){t.classList.remove('on')},2600)}
+function paint(){var c=0;steps.forEach(function(s){var i=$('input',s);if(i.checked)c++;s.classList.toggle('done',i.checked)});
+  $('#count').textContent=c+' / '+steps.length;
+  $$('.part').forEach(function(p){var all=$$('.step',p),d=all.filter(function(s){return $('input',s).checked}).length;var b=$('[data-seg="'+p.dataset.part+'"]');if(b)b.style.width=(100*d/all.length)+'%'});
+  $('#finish').classList.toggle('on',c===steps.length);return c}
+function burst(el,color){return;var r=el.getBoundingClientRect(),cols=[color,'#fff','#ffb224','#2ee6a6','#8b7bff'];
+  for(var i=0;i<18;i++){(function(i){var d=document.createElement('i'),a=Math.random()*Math.PI*2,v=50+Math.random()*80;
+    d.style.cssText='position:fixed;z-index:50;pointer-events:none;width:8px;height:8px;border-radius:'+(i%2?'50%':'2px')+';left:'+(r.left+r.width/2-4)+'px;top:'+(r.top+r.height/2-4)+'px;background:'+cols[i%cols.length];
+    document.body.appendChild(d);
+    d.animate([{transform:'translate(0,0) scale(1)',opacity:1},{transform:'translate('+Math.cos(a)*v+'px,'+(Math.sin(a)*v+50)+'px) rotate('+(Math.random()*540)+'deg) scale(.3)',opacity:0}],{duration:800+Math.random()*400,easing:'cubic-bezier(.1,.8,.3,1)'}).onfinish=function(){d.parentNode&&d.parentNode.removeChild(d)}})(i)}}
+steps.forEach(function(s){var i=$('input',s);i.checked=!!saved[s.dataset.id];
+  i.addEventListener('change',function(){saved[s.dataset.id]=i.checked;try{localStorage.setItem(KEY,JSON.stringify(saved))}catch(e){}
+    var c=paint();if(!i.checked)return;var part=s.closest('.part');burst(i.parentNode,getComputedStyle(part).getPropertyValue('--c').trim());
+    var left=$$('.step',part).filter(function(x){return !$('input',x).checked}).length;
+    if(c===steps.length)toast('All done. You are set up.');else if(!left)toast('Part '+part.dataset.part+' done. On to part '+(+part.dataset.part+1)+'.')})});
+$('#reset').addEventListener('click',function(){saved={};try{localStorage.removeItem(KEY)}catch(e){}steps.forEach(function(s){$('input',s).checked=false});paint();toast('Ticks cleared')});
+paint();
+
+/* copy */
+$$('[data-copy]').forEach(function(b){b.addEventListener('click',function(){
+  var el=document.getElementById(b.getAttribute('data-copy')),txt=el.textContent,o=b.getAttribute('data-label')||b.textContent;b.setAttribute('data-label',o);
+  function done(){b.textContent='Copied. Now paste it.';b.classList.add('ok');clearTimeout(b._t);b._t=setTimeout(function(){b.textContent=o;b.classList.remove('ok')},2200)}
+  function execCopy(){var ta=document.createElement('textarea');ta.value=txt;ta.setAttribute('readonly','');ta.style.cssText='position:fixed;top:0;left:0;width:1px;height:1px;opacity:0';document.body.appendChild(ta);ta.focus();ta.select();try{ta.setSelectionRange(0,ta.value.length)}catch(e){}var ok=false;try{ok=document.execCommand('copy')}catch(e){ok=false}document.body.removeChild(ta);return ok}
+  function manual(){var r=document.createRange();r.selectNodeContents(el);var s=window.getSelection();s.removeAllRanges();s.addRange(r);b.textContent='Selected. Press Ctrl+C';b.classList.remove('ok');clearTimeout(b._t);b._t=setTimeout(function(){b.textContent=o},4500)}
+  if(execCopy()){done();return}
+  try{if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(done,manual)}else{manual()}}catch(e){manual()}
+})});
+
+/* collapse, navigator, continue */
+steps.forEach(function(s){s.id='s-'+s.dataset.id;$('h3',s).addEventListener('click',function(){if(s.classList.contains('done')||s.classList.contains('wait'))s.classList.toggle('open')})});
+var side=document.createElement('nav');side.className='side';side.setAttribute('aria-label','Steps');
+$$('.part').forEach(function(p){var h=document.createElement('h4');h.textContent=p.dataset.part+'. '+$('.part-head h2',p).textContent;h.className='sh'+p.dataset.part;side.appendChild(h);
+  $$('.step',p).forEach(function(s){var b=document.createElement('button');b.innerHTML='<i></i><span></span>';$('span',b).textContent=$('h3',s).textContent;b.dataset.for=s.id;b.addEventListener('click',function(){goTo(s)});side.appendChild(b)})});
+document.body.appendChild(side);
+function goTo(el){if(el)el.scrollIntoView({behavior:reduce?'auto':'smooth',block:'start'})}
+var heroBtn=$('.hero .btn'),heroLabel=heroBtn.firstChild;
+function firstOpen(){return steps.filter(function(s){return !$('input',s).checked})[0]}
+heroBtn.addEventListener('click',function(e){var n=firstOpen();if(n&&n!==steps[0]){e.preventDefault();e.stopImmediatePropagation();goTo(n)}},true);
+function syncNav(){var c=0;steps.forEach(function(s){var d=$('input',s).checked;if(d)c++;var b=$('[data-for="'+s.id+'"]',side);if(b)b.classList.toggle('dn',d)});
+  $$('.part').forEach(function(p){var h=$('.sh'+p.dataset.part,side);if(h)h.style.color=getComputedStyle(p).getPropertyValue('--c')});
+  var n=firstOpen();steps.forEach(function(x){x.classList.toggle('wait',!$('input',x).checked&&x!==n);if(x===n)x.classList.remove('open')});heroLabel.nodeValue=(c>0&&n)?'Continue at '+n.dataset.id.toUpperCase()+' ':(c===steps.length?'Review part 1 ':'Start part 1 ')}
+function sideVis(){var setup=!$('[data-tab="setup"]').hidden,hero=$('.hero');side.classList.toggle('on',setup&&window.scrollY>hero.offsetHeight-120)}
+window.addEventListener('scroll',sideVis,{passive:true});$$('[data-go]').forEach(function(b){b.addEventListener('click',function(){setTimeout(sideVis,50)})});
+if('IntersectionObserver' in window){var cur=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){$$('button.cur',side).forEach(function(b){b.classList.remove('cur')});var b=$('[data-for="'+e.target.id+'"]',side);if(b)b.classList.add('cur')}})},{rootMargin:'-25% 0px -65% 0px'});steps.forEach(function(s){cur.observe(s)})}
+steps.forEach(function(s){$('input',s).addEventListener('change',function(){s.classList.remove('open');syncNav()})});
+$('#reset').addEventListener('click',function(){setTimeout(syncNav,0)});$$('#themes button').forEach(function(b){b.addEventListener('click',function(){setTimeout(syncNav,0)})});
+syncNav();sideVis();
+
+/* open on hash */
+var h=(location.hash||'').slice(1);if(/^p[1-4]$/.test(h)){show('setup',true)}else if(h){show(h,true)}
+})();
+</script>
+</body></html>
